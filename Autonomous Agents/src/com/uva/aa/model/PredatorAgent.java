@@ -2,8 +2,8 @@ package com.uva.aa.model;
 
 public class PredatorAgent extends Agent {
 	
-	public PredatorAgent(final Environment environment) {
-		super(environment);
+	public PredatorAgent(final Environment environment, final int x, final int y) {
+		super(environment, x, y);
 	}
 
 	@Override
