@@ -1,4 +1,4 @@
-package com.uva.aa;
+package com.uva.aa.enums;
 
 /**
  * Denotes the different possible types of states the game can be in.
