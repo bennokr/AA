@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.uva.aa.enums.GameState;
 import com.uva.aa.model.Agent;
+import com.uva.aa.model.DumbPredatorAgent;
 import com.uva.aa.model.PreyAgent;
 import com.uva.aa.model.PredatorAgent;
 import com.uva.aa.model.Environment;
@@ -12,12 +13,18 @@ import com.uva.aa.model.Environment;
  * The game which maintains the environment and agents.
  */
 public class Game {
+    
+    /** The amount of time between turns in ms */
+    private final static int TURN_DELAY = 0;
 
     /** The environment for this game */
     private final Environment mEnvironment;
 
     /** The state of the game */
     private GameState mState = GameState.PREPARATION;
+    
+    /** The amount of turns taken in the game */
+    private int mTurnsTaken = 0;
 
     /**
      * Creates a new game with an environment with the specified dimensions.
@@ -52,7 +59,7 @@ public class Game {
      *            The y coordinate where the predator is located at
      */
     public void addPredator(final int x, final int y) {
-        mEnvironment.addAgent(new PredatorAgent(new Location(mEnvironment, x, y)));
+        mEnvironment.addAgent(new DumbPredatorAgent(new Location(mEnvironment, x, y)));
     }
 
     /**
@@ -71,6 +78,7 @@ public class Game {
         mState = GameState.FINISHED;
 
         System.out.println("Game finished!");
+        System.out.println("Amount of turns taken: " + mTurnsTaken);
     }
 
     /**
@@ -85,12 +93,15 @@ public class Game {
 
         // Mark the game as running
         mState = GameState.RUNNING;
+        mTurnsTaken = 0;
 
         // Let each agent take turns in performing actions
         final List<Agent> agents = mEnvironment.getAgents();
         Agent activeAgent = agents.get(0);
         while (mState == GameState.RUNNING) {
-
+            // Keep track of the turns taken
+            ++mTurnsTaken;
+            
             // Make a move
             activeAgent.performAction();
 
@@ -102,7 +113,7 @@ public class Game {
 
             // Make sure that humans can see the game's state changes develop
             try {
-                Thread.sleep(100);
+                Thread.sleep(TURN_DELAY);
             } catch (InterruptedException e) {}
         }
     }

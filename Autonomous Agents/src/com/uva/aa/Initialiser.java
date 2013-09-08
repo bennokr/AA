@@ -20,12 +20,12 @@ public class Initialiser {
         game.addPredator(0, 0);
 
         // Enable this for a simple multi-agent demonstration
-        game.addPrey(5, 6);
-        game.addPrey(6, 6);
-        game.addPrey(6, 5);
-        game.addPredator(0, 10);
-        game.addPredator(10, 10);
-        game.addPredator(10, 0);
+//        game.addPrey(5, 6);
+//        game.addPrey(6, 6);
+//        game.addPrey(6, 5);
+//        game.addPredator(0, 10);
+//        game.addPredator(10, 10);
+//        game.addPredator(10, 0);
 
         game.start();
     }
