@@ -44,7 +44,8 @@ public class Policy {
     }
 
     /**
-     * Retrieves the value of the state. Acts as V^pi(s).
+     * Retrieves the value of the state. Essentially returns a cached result of V^pi(s), but does not actually perform
+     * the value function.
      * 
      * @param state
      *            The state to get the value for

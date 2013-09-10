@@ -12,7 +12,8 @@ import com.uva.aa.policies.Policy;
  */
 public class PredatorAgent extends Agent {
 	
-	private Policy policy;
+    /** The policy the predator follows */
+	private Policy mPolicy;
 
     /**
      * Creates a new predator on the specified coordinates within the environment.
