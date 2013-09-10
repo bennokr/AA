@@ -4,9 +4,9 @@ import java.util.List;
 
 import com.uva.aa.enums.GameState;
 import com.uva.aa.model.Agent;
-import com.uva.aa.model.DumbPredatorAgent;
-import com.uva.aa.model.PreyAgent;
 import com.uva.aa.model.PredatorAgent;
+import com.uva.aa.model.PreyAgent;
+import com.uva.aa.model.SmartPredatorAgent;
 import com.uva.aa.model.Environment;
 
 /**
@@ -15,12 +15,12 @@ import com.uva.aa.model.Environment;
 public class Game {
     
     /** The amount of time between turns in ms */
-    private final static int TURN_DELAY = 0;
+    private final static int TURN_DELAY = 50;
 
     /** The environment for this game */
     private final Environment mEnvironment;
 
-    /** The state of the game */
+    /** The state of the game which indicates if it's running */
     private GameState mState = GameState.PREPARATION;
     
     /** The amount of turns taken in the game */
@@ -59,7 +59,7 @@ public class Game {
      *            The y coordinate where the predator is located at
      */
     public void addPredator(final int x, final int y) {
-        mEnvironment.addAgent(new DumbPredatorAgent(new Location(mEnvironment, x, y)));
+        mEnvironment.addAgent(new PredatorAgent(new Location(mEnvironment, x, y)));
     }
 
     /**
