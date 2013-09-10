@@ -1,10 +1,10 @@
-package com.uva.aa.model;
+package com.uva.aa.agents;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import com.uva.aa.Location;
-import com.uva.aa.enums.Direction;
+import com.uva.aa.enums.Action;
 
 /**
  * An agent that acts as a predator within the environment. Will target a prey and try to hunt it down.
@@ -33,8 +33,8 @@ public class SmartPredatorAgent extends PredatorAgent {
         final int environmentHalfHeight = environment.getHalfHeight();
 
         // Check which directions are invalid moves (i.e., have a predator on the resulting location)
-        final List<Direction> excludedDirections = new LinkedList<Direction>();
-        for (final Direction direction : Direction.values()) {
+        final List<Action> excludedDirections = new LinkedList<Action>();
+        for (final Action direction : Action.values()) {
             if (environment.isOccupiedByPredator(direction.getLocation(this))) {
                 excludedDirections.add(direction);
             }
@@ -51,13 +51,13 @@ public class SmartPredatorAgent extends PredatorAgent {
         // Determine the best horizontal and vertical directions, based on the distances
         final boolean goLeft = (distX < environmentHalfWidth == diffX < 0);
         final boolean goUp = (distY < environmentHalfHeight == diffY < 0);
-        final Direction bestX = (goLeft ? Direction.LEFT : Direction.RIGHT);
-        final Direction worstX = (goLeft ? Direction.RIGHT : Direction.LEFT);
-        final Direction bestY = (goUp ? Direction.UP : Direction.DOWN);
-        final Direction worstY = (goUp ? Direction.DOWN : Direction.UP);
+        final Action bestX = (goLeft ? Action.LEFT : Action.RIGHT);
+        final Action worstX = (goLeft ? Action.RIGHT : Action.LEFT);
+        final Action bestY = (goUp ? Action.UP : Action.DOWN);
+        final Action worstY = (goUp ? Action.DOWN : Action.UP);
 
         // Check whether moving horizontal or vertical is preferred
-        final Direction[] directions = new Direction[4];
+        final Action[] directions = new Action[4];
         if (distX % (environmentHalfWidth + 1) > distY % (environmentHalfHeight + 1)) {
             directions[0] = bestX;
             directions[1] = bestY;
@@ -71,8 +71,8 @@ public class SmartPredatorAgent extends PredatorAgent {
         }
 
         // Try to return the best allowed direction
-        Direction targetDirection = null;
-        for (final Direction direction : directions) {
+        Action targetDirection = null;
+        for (final Action direction : directions) {
             if (!excludedDirections.contains(direction)) {
                 targetDirection = direction;
                 break;

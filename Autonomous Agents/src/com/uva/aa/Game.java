@@ -2,11 +2,11 @@ package com.uva.aa;
 
 import java.util.List;
 
+import com.uva.aa.agents.Agent;
+import com.uva.aa.agents.Environment;
+import com.uva.aa.agents.PredatorAgent;
+import com.uva.aa.agents.PreyAgent;
 import com.uva.aa.enums.GameState;
-import com.uva.aa.model.Agent;
-import com.uva.aa.model.PredatorAgent;
-import com.uva.aa.model.PreyAgent;
-import com.uva.aa.model.Environment;
 
 /**
  * The game which maintains the environment and agents.

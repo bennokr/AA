@@ -1,4 +1,4 @@
-package tester;
+package testers;
 
 import java.util.List;
 import java.util.LinkedList;

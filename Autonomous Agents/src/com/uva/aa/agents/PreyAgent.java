@@ -1,10 +1,10 @@
-package com.uva.aa.model;
+package com.uva.aa.agents;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import com.uva.aa.Location;
-import com.uva.aa.enums.Direction;
+import com.uva.aa.enums.Action;
 
 /**
  * An agent that acts as a prey within the environment. Will randomly move and won't kill other agents.
@@ -35,7 +35,7 @@ public class PreyAgent extends Agent {
     public void performAction() {
         // Check which directions are valid moves (i.e., have no other agent on the resulting location)
         final List<Location> possibleLocations = new LinkedList<Location>();
-        for (final Direction direction : Direction.values()) {
+        for (final Action direction : Action.values()) {
             final Location possibleLocation = direction.getLocation(this);
             if (!getEnvironment().isOccupied(possibleLocation)) {
                 possibleLocations.add(possibleLocation);

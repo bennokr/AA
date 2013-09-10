@@ -1,6 +1,6 @@
 package com.uva.aa;
 
-import com.uva.aa.model.Environment;
+import com.uva.aa.agents.Environment;
 
 /**
  * A location within an environment.

@@ -1,4 +1,4 @@
-package com.uva.aa.model;
+package com.uva.aa.agents;
 
 import com.uva.aa.Location;
 

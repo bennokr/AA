@@ -1,7 +1,7 @@
 package com.uva.aa;
 
-import tester.SimpleTester;
-import tester.Tester;
+import testers.SimpleTester;
+import testers.Tester;
 
 /**
  * Prepares the game(s) and starts the required actions.
@@ -16,7 +16,7 @@ public class Initialiser {
      */
     public static void main(String[] args) {
         final Tester simpleTester = new SimpleTester();
-        simpleTester.runTests(100000);
+        simpleTester.runTests(10);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.uva.aa.model;
+package com.uva.aa.agents;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -6,6 +6,8 @@ import java.util.List;
 
 import com.uva.aa.Game;
 import com.uva.aa.Location;
+import com.uva.aa.enums.Action;
+import com.uva.aa.policies.State;
 
 /**
  * The environment which holds the agents and state.
@@ -254,6 +256,18 @@ public class Environment {
         if (mPreys.isEmpty() && mGame.isRunning()) {
             mGame.finish();
         }
+    }
+
+    public double getTransitionProbability(final State initialState, 
+    		final State resultingState, final Action action) {
+    	// TODO: Benno will do this
+    	return 0.0;
+    }
+    
+    public double getImmediateReward(final State initialState, 
+    		final State resultingState, final Action action) {
+    	// TODO: Benno will do this
+    	return 0.0;
     }
 
     /**
