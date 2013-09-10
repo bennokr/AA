@@ -121,15 +121,15 @@ public class Environment {
     public List<State> getPossibleStatesExclTerminal() {
     	List<State> possibleStatesExclTerminal = new ArrayList<State>();
     	// Loop over the possible positions of the Predator
-    	for (int i = 0 ; i <= mHeight-1 ; i++) {	// go through each line
+    	for (int i = 0 ; i < mHeight ; i++) {	// go through each line
     		int xPred = i;
-    		for (int j = 0; j <= mWidth-1 ; j++) {	// go through each column (in the line you're in)
+    		for (int j = 0; j < mWidth ; j++) {	// go through each column (in the line you're in)
     			int yPred = j;
     			Location locPred = new Location(this, xPred, yPred);
     			// Loop over the possible positions of the Prey
-    			for (int k = 0 ; k <= mHeight-1 ; k++) {
+    			for (int k = 0 ; k < mHeight ; k++) {
     				int xPrey = k;
-    				for (int l = 0 ; l <= mWidth-1 ; l++) {
+    				for (int l = 0 ; l < mWidth ; l++) {
     					int yPrey = l;
     					Location locPrey = new Location(this, xPrey, yPrey);
     					if (!locPred.equals(locPrey)) {
@@ -153,24 +153,19 @@ public class Environment {
      * @return The List of possible (nonterminal and terminal) states
      */
     public List<State> getPossibleStatesInclTerminal() {
-    	List<State> possibleStatesInclTerminal = new ArrayList<State>();
+    	final List<State> possibleStatesInclTerminal = new ArrayList<State>();
     	// Loop over the possible positions of the Predator
-    	for (int i = 0 ; i <= mHeight-1 ; i++) {	// go through each line
-    		int xPred = i;
-    		for (int j = 0; j <= mWidth-1 ; j++) {	// go through each column (in the current line you're in)
-    			int yPred = j;
-    			Location locPred = new Location(this, xPred, yPred);
+    	for (int xPred = 0 ; xPred < mHeight ; xPred++) {	// go through each line
+    		for (int yPred = 0; yPred < mWidth ; yPred++) {	// go through each column (in the current line you're in)
+    			final Location locPred = new Location(this, xPred, yPred);
     			// Loop over the possible positions of the Prey
-    			for (int k = 0 ; k <= mHeight-1 ; k++) { 	// lines
-    				int xPrey = k;
-    				for (int l = 0 ; l <= mWidth-1 ; l++) {	// columns
-    					int yPrey = l;
-    					Location locPrey = new Location(this, xPrey, yPrey);
-    					HashMap<Agent, Location> stateMap = new HashMap();
+    			for (int xPrey = 0 ; xPrey < mHeight ; xPrey++) { 	// lines
+    				for (int yPrey = 0 ; yPrey < mWidth ; yPrey++) {	// columns
+    					final Location locPrey = new Location(this, xPrey, yPrey);
+    					final HashMap<Agent, Location> stateMap = new HashMap();
     					stateMap.put(mPredators.get(0), locPred);
     					stateMap.put(mPreys.get(0), locPrey);
-    					State state = new State(stateMap);
-    					possibleStatesInclTerminal.add(state);
+    					possibleStatesInclTerminal.add(new State(stateMap));
     				}
     			}
     		}
