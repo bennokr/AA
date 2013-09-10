@@ -136,7 +136,7 @@ public class Environment {
                     for (int yPrey = 0; yPrey < mHeight; yPrey++) {
                         final Location locPrey = new Location(this, xPrey, yPrey);
                         if (includeTerminal || !locPred.equals(locPrey)) {
-                            final HashMap<Agent, Location> stateMap = new HashMap();
+                            final HashMap<Agent, Location> stateMap = new HashMap<Agent, Location>();
                             stateMap.put(mPredators.get(0), locPred);
                             stateMap.put(mPreys.get(0), locPrey);
                             possibleStatesInclTerminal.add(new State(stateMap));
