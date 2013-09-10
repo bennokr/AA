@@ -67,7 +67,7 @@ public class Environment {
         if (PreyAgent.class.isInstance(agent)) {
             mPreys.add((PreyAgent) agent);
         } else if (PredatorAgent.class.isInstance(agent)) {
-            mPredators.add((SmartPredatorAgent) agent);
+            mPredators.add((PredatorAgent) agent);
         }
     }
 
