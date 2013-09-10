@@ -2,7 +2,9 @@ package com.uva.aa.agents;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.uva.aa.Game;
 import com.uva.aa.Location;
@@ -110,6 +112,72 @@ public class Environment {
         return mPreys;
     }
 
+    /**
+     * Retrieves the list of all possible nonterminal states S that the Environment can be in,
+     * considering all the agents that are currently in it
+     * 
+     * @return The List of possible nonterminal states
+     */
+    public List<State> getPossibleStatesExclTerminal() {
+    	List<State> possibleStatesExclTerminal = new ArrayList<State>();
+    	// Loop over the possible positions of the Predator
+    	for (int i = 0 ; i <= mHeight-1 ; i++) {	// go through each line
+    		int xPred = i;
+    		for (int j = 0; j <= mWidth-1 ; j++) {	// go through each column (in the line you're in)
+    			int yPred = j;
+    			Location locPred = new Location(this, xPred, yPred);
+    			// Loop over the possible positions of the Prey
+    			for (int k = 0 ; k <= mHeight-1 ; k++) {
+    				int xPrey = k;
+    				for (int l = 0 ; l <= mWidth-1 ; l++) {
+    					int yPrey = l;
+    					Location locPrey = new Location(this, xPrey, yPrey);
+    					if (!locPred.equals(locPrey)) {
+    						HashMap<Agent, Location> stateMap = new HashMap();
+    						stateMap.put(mPredators.get(0), locPred);
+    						stateMap.put(mPreys.get(0), locPrey);
+    						State state = new State(stateMap);
+    						possibleStatesExclTerminal.add(state);
+    					}
+    				}
+    			}
+    		}
+    	}
+    	return possibleStatesExclTerminal;
+    }
+    
+    /**
+     * Retrieves the list of all possible states S+ (nonterminal and terminal) that the 
+     * Environment can be in, considering all the agents that are currently in it
+     * 
+     * @return The List of possible (nonterminal and terminal) states
+     */
+    public List<State> getPossibleStatesInclTerminal() {
+    	List<State> possibleStatesInclTerminal = new ArrayList<State>();
+    	// Loop over the possible positions of the Predator
+    	for (int i = 0 ; i <= mHeight-1 ; i++) {	// go through each line
+    		int xPred = i;
+    		for (int j = 0; j <= mWidth-1 ; j++) {	// go through each column (in the current line you're in)
+    			int yPred = j;
+    			Location locPred = new Location(this, xPred, yPred);
+    			// Loop over the possible positions of the Prey
+    			for (int k = 0 ; k <= mHeight-1 ; k++) { 	// lines
+    				int xPrey = k;
+    				for (int l = 0 ; l <= mWidth-1 ; l++) {	// columns
+    					int yPrey = l;
+    					Location locPrey = new Location(this, xPrey, yPrey);
+    					HashMap<Agent, Location> stateMap = new HashMap();
+    					stateMap.put(mPredators.get(0), locPred);
+    					stateMap.put(mPreys.get(0), locPrey);
+    					State state = new State(stateMap);
+    					possibleStatesInclTerminal.add(state);
+    				}
+    			}
+    		}
+    	}
+    	return possibleStatesInclTerminal;
+    }
+    
     /**
      * Retrieves the list of predators in the order in which they were added.
      * 
