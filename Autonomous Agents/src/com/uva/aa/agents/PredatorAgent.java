@@ -1,19 +1,28 @@
 package com.uva.aa.agents;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import com.uva.aa.Location;
 import com.uva.aa.enums.Action;
 import com.uva.aa.policies.Policy;
+import com.uva.aa.policies.State;
+import com.uva.aa.policies.StatePolicyProperties;
+import com.uva.aa.policyImpovement.IterativePolicyEvaluation;
 
 /**
  * An agent that acts as a predator within the environment. Will randomly move, hoping to catch a prey.
  */
 public class PredatorAgent extends Agent {
-	
+
     /** The policy the predator follows */
-	private Policy mPolicy;
+    private Policy mPolicy;
+    private List<State> mPossibleStatesExclTerminal;
+    private List<State> mPossibleStatesInclTerminal;
 
     /**
      * Creates a new predator on the specified coordinates within the environment.
@@ -23,16 +32,34 @@ public class PredatorAgent extends Agent {
      */
     public PredatorAgent(final Location location) {
         super(location);
-        
+
         initPolicy();
     }
-    
+
+    /**
+     * Initialize the random policy: for each state the predator can be in, every possible action will be chosen with
+     * the same probability
+     */
     public void initPolicy() {
-    	// TODO: Luisa will do this
+        mPolicy = new Policy();
+        mPossibleStatesExclTerminal = getEnvironment().getPossibleStates(false);
+        mPossibleStatesInclTerminal = getEnvironment().getPossibleStates(true);
+        // TODO: Remove console output when true
+        System.out.println("This should be 14.520" + mPossibleStatesExclTerminal.size());
+        System.out.println("This should be 14.641" + mPossibleStatesExclTerminal.size());
+        for (State state : mPossibleStatesExclTerminal) {
+            for (Action action : Action.values()) {
+                mPolicy.setActionProbability(state, action, 1 / (Action.values().length));
+            }
+        }
     }
-    
+
+    /**
+     * Evaluates the policy of the predator
+     * 
+     */
     public void evaluatePolicy() {
-    	// TODO: Luisa will do this
+        new IterativePolicyEvaluation(this, mPolicy, mPossibleStatesExclTerminal, mPossibleStatesInclTerminal);
     }
 
     /**
@@ -42,9 +69,9 @@ public class PredatorAgent extends Agent {
      */
     @Override
     public void performAction() {
-    	
-    	// TODO: Follow policy instead of custom logic
-    	
+
+        // TODO: Follow policy instead of custom logic
+
         // Check which directions are valid moves (i.e., have no other agent on the resulting location)
         final List<Location> possibleLocations = new LinkedList<Location>();
         for (final Action direction : Action.values()) {
