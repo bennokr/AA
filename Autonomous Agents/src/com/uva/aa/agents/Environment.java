@@ -116,21 +116,24 @@ public class Environment {
      * Retrieves the list of all possible states that the Environment can be in, considering all the agents that are
      * currently in it
      * 
+     * @param includeTerminal
+     *          whether the terminal states should also be included in the list or not
+     * 
      * @return The List of possible states
      */
     public List<State> getPossibleStates(boolean includeTerminal) {
         final List<State> possibleStatesInclTerminal = new ArrayList<State>();
         // Loop over the possible positions of the Predator
         // go through each line
-        for (int xPred = 0; xPred < mHeight; xPred++) {
+        for (int xPred = 0; xPred < mWidth; xPred++) {
             // go through each column (in the current line you're in)
-            for (int yPred = 0; yPred < mWidth; yPred++) {
+            for (int yPred = 0; yPred < mHeight; yPred++) {
                 final Location locPred = new Location(this, xPred, yPred);
                 // Loop over the possible positions of the Prey
                 // lines
-                for (int xPrey = 0; xPrey < mHeight; xPrey++) {
+                for (int xPrey = 0; xPrey < mWidth; xPrey++) {
                     // columns
-                    for (int yPrey = 0; yPrey < mWidth; yPrey++) {
+                    for (int yPrey = 0; yPrey < mHeight; yPrey++) {
                         final Location locPrey = new Location(this, xPrey, yPrey);
                         if (includeTerminal || !locPred.equals(locPrey)) {
                             final HashMap<Agent, Location> stateMap = new HashMap();
