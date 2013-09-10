@@ -4,7 +4,6 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.uva.aa.Game;
 import com.uva.aa.Location;
@@ -113,40 +112,43 @@ public class Environment {
     }
 
     /**
-     * Retrieves the list of all possible states that the Environment can be in, considering all the agents that are
-     * currently in it
+     * Retrieves the list of all possible states that the environment can be in, considering all the agents that are
+     * currently in it.
+     * 
+     * This method does NOT support more than one predator or prey yet.
      * 
      * @param includeTerminal
-     *          whether the terminal states should also be included in the list or not
+     *            Whether or not the terminal states should also be included in the list
      * 
-     * @return The List of possible states
+     * @return The possible states
      */
-    public List<State> getPossibleStates(boolean includeTerminal) {
-        final List<State> possibleStatesInclTerminal = new ArrayList<State>();
-        // Loop over the possible positions of the Predator
-        // go through each line
-        for (int xPred = 0; xPred < mWidth; xPred++) {
-            // go through each column (in the current line you're in)
-            for (int yPred = 0; yPred < mHeight; yPred++) {
+    public List<State> getPossibleStates(final boolean includeTerminal) {
+        final List<State> possibleStates = new ArrayList<State>();
+
+        // Loop over the possible locations of the predator
+        for (int xPred = 0; xPred < mWidth; ++xPred) {
+            for (int yPred = 0; yPred < mHeight; ++yPred) {
                 final Location locPred = new Location(this, xPred, yPred);
-                // Loop over the possible positions of the Prey
-                // lines
-                for (int xPrey = 0; xPrey < mWidth; xPrey++) {
-                    // columns
-                    for (int yPrey = 0; yPrey < mHeight; yPrey++) {
+
+                // Loop over the possible locations of the prey
+                for (int xPrey = 0; xPrey < mWidth; ++xPrey) {
+                    for (int yPrey = 0; yPrey < mHeight; ++yPrey) {
                         final Location locPrey = new Location(this, xPrey, yPrey);
+
+                        // Only include the state if it's not terminal or if terminal states should be included
                         if (includeTerminal || !locPred.equals(locPrey)) {
                             final HashMap<Agent, Location> stateMap = new HashMap<Agent, Location>();
                             stateMap.put(mPredators.get(0), locPred);
                             stateMap.put(mPreys.get(0), locPrey);
-                            possibleStatesInclTerminal.add(new State(stateMap));
+                            possibleStates.add(new State(stateMap));
                         }
-
                     }
                 }
+
             }
         }
-        return possibleStatesInclTerminal;
+
+        return possibleStates;
     }
 
     /**

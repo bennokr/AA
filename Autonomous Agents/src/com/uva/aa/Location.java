@@ -6,6 +6,11 @@ import com.uva.aa.agents.Environment;
  * A location within an environment.
  */
 public class Location {
+    /** The initial hash value; must be prime */
+    private static final int HASH_SEED = 7;
+    
+    /** The hash offset for following numbers; must be prime */
+    private static final int HASH_OFFSET = 31;
 
     /** The environment this location is within */
     private Environment mEnvironment;
@@ -80,18 +85,6 @@ public class Location {
     }
 
     /**
-     * Checks if this location has the same coordinates as the given one.
-     * 
-     * @param location
-     *            The location to compare
-     * 
-     * @return True of the coordinates are the same, false otherwise
-     */
-    public boolean equals(final Location location) {
-        return mX == location.getX() && mY == location.getY();
-    }
-
-    /**
      * Adds the x and y values of two locations together within a certain environment.
      * 
      * @param location
@@ -110,5 +103,29 @@ public class Location {
         }
 
         return new Location(mEnvironment != null ? mEnvironment : targetEnv, mX + location.getX(), mY + location.getY());
+    }
+
+    /**
+     * Checks if this location has the same coordinates as the given one.
+     * 
+     * @param location
+     *            The location to compare
+     * 
+     * @return True of the coordinates are the same, false otherwise
+     */
+    public boolean equals(final Location location) {
+        return mX == location.getX() && mY == location.getY();
+    }
+
+    /**
+     * Hashes the location based on the coordinates. The environment does not affect this hashcode.
+     * 
+     * @return The hash code for the location
+     */
+    public int hashCode() {
+        int intHash = HASH_SEED;
+        intHash += HASH_OFFSET * mX;
+        intHash += HASH_OFFSET * mY * (int) Math.pow(2, 16);
+        return intHash;
     }
 }
