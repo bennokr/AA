@@ -33,8 +33,11 @@ public abstract class Agent {
      *            The location to move to
      */
     public void moveTo(final Location location) {
-        System.out.println(getClass().getSimpleName() + " moves from (" + mLocation.getX() + ", " + mLocation.getY()
-                + ") to (" + location.getX() + ", " + location.getY() + ")");
+    	// Print the move taken if needed
+    	if (getEnvironment().getGame().shouldPrintMoves()) {
+	        System.out.println(getClass().getSimpleName() + " moves from (" + mLocation.getX() + ", " + mLocation.getY()
+	                + ") to (" + location.getX() + ", " + location.getY() + ")");
+    	}
 
         // Kills the agent present at the location, if any
         final Agent occupyingAgent = getEnvironment().getOccupyingAgent(location);

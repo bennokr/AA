@@ -6,7 +6,6 @@ import com.uva.aa.enums.GameState;
 import com.uva.aa.model.Agent;
 import com.uva.aa.model.PredatorAgent;
 import com.uva.aa.model.PreyAgent;
-import com.uva.aa.model.SmartPredatorAgent;
 import com.uva.aa.model.Environment;
 
 /**
@@ -15,7 +14,7 @@ import com.uva.aa.model.Environment;
 public class Game {
     
     /** The amount of time between turns in ms */
-    private final static int TURN_DELAY = 50;
+    private final static int TURN_DELAY = 0;
 
     /** The environment for this game */
     private final Environment mEnvironment;
@@ -25,6 +24,18 @@ public class Game {
     
     /** The amount of turns taken in the game */
     private int mTurnsTaken = 0;
+    
+    /** The amount of rounds played in the game */
+    private int mRoundsPlayed = 0;
+    
+    /** Whether or not to print the state */
+    private boolean mPrintState = false;
+    
+    /** Whether to print the UI or just a simple textual state */
+    private boolean mPrintUi = false;
+    
+    /** Whether or not to print moves taken */
+    private boolean mPrintMoves = false;
 
     /**
      * Creates a new game with an environment with the specified dimensions.
@@ -61,6 +72,15 @@ public class Game {
     public void addPredator(final int x, final int y) {
         mEnvironment.addAgent(new PredatorAgent(new Location(mEnvironment, x, y)));
     }
+    
+    /**
+     * Checks whether or not moves taken should be printed.
+     * 
+     * @return True of moves should be printed, false otherwise
+     */
+    public boolean shouldPrintMoves() {
+    	return mPrintMoves;
+    }
 
     /**
      * Checks whether or not the game is currently running.
@@ -72,13 +92,25 @@ public class Game {
     }
 
     /**
+     * Retrieves the number of rounds played.
+     * 
+     * @return The number of rounds played
+     */
+    public int getRoundsPlayed() {
+        return mRoundsPlayed;
+    }
+
+    /**
      * Finishes the game.
      */
     public void finish() {
         mState = GameState.FINISHED;
 
-        System.out.println("Game finished!");
-        System.out.println("Amount of turns taken: " + mTurnsTaken);
+        if (mPrintState) {
+        	System.out.println("Game finished!");
+        }
+        System.out.println(mRoundsPlayed + " rounds played with a total of " + mTurnsTaken + " turns.");
+        System.out.println();
     }
 
     /**
@@ -106,10 +138,21 @@ public class Game {
             activeAgent.performAction();
 
             // Show the current state of the environment
-            mEnvironment.print();
+            if (mPrintState) {
+	            if (mPrintUi) {
+	                mEnvironment.printUi();
+	            } else {
+	                mEnvironment.printSimple();
+	            }
+            }
 
             // Select the next agent, keeping in mind that the list of agents may be altered
-            activeAgent = agents.get((agents.indexOf(activeAgent) + 1) % agents.size());
+            int nextAgent = (agents.indexOf(activeAgent) + 1);
+            if (nextAgent == agents.size()) {
+            	++mRoundsPlayed;
+            	nextAgent = 0;
+            }
+            activeAgent = agents.get(nextAgent);
 
             // Make sure that humans can see the game's state changes develop
             try {

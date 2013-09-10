@@ -118,6 +118,15 @@ public class Environment {
     }
 
     /**
+     * Returns the game containing the environment.
+     * 
+     * @return The game containing the environment
+     */
+    public Game getGame() {
+        return mGame;
+    }
+
+    /**
      * Returns the width of the environment.
      * 
      * @return The width of the environment
@@ -250,7 +259,7 @@ public class Environment {
     /**
      * Prints the current environment state to the console.
      */
-    public void print() {
+    public void printUi() {
         final PrintStream out = System.out;
 
         // Print the top border
@@ -288,5 +297,20 @@ public class Environment {
         }
         out.print(" ");
         out.println();
+    }
+
+    /**
+     * Prints the current environment state to the console.
+     */
+    public void printSimple() {
+    	for (final PredatorAgent predator : mPredators) {
+    		final Location location = predator.getLocation();
+    		System.out.print("Predator(" + location.getX() + "," + location.getY() + ") ");
+    	}
+    	for (final PreyAgent prey : mPreys) {
+    		final Location location = prey.getLocation();
+    		System.out.print("Prey(" + location.getX() + "," + location.getY() + ") ");
+    	}
+    	System.out.println();
     }
 }
