@@ -65,7 +65,7 @@ public class Environment {
             // Should throw a proper exception when agents can be dynamically added and this is a viable scenario
             throw new RuntimeException("This location is already occupied by another agent.");
         }
-        
+
         mAgents.add(agent);
 
         if (PreyAgent.class.isInstance(agent)) {
@@ -113,66 +113,39 @@ public class Environment {
     }
 
     /**
-     * Retrieves the list of all possible nonterminal states S that the Environment can be in,
-     * considering all the agents that are currently in it
+     * Retrieves the list of all possible states that the Environment can be in, considering all the agents that are
+     * currently in it
      * 
-     * @return The List of possible nonterminal states
+     * @return The List of possible states
      */
-    public List<State> getPossibleStatesExclTerminal() {
-    	List<State> possibleStatesExclTerminal = new ArrayList<State>();
-    	// Loop over the possible positions of the Predator
-    	for (int i = 0 ; i < mHeight ; i++) {	// go through each line
-    		int xPred = i;
-    		for (int j = 0; j < mWidth ; j++) {	// go through each column (in the line you're in)
-    			int yPred = j;
-    			Location locPred = new Location(this, xPred, yPred);
-    			// Loop over the possible positions of the Prey
-    			for (int k = 0 ; k < mHeight ; k++) {
-    				int xPrey = k;
-    				for (int l = 0 ; l < mWidth ; l++) {
-    					int yPrey = l;
-    					Location locPrey = new Location(this, xPrey, yPrey);
-    					if (!locPred.equals(locPrey)) {
-    						HashMap<Agent, Location> stateMap = new HashMap();
-    						stateMap.put(mPredators.get(0), locPred);
-    						stateMap.put(mPreys.get(0), locPrey);
-    						State state = new State(stateMap);
-    						possibleStatesExclTerminal.add(state);
-    					}
-    				}
-    			}
-    		}
-    	}
-    	return possibleStatesExclTerminal;
+    public List<State> getPossibleStates(boolean includeTerminal) {
+        final List<State> possibleStatesInclTerminal = new ArrayList<State>();
+        // Loop over the possible positions of the Predator
+        // go through each line
+        for (int xPred = 0; xPred < mHeight; xPred++) {
+            // go through each column (in the current line you're in)
+            for (int yPred = 0; yPred < mWidth; yPred++) {
+                final Location locPred = new Location(this, xPred, yPred);
+                // Loop over the possible positions of the Prey
+                // lines
+                for (int xPrey = 0; xPrey < mHeight; xPrey++) {
+                    // columns
+                    for (int yPrey = 0; yPrey < mWidth; yPrey++) {
+                        final Location locPrey = new Location(this, xPrey, yPrey);
+                        if (includeTerminal || !locPred.equals(locPrey)) {
+                            final HashMap<Agent, Location> stateMap = new HashMap();
+                            stateMap.put(mPredators.get(0), locPred);
+                            stateMap.put(mPreys.get(0), locPrey);
+                            possibleStatesInclTerminal.add(new State(stateMap));
+                        }
+
+                    }
+                }
+            }
+        }
+        return possibleStatesInclTerminal;
     }
-    
-    /**
-     * Retrieves the list of all possible states S+ (nonterminal and terminal) that the 
-     * Environment can be in, considering all the agents that are currently in it
-     * 
-     * @return The List of possible (nonterminal and terminal) states
-     */
-    public List<State> getPossibleStatesInclTerminal() {
-    	final List<State> possibleStatesInclTerminal = new ArrayList<State>();
-    	// Loop over the possible positions of the Predator
-    	for (int xPred = 0 ; xPred < mHeight ; xPred++) {	// go through each line
-    		for (int yPred = 0; yPred < mWidth ; yPred++) {	// go through each column (in the current line you're in)
-    			final Location locPred = new Location(this, xPred, yPred);
-    			// Loop over the possible positions of the Prey
-    			for (int xPrey = 0 ; xPrey < mHeight ; xPrey++) { 	// lines
-    				for (int yPrey = 0 ; yPrey < mWidth ; yPrey++) {	// columns
-    					final Location locPrey = new Location(this, xPrey, yPrey);
-    					final HashMap<Agent, Location> stateMap = new HashMap();
-    					stateMap.put(mPredators.get(0), locPred);
-    					stateMap.put(mPreys.get(0), locPrey);
-    					possibleStatesInclTerminal.add(new State(stateMap));
-    				}
-    			}
-    		}
-    	}
-    	return possibleStatesInclTerminal;
-    }
-    
+
     /**
      * Retrieves the list of predators in the order in which they were added.
      * 
@@ -321,16 +294,14 @@ public class Environment {
         }
     }
 
-    public double getTransitionProbability(final State initialState, 
-    		final State resultingState, final Action action) {
-    	// TODO: Benno will do this
-    	return 0.0;
+    public double getTransitionProbability(final State initialState, final State resultingState, final Action action) {
+        // TODO: Benno will do this
+        return 0.0;
     }
-    
-    public double getImmediateReward(final State initialState, 
-    		final State resultingState, final Action action) {
-    	// TODO: Benno will do this
-    	return 0.0;
+
+    public double getImmediateReward(final State initialState, final State resultingState, final Action action) {
+        // TODO: Benno will do this
+        return 0.0;
     }
 
     /**
@@ -380,14 +351,14 @@ public class Environment {
      * Prints the current environment state to the console.
      */
     public void printSimple() {
-    	for (final PredatorAgent predator : mPredators) {
-    		final Location location = predator.getLocation();
-    		System.out.print("Predator(" + location.getX() + "," + location.getY() + ") ");
-    	}
-    	for (final PreyAgent prey : mPreys) {
-    		final Location location = prey.getLocation();
-    		System.out.print("Prey(" + location.getX() + "," + location.getY() + ") ");
-    	}
-    	System.out.println();
+        for (final PredatorAgent predator : mPredators) {
+            final Location location = predator.getLocation();
+            System.out.print("Predator(" + location.getX() + "," + location.getY() + ") ");
+        }
+        for (final PreyAgent prey : mPreys) {
+            final Location location = prey.getLocation();
+            System.out.print("Prey(" + location.getX() + "," + location.getY() + ") ");
+        }
+        System.out.println();
     }
 }
