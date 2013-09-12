@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.uva.aa.Location;
 import com.uva.aa.enums.Action;
+import com.uva.aa.policies.Policy;
 
 /**
  * An agent that acts as a prey within the environment. Will randomly move and won't kill other agents.
@@ -53,5 +54,4 @@ public class PreyAgent extends Agent {
             moveTo(possibleLocations.get((int) Math.floor(decision / MOVE_PROBABILITY * possibleLocations.size())));
         }
     }
-
 }

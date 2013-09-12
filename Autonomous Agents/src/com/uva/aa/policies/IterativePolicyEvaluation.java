@@ -10,6 +10,21 @@ import com.uva.aa.agents.Environment;
 import com.uva.aa.agents.PreyAgent;
 import com.uva.aa.enums.Action;
 
+/**
+ * Iterative Policy Evaluation after Sutton, Barto, Chapter 4.1. An agent in an MDP-environment which is fully known to
+ * him can evaluate his current policy and thus estimate the true value function for that policy
+ * 
+ * An estimation of the value function V which maps a value to each state that the agent can be in will be updated
+ * incrementally using the Bellman equation: 
+ * V(s) <- sum_{a}[policy(s,a)*sum_{s'}P_{s,s'}^{a}*(R_{s,s'}^{a}+gamma*V(s'))]
+ * where the first sum is over all possible actions in state s,
+ * policy(s,a) gives the probability for taking action a in state s due to that policy,
+ * P_{s,s'}^{a} is the transition function (see environment.getTransitionProbability),
+ * R_{s,s'}^{a} is the immediate reward function (see environment.getImmediateReward),
+ * gamma is the discount factor of the Bellman equation and
+ * V is our (estimation of the) value function
+ * 
+ */
 public class IterativePolicyEvaluation {
 
     private final Agent mAgent;
@@ -17,19 +32,22 @@ public class IterativePolicyEvaluation {
     private final List<PreyAgent> mPreys;
     private final List<State> mPossibleStatesExclTerminal;
     private final List<State> mPossibleStatesInclTerminal;
-
+    /** counts the number of iterations */
     private int mIterations;
-
+    // this threshold will determine at what point we stop our algorithm
     private static final double ERR_THRESHOLD_THETA = 0.00001;
+    // the discount factor of the bellman equation
     private static final double DISCOUNT_FACTOR_GAMMA = 0.8;
 
     /**
-     * The Iterative Policy Evaluation (Sutton, Barto, Chapter 4.1) determines the value function to a given policy
+     * Creates a new Iterative Policy Evaluation
      * 
      * @param agent
-     * @param policy
+     *            the agent who holds a policy that he wants to evaluate
      * @param possibleStatesExclTerminal
+     *            all the possible states the agent can be in, excluding the terminal states
      * @param possibleStatesInclTerminal
+     *            all the possible states the agent can be in, including the terminal states
      */
     public IterativePolicyEvaluation(final Agent agent, final List<State> possibleStatesExclTerminal,
             final List<State> possibleStatesInclTerminal) {
@@ -43,7 +61,10 @@ public class IterativePolicyEvaluation {
     }
 
     /**
-     * Updates the value function until it converges
+     * Compute the real value function to a given policy with the iterative polic evaluation
+     * 
+     * @param policy
+     *            the policy for which the value function should be estimated
      */
     public void estimateValueFunction(final Policy policy) {
         // initialize the number of iterations
@@ -67,7 +88,7 @@ public class IterativePolicyEvaluation {
                 // save current estimate of the value of the current state (for later comparison)
                 final double previousStateValue = policy.getStateValue(state);
 
-                // now: use the bellman equation to update the estimate of the state-values
+                // we replace the old values in place (like suggested in Sutton, Barto, Chapter 4.1)
                 final double updatedStateValue = getNextStateValue(policy, state);
                 policy.setStateValue(state, updatedStateValue);
 
@@ -81,10 +102,14 @@ public class IterativePolicyEvaluation {
     }
 
     /**
-     * Returns an updated estimation of the state-value based on the bellmann equation
+     * Returns the next estimation of the state-value based on the Bellmann equation
      * 
+     * @param policy
+     *          the policy that we are following
      * @param state
-     * @return
+     *          the state for which we want to estimate the value
+     * @return outerSum
+     *          the (next) estimation of the value of the given state
      */
     private double getNextStateValue(Policy policy, State state) {
 
@@ -106,7 +131,7 @@ public class IterativePolicyEvaluation {
                 nextPredatorStateMap.put(mAgent, predatorNewLocation);
                 possibleNextStates.add(new State(nextPredatorStateMap));
             }
-            // else, there are five possible actions we have to iterate over (if the prey cannot make 
+            // else, there are five possible actions we have to iterate over (if the prey cannot make
             // an action, the possibility of this will be 0, so we will not care about this here)
             else {
                 for (Action actionPrey : Action.values()) {
@@ -121,8 +146,8 @@ public class IterativePolicyEvaluation {
             // in the inner sum: iterate over all the possible next states
             double innerSum = 0;
             for (State nextState : possibleNextStates) {
-                double transitionProbability = mEnvironment.getTransitionProbability(state, nextState, actionPredator);
-                double immediateReward = mEnvironment.getImmediateReward(state, nextState, actionPredator);
+                double transitionProbability = mAgent.getTransitionProbability(state, nextState, actionPredator);
+                double immediateReward = mAgent.getImmediateReward(state, nextState, actionPredator);
                 double nextStateValue = policy.getStateValue(nextState);
                 innerSum += transitionProbability * (immediateReward + DISCOUNT_FACTOR_GAMMA * nextStateValue);
             }
