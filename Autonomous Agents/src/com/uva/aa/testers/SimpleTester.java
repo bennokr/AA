@@ -1,4 +1,4 @@
-package testers;
+package com.uva.aa.testers;
 
 import com.uva.aa.Game;
 
