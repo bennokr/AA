@@ -47,13 +47,13 @@ public class IterativePolicyEvaluation {
         }
 
         // start the actual loop
-        estimateValueFunction();
+        estimateValueFunction(agent);
     }
     
     /**
      * Updates the value function until it converges
      */
-    private void estimateValueFunction() {
+    private void estimateValueFunction(Agent agent) {
         
         // these determine at what point the algorithm should stop
         double maxValErrDelta = 100.0;
@@ -69,7 +69,7 @@ public class IterativePolicyEvaluation {
                 double previousStateValue = mPolicy.getStateValue(state);
 
                 // now: use the bellman equation to update the estimate of the state-values
-                double updatedStateValue = updateStateValue(state);
+                double updatedStateValue = updateStateValue(state, agent);
                 mPolicy.setStateValue(state, updatedStateValue);
  
                 maxValErrDelta = Math.max(maxValErrDelta, Math.abs(previousStateValue-updatedStateValue));
@@ -84,7 +84,7 @@ public class IterativePolicyEvaluation {
      * @param state
      * @return
      */
-    private double updateStateValue(State state) {
+    private double updateStateValue(State state, Agent agent) {
  
         // discount factor of the bellman equation
         double discountFactorGamma = 0.8;
@@ -124,9 +124,9 @@ public class IterativePolicyEvaluation {
             // in the inner sum: iterate over all the possible next states
             double innerSum = 0;
             for (State nextState : possibleNextStates) {
-                double transitionProbability = mEnvironment.getTransitionProbability(state, nextState,
+                double transitionProbability = agent.getTransitionProbability(state, nextState,
                         actionPredator);
-                double immediateReward = mEnvironment.getImmediateReward(state, nextState, actionPredator);
+                double immediateReward = agent.getImmediateReward(state, nextState, actionPredator);
                 double nextStateValue = mPolicy.getStateValue(nextState);
                 innerSum += transitionProbability * (immediateReward + discountFactorGamma * nextStateValue);
             }

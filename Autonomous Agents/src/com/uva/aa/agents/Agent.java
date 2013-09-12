@@ -1,6 +1,9 @@
 package com.uva.aa.agents;
 
 import com.uva.aa.Location;
+import com.uva.aa.enums.Action;
+import com.uva.aa.policies.Policy;
+import com.uva.aa.policies.State;
 
 /**
  * An agent that will act within the environment.
@@ -72,4 +75,35 @@ public abstract class Agent {
     public Location getLocation() {
         return mLocation;
     }
+    
+
+    
+    /**
+     * Retrieves the probability of going from initialState to resultingState when this agent performs action.
+     * 
+     * @param The initial state
+     * @param The resulting state
+     * @param This agents action
+     * @return Probability
+     */
+    public double getTransitionProbability(final State initialState, final State resultingState, final Action action) {
+        return 0.0;
+    }
+
+    /**
+     * Retrieves this agents immediate reward for going from initialState to resultingState when this agent performs action.
+     * 
+     * @param initialState
+     * @param resultingState
+     * @param action
+     * @return Probability
+     */
+    public double getImmediateReward(final State initialState, final State resultingState, final Action action) {
+        return 0.0;
+    }
+    
+    public Policy getPolicy() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

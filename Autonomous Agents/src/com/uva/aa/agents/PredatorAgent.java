@@ -61,6 +61,49 @@ public class PredatorAgent extends Agent {
     public void evaluatePolicy() {
         new IterativePolicyEvaluation(this, mPolicy, mPossibleStatesExclTerminal, mPossibleStatesInclTerminal);
     }
+    
+    /** 
+     * The transition probability that accounts for the prey movement
+     */
+    public double getTransitionProbability(final State initialState, final State resultingState, final Action action) {
+    	// The moves should be deterministic
+    	if (resultingState.getAgentLocation(this).equals( action.getLocation(initialState.getAgentLocation(this)) )) {
+    		// We assume one prey and one predator!
+    		PreyAgent prey = getEnvironment().getPreys().get(0);
+    		// Check if the prey is alive
+    		if (resultingState.getAgentLocation( prey ) != null) {
+    			// Return the probability of the prey moving to its location in the resulting state from where it is in the initial state
+    			for (final Action direction : Action.values()) {
+    				// check if the prey moved in this direction
+    				if (direction.getLocation(initialState.getAgentLocation( prey )).equals( resultingState.getAgentLocation( prey ) )) {
+    					// return the chance we moved here
+    					return prey.getPolicy().getActionProbability(initialState, direction);
+    				}
+    			}
+    			// Should be unreachable!
+    			return 0.0;
+    		} else {
+    			return 1.0;
+    		}
+    	} else {
+    		return 0.0;
+    	}
+    }
+    
+    /** 
+     * The deterministic immediate reward
+     */
+    public double getImmediateReward(final State initialState, final State resultingState, final Action action) {
+    	// The reward does not depend on the action, only on the locations
+    	// The prey moves 'after' the predator
+    	// We assume one prey and one predator!
+		PreyAgent prey = getEnvironment().getPreys().get(0);
+    	if (resultingState.getAgentLocation(this).equals( initialState.getAgentLocation(prey) )) {
+    		return 10.0;
+    	} else {
+    		return 0.0;
+    	}
+    }
 
     /**
      * {@inheritDoc}

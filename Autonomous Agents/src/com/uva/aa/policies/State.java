@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.uva.aa.Location;
 import com.uva.aa.agents.Agent;
+import com.uva.aa.agents.PreyAgent;
 
 /**
  * A description of the state within an environment.
@@ -91,4 +92,9 @@ public class State {
 
         return agentHash;
     }
+
+	public Agent getAgentLocation(Agent prey) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
