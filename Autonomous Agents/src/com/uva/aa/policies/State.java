@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.uva.aa.Location;
 import com.uva.aa.agents.Agent;
+import com.uva.aa.agents.PreyAgent;
 
 /**
  * A description of the state within an environment.
@@ -90,5 +91,15 @@ public class State {
         }
 
         return agentHash;
+    }
+    
+    /**
+     * Returns the location of the agent
+     * 
+     * @param state
+     * @return
+     */
+    public Location getAgentLocation(Agent agent) {
+        return mAgentLocations.get(agent);
     }
 }
