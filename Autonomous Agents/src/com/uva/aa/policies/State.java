@@ -93,8 +93,13 @@ public class State {
         return agentHash;
     }
 
-	public Agent getAgentLocation(Agent prey) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    /**
+     * Returns the location of the agent
+     * 
+     * @param state
+     * @return
+     */
+    public Location getAgentLocation(Agent agent) {
+        return mAgentLocations.get(agent);
+    }
 }

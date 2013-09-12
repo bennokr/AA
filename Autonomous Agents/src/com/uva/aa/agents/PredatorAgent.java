@@ -9,10 +9,10 @@ import java.util.Map;
 
 import com.uva.aa.Location;
 import com.uva.aa.enums.Action;
+import com.uva.aa.policies.IterativePolicyEvaluation;
 import com.uva.aa.policies.Policy;
 import com.uva.aa.policies.State;
 import com.uva.aa.policies.StatePolicyProperties;
-import com.uva.aa.policyImpovement.IterativePolicyEvaluation;
 
 /**
  * An agent that acts as a predator within the environment. Will randomly move, hoping to catch a prey.
@@ -47,9 +47,9 @@ public class PredatorAgent extends Agent {
         // TODO: Remove console output when true
         System.out.println("This should be 14.520" + mPossibleStatesExclTerminal.size());
         System.out.println("This should be 14.641" + mPossibleStatesExclTerminal.size());
-        for (State state : mPossibleStatesExclTerminal) {
-            for (Action action : Action.values()) {
-                mPolicy.setActionProbability(state, action, 1 / (Action.values().length));
+        for (final State state : mPossibleStatesExclTerminal) {
+            for (final Action action : Action.values()) {
+                mPolicy.setActionProbability(state, action, 1 / Action.values().length);
             }
         }
     }
@@ -59,7 +59,9 @@ public class PredatorAgent extends Agent {
      * 
      */
     public void evaluatePolicy() {
-        new IterativePolicyEvaluation(this, mPolicy, mPossibleStatesExclTerminal, mPossibleStatesInclTerminal);
+        IterativePolicyEvaluation iterativePolicyEvaluation = new IterativePolicyEvaluation(this,
+                mPossibleStatesExclTerminal, mPossibleStatesInclTerminal);
+        iterativePolicyEvaluation.estimateValueFunction(mPolicy);
     }
     
     /** 
