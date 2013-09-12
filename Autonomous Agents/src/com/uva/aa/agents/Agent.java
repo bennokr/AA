@@ -44,7 +44,7 @@ public abstract class Agent {
 
         // Kills the agent present at the location, if any
         final Agent occupyingAgent = getEnvironment().getOccupyingAgent(location);
-        if (occupyingAgent != null) {
+        if (occupyingAgent != null && occupyingAgent != this) {
             occupyingAgent.die();
         }
 
