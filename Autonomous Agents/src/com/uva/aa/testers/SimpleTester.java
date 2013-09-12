@@ -5,12 +5,12 @@ import com.uva.aa.Game;
 /**
  * Runs a simple test with the default predator and prey behaviour.
  */
-public class SimpleTester extends Tester {
+public class SimpleTester extends GameTester {
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Game performSingleTest() {
+	public Game performSingleGameTest(final int numRuns) {
 		// Creates a sample game
 		final Game game = new Game(11, 11);
 

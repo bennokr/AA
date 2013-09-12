@@ -3,8 +3,6 @@ package com.uva.aa.testers;
 import java.util.List;
 import java.util.LinkedList;
 
-import com.uva.aa.Game;
-
 /**
  * A tester class that performs multiple tests and finds the mean average.
  */
@@ -15,7 +13,7 @@ public abstract class Tester {
 	 * 
 	 * @return The finished game
 	 */
-	public abstract Game performSingleTest();
+	public abstract int performSingleTest(int numRuns);
 
 	/**
 	 * Performs the test <code>numRuns</code> times and prints the mean average.
@@ -27,13 +25,12 @@ public abstract class Tester {
 		
 		// Run the tests
 		for (int i = 0; i < numRuns; ++i) {
-			final Game game = performSingleTest();
-			results.add(game.getRoundsPlayed());
+			results.add(performSingleTest(i));
 		}
 		
 		// Find the mean average of the results
 		int resultSum = 0;
-		for (int result : results) {
+		for (final int result : results) {
 			resultSum += result;
 		}
 		final int mean = resultSum / results.size();

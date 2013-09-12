@@ -18,7 +18,7 @@ public class IterativePolicyEvaluation {
     private final List<State> mPossibleStatesExclTerminal;
     private final List<State> mPossibleStatesInclTerminal;
 
-    private int mIter;
+    private int mIterations;
 
     private static final double ERR_THRESHOLD_THETA = 0.00001;
     private static final double DISCOUNT_FACTOR_GAMMA = 0.8;
@@ -31,8 +31,8 @@ public class IterativePolicyEvaluation {
      * @param possibleStatesExclTerminal
      * @param possibleStatesInclTerminal
      */
-    public IterativePolicyEvaluation(Agent agent, List<State> possibleStatesExclTerminal,
-            List<State> possibleStatesInclTerminal) {
+    public IterativePolicyEvaluation(final Agent agent, final List<State> possibleStatesExclTerminal,
+            final List<State> possibleStatesInclTerminal) {
 
         mAgent = agent;
         mEnvironment = agent.getEnvironment();
@@ -45,12 +45,12 @@ public class IterativePolicyEvaluation {
     /**
      * Updates the value function until it converges
      */
-    public void estimateValueFunction(Policy policy) {
-
-        mIter = 0;
+    public void estimateValueFunction(final Policy policy) {
+        // initialize the number of iterations
+        mIterations = 0;
 
         // initialize the value of each state to be 0 (including the terminal states)
-        for (State state : mPossibleStatesInclTerminal) {
+        for (final State state : mPossibleStatesInclTerminal) {
             policy.setStateValue(state, 0.0);
         }
 
@@ -58,24 +58,25 @@ public class IterativePolicyEvaluation {
         double maxValErrDelta = 0;
 
         // update the value function until it converges...
-        while (maxValErrDelta > ERR_THRESHOLD_THETA) {
-
+        do {
+            maxValErrDelta = 0;
+            
             // ... by sweeping through the state space
-            for (State state : mPossibleStatesExclTerminal) {
+            for (final State state : mPossibleStatesExclTerminal) {
 
                 // save current estimate of the value of the current state (for later comparison)
-                double previousStateValue = policy.getStateValue(state);
+                final double previousStateValue = policy.getStateValue(state);
 
                 // now: use the bellman equation to update the estimate of the state-values
-                double updatedStateValue = getNextStateValue(policy, state);
+                final double updatedStateValue = getNextStateValue(policy, state);
                 policy.setStateValue(state, updatedStateValue);
 
                 // update the maximum error we have
                 maxValErrDelta = Math.max(maxValErrDelta, Math.abs(previousStateValue - updatedStateValue));
 
-                mIter++;
+                ++mIterations;
             }
-        }
+        } while (maxValErrDelta > ERR_THRESHOLD_THETA);
 
     }
 
@@ -135,7 +136,7 @@ public class IterativePolicyEvaluation {
     }
 
     public int getNumberOfIterations() {
-        return mIter;
+        return mIterations;
     }
 
 }
