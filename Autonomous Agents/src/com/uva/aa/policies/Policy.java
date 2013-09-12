@@ -97,6 +97,29 @@ public class Policy {
     }
 
     /**
+     * Returns a random action based on the probability within the given state.
+     * 
+     * @param state
+     *            The state to choose an action for
+     * 
+     * @return A semi-random action
+     */
+    public Action getActionBasedOnProbability(final State state) {
+        final double decision = Math.random();
+        double decisionCount = 0;
+
+        final Map<Action, Double> actionProbabilities = getProperties(state).getActionProbabilities();
+        for (final Map.Entry<Action, Double> actionProbability : actionProbabilities.entrySet()) {
+            decisionCount += actionProbability.getValue();
+            if (decisionCount >= decision) {
+                return actionProbability.getKey();
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Prints out the full mapped contents.
      */
     public void print() {

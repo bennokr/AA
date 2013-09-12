@@ -8,7 +8,7 @@ import com.uva.aa.agents.Environment;
 public class Location {
     /** The initial hash value; must be prime */
     private static final int HASH_SEED = 7;
-    
+
     /** The hash offset for following numbers; must be prime */
     private static final int HASH_OFFSET = 31;
 
@@ -113,7 +113,14 @@ public class Location {
      * 
      * @return True of the coordinates are the same, false otherwise
      */
-    public boolean equals(final Location location) {
+    @Override
+    public boolean equals(final Object other) {
+        if (!(other instanceof Location)) {
+            return false;
+        }
+
+        final Location location = (Location) other;
+
         return mX == location.getX() && mY == location.getY();
     }
 
@@ -122,6 +129,7 @@ public class Location {
      * 
      * @return The hash code for the location
      */
+    @Override
     public int hashCode() {
         int intHash = HASH_SEED;
         intHash += HASH_OFFSET * mX;

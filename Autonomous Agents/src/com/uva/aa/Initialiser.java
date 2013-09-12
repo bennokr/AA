@@ -1,6 +1,6 @@
 package com.uva.aa;
 
-import com.uva.aa.testers.SimpleTester;
+import com.uva.aa.testers.SimpleGameTester;
 import com.uva.aa.testers.Tester;
 
 /**
@@ -15,7 +15,7 @@ public class Initialiser {
      *            Not used
      */
     public static void main(String[] args) {
-        final Tester simpleTester = new SimpleTester();
+        final Tester simpleTester = new SimpleGameTester();
         simpleTester.runTests(10);
     }
 

@@ -122,6 +122,8 @@ public class Environment {
      * @return The possible states
      */
     public List<State> getPossibleStates(final boolean includeTerminal) {
+        // TODO: Cache this
+        
         final List<State> possibleStates = new ArrayList<State>();
 
         // Loop over the possible locations of the predator
@@ -148,6 +150,20 @@ public class Environment {
         }
 
         return possibleStates;
+    }
+
+    /**
+     * Retrieves the state that the environment is currently in.
+     * 
+     * @return The environment's current state
+     */
+    public State getState() {
+        final HashMap<Agent, Location> stateMap = new HashMap<Agent, Location>();
+        
+        for (final Agent agent : mAgents) {
+            stateMap.put(agent, agent.getLocation());
+        }
+        return new State(stateMap);
     }
 
     /**

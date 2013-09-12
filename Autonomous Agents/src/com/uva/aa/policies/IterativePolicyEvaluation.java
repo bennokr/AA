@@ -26,13 +26,16 @@ public class IterativePolicyEvaluation {
 
     private final Agent mAgent;
     private final Environment mEnvironment;
-    private final List<PreyAgent> mPreys;
+    private final PreyAgent mPrey;
     private final List<State> mPossibleStatesExclTerminal;
     private final List<State> mPossibleStatesInclTerminal;
+
     /** counts the number of iterations */
     private int mIterations;
+
     // this threshold will determine at what point we stop our algorithm
-    private static final double ERR_THRESHOLD_THETA = 0.00001;
+    private static final double ERR_THRESHOLD_THETA = 0.0001;
+
     // the discount factor of the bellman equation
     private static final double DISCOUNT_FACTOR_GAMMA = 0.8;
 
@@ -50,7 +53,7 @@ public class IterativePolicyEvaluation {
             final List<State> possibleStatesInclTerminal) {
         mAgent = agent;
         mEnvironment = agent.getEnvironment();
-        mPreys = mEnvironment.getPreys();
+        mPrey = mEnvironment.getPreys().get(0);
         mPossibleStatesExclTerminal = possibleStatesExclTerminal;
         mPossibleStatesInclTerminal = possibleStatesInclTerminal;
     }
@@ -104,13 +107,14 @@ public class IterativePolicyEvaluation {
      *            the policy that we are following
      * @param state
      *            the state for which we want to estimate the value
+     * 
      * @return outerSum the (next) estimation of the value of the given state
      */
     private double getNextStateValue(Policy policy, State state) {
 
         // locations of the agents
         final Location predatorCurrLocation = state.getAgentLocation(mAgent);
-        final Location preyCurrLocation = state.getAgentLocation(mPreys.get(0));
+        final Location preyCurrLocation = state.getAgentLocation(mPrey);
 
         // in the outer summation: iterate over all possible actions the predator can take
         double outerSum = 0;
@@ -133,7 +137,7 @@ public class IterativePolicyEvaluation {
                     final Location preyNewLocation = actionPrey.getLocation(preyCurrLocation);
                     final Map<Agent, Location> nextPreyStateMap = new HashMap<Agent, Location>();
                     nextPreyStateMap.put(mAgent, predatorNewLocation);
-                    nextPreyStateMap.put(mPreys.get(0), preyNewLocation);
+                    nextPreyStateMap.put(mPrey, preyNewLocation);
                     possibleNextStates.add(new State(nextPreyStateMap));
                 }
             }

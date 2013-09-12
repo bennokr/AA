@@ -53,7 +53,8 @@ public class StatePolicyProperties {
      * @return The action's probability
      */
     public double getActionProbability(final Action action) {
-        return mActionProbabilities.get(action);
+        final Double val = mActionProbabilities.get(action);
+        return (val != null ? val : 0.0);
     }
 
     /**

@@ -35,11 +35,44 @@ public class State {
     /**
      * Returns the location of the agent.
      * 
-     * @param agent The agent to find the location for
+     * @param agent
+     *            The agent to find the location for
      * @return The agent's location or null if the agent is not in the state
      */
     public Location getAgentLocation(final Agent agent) {
         return mAgentLocations.get(agent);
+    }
+
+    /**
+     * Retrieves the agent occupying the given location, if any, from the specified list of agents.
+     * 
+     * @param location
+     *            The location to find an agent at
+     * @param agents
+     *            The lost of agents to check
+     * 
+     * @return The occupying agent or null if none on the location
+     */
+    public Agent getOccupyingAgent(final Location location) {
+        for (final Map.Entry<Agent, Location> agentLocation : mAgentLocations.entrySet()) {
+            if (location.equals(agentLocation.getValue())) {
+                return agentLocation.getKey();
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Checks if an agent is occupying the given location.
+     * 
+     * @param location
+     *            The location to find an agent at
+     * 
+     * @return True if an agent is at the location, false otherwise
+     */
+    public boolean isOccupied(final Location location) {
+        return (getOccupyingAgent(location) != null);
     }
 
     /**
@@ -49,7 +82,8 @@ public class State {
         for (final Map.Entry<Agent, Location> agentLocation : mAgentLocations.entrySet()) {
             final Agent agent = agentLocation.getKey();
             final Location location = agentLocation.getValue();
-            System.out.print(agent.getClass().getSimpleName() + "-" + agent.hashCode() + "(" + location.getX() + "," + location.getY() + ") ");
+            System.out.print(agent.getClass().getSimpleName() + "-" + agent.hashCode() + "(" + location.getX() + ","
+                    + location.getY() + ") ");
         }
         System.out.println();
     }
@@ -62,7 +96,14 @@ public class State {
      * 
      * @return True of the contents of the state are the same, false otherwise
      */
-    public boolean equals(final State state) {
+    @Override
+    public boolean equals(final Object other) {
+        if (!(other instanceof State)) {
+            return false;
+        }
+        
+        final State state = (State) other;
+
         final Map<Agent, Location> otherAgentLocations = state.getAgentLocations();
 
         // Verify if the number of agents is the same, so as to not miss any after checking each agent from this state's
@@ -73,11 +114,7 @@ public class State {
 
         // Checks if all agents and their locations match with those in the other set
         for (final Map.Entry<Agent, Location> agentLocation : mAgentLocations.entrySet()) {
-            final Location otherAgentLocation = otherAgentLocations.get(agentLocation.getKey());
-            if (otherAgentLocation == null) {
-                return false;
-            }
-            if (!agentLocation.equals(otherAgentLocation)) {
+            if (!agentLocation.getValue().equals(otherAgentLocations.get(agentLocation.getKey()))) {
                 return false;
             }
         }
@@ -94,11 +131,6 @@ public class State {
      */
     @Override
     public int hashCode() {
-        int agentHash = 0;
-        for (final Map.Entry<Agent, Location> agentLocation : mAgentLocations.entrySet()) {
-            agentHash += agentLocation.hashCode();
-        }
-
-        return agentHash;
+        return mAgentLocations.hashCode();
     }
 }

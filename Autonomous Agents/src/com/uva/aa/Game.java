@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.uva.aa.agents.Agent;
 import com.uva.aa.agents.Environment;
+import com.uva.aa.agents.EvaluatingPredatorAgent;
 import com.uva.aa.agents.PredatorAgent;
 import com.uva.aa.agents.PreyAgent;
 import com.uva.aa.enums.GameState;
@@ -14,7 +15,7 @@ import com.uva.aa.enums.GameState;
 public class Game {
     
     /** The amount of time between turns in ms */
-    private final static int TURN_DELAY = 0;
+    private final static int TURN_DELAY = 100;
 
     /** The environment for this game */
     private final Environment mEnvironment;
@@ -29,13 +30,13 @@ public class Game {
     private int mRoundsPlayed = 0;
     
     /** Whether or not to print the state */
-    private boolean mPrintState = false;
+    private boolean mPrintState = true;
     
     /** Whether to print the UI or just a simple textual state */
-    private boolean mPrintUi = false;
+    private boolean mPrintUi = true;
     
     /** Whether or not to print moves taken */
-    private boolean mPrintMoves = false;
+    private boolean mPrintMoves = true;
 
     /**
      * Creates a new game with an environment with the specified dimensions.
@@ -71,6 +72,18 @@ public class Game {
      */
     public void addPredator(final int x, final int y) {
         mEnvironment.addAgent(new PredatorAgent(new Location(mEnvironment, x, y)));
+    }
+
+    /**
+     * Adds an evaluating predator to the environment at the specified coordinates.
+     * 
+     * @param x
+     *            The x coordinate where the predator is located at
+     * @param y
+     *            The y coordinate where the predator is located at
+     */
+    public void addEvaluatingPredator(final int x, final int y) {
+        mEnvironment.addAgent(new EvaluatingPredatorAgent(new Location(mEnvironment, x, y)));
     }
     
     /**
@@ -121,6 +134,14 @@ public class Game {
         if (mState != GameState.PREPARATION) {
             // Should throw a proper exception when the game can be started dynamically
             throw new RuntimeException("This game is already running or finished.");
+        }
+
+        // The preys must be prepared first as the predators depend on them
+        for (final Agent agent : mEnvironment.getPreys()) {
+            agent.prepare();
+        }
+        for (final Agent agent : mEnvironment.getPredators()) {
+            agent.prepare();
         }
 
         // Mark the game as running

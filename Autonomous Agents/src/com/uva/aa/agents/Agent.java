@@ -9,6 +9,9 @@ import com.uva.aa.policies.State;
  * An agent that will act within the environment.
  */
 public abstract class Agent {
+    
+    /** The policy that the agent should follow */
+    protected final Policy mPolicy = new Policy();
 
     /** The current location of the agent within the environment */
     private Location mLocation;
@@ -24,9 +27,12 @@ public abstract class Agent {
     }
 
     /**
-     * Performs an action during the agent's turn, often involving movement.
+     * Performs an action during the agent's turn based on the policy.
      */
-    public abstract void performAction();
+    public void performAction() {
+        // Move to a location based on an action determined by the policy
+        moveTo(mPolicy.getActionBasedOnProbability(getEnvironment().getState()).getLocation(this));
+    }
 
     /**
      * Moves the agent to the specified location within the environment. If there is an agent already occupying the
@@ -76,7 +82,10 @@ public abstract class Agent {
         return mLocation;
     }
     
-
+    /**
+     * Prepares the agent before starting a game.
+     */
+    public abstract void prepare();
     
     /**
      * Retrieves the probability of going from initialState to resultingState when this agent performs action.
@@ -86,9 +95,7 @@ public abstract class Agent {
      * @param This agents action
      * @return Probability
      */
-    public double getTransitionProbability(final State initialState, final State resultingState, final Action action) {
-        return 0.0;
-    }
+    public abstract double getTransitionProbability(final State initialState, final State resultingState, final Action action);
 
     /**
      * Retrieves this agents immediate reward for going from initialState to resultingState when this agent performs action.
@@ -98,12 +105,14 @@ public abstract class Agent {
      * @param action
      * @return Probability
      */
-    public double getImmediateReward(final State initialState, final State resultingState, final Action action) {
-        return 0.0;
-    }
+    public abstract double getImmediateReward(final State initialState, final State resultingState, final Action action);
     
+    /**
+     * Retrieves the policy that the agent is following.
+     * 
+     * @return The agent's policy
+     */
     public Policy getPolicy() {
-		// TODO Auto-generated method stub
-		return null;
+		return mPolicy;
 	}
 }
