@@ -147,8 +147,8 @@ public class IterativePolicyEvaluation {
             // in the inner sum: iterate over all the possible next states
             double innerSum = 0;
             for (State nextState : possibleNextStates) {
-                double transitionProbability = mEnvironment.getTransitionProbability(state, nextState, actionPredator);
-                double immediateReward = mEnvironment.getImmediateReward(state, nextState, actionPredator);
+                double transitionProbability = mAgent.getTransitionProbability(state, nextState, actionPredator);
+                double immediateReward = mAgent.getImmediateReward(state, nextState, actionPredator);
                 double nextStateValue = policy.getStateValue(nextState);
                 innerSum += transitionProbability * (immediateReward + DISCOUNT_FACTOR_GAMMA * nextStateValue);
             }

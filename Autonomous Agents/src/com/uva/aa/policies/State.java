@@ -92,7 +92,7 @@ public class State {
 
         return agentHash;
     }
-    
+
     /**
      * Returns the location of the agent
      * 

@@ -299,16 +299,6 @@ public class Environment {
         }
     }
 
-    public double getTransitionProbability(final State initialState, final State resultingState, final Action action) {
-        // TODO: Benno will do this
-        return 0.0;
-    }
-
-    public double getImmediateReward(final State initialState, final State resultingState, final Action action) {
-        // TODO: Benno will do this
-        return 0.0;
-    }
-
     /**
      * Prints the current environment state to the console.
      */
