@@ -1,18 +1,13 @@
 package com.uva.aa.agents;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import com.uva.aa.Location;
 import com.uva.aa.enums.Action;
 import com.uva.aa.policies.IterativePolicyEvaluation;
 import com.uva.aa.policies.Policy;
 import com.uva.aa.policies.State;
-import com.uva.aa.policies.StatePolicyProperties;
 
 /**
  * An agent that acts as a predator within the environment. Will randomly move, hoping to catch a prey.

@@ -7,7 +7,6 @@ import java.util.List;
 
 import com.uva.aa.Game;
 import com.uva.aa.Location;
-import com.uva.aa.enums.Action;
 import com.uva.aa.policies.State;
 
 /**

@@ -33,6 +33,16 @@ public class State {
     }
 
     /**
+     * Returns the location of the agent.
+     * 
+     * @param agent The agent to find the location for
+     * @return The agent's location or null if the agent is not in the state
+     */
+    public Location getAgentLocation(final Agent agent) {
+        return mAgentLocations.get(agent);
+    }
+
+    /**
      * Prints this state to the console in a human readable way.
      */
     public void print() {
@@ -90,15 +100,5 @@ public class State {
         }
 
         return agentHash;
-    }
-
-    /**
-     * Returns the location of the agent
-     * 
-     * @param state
-     * @return
-     */
-    public Location getAgentLocation(Agent agent) {
-        return mAgentLocations.get(agent);
     }
 }

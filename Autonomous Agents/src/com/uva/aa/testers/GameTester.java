@@ -10,17 +10,17 @@ public abstract class GameTester extends Tester {
     /**
      * Performs the test once and returns the resulting game after this has finished.
      * 
+     * @param numRun
+     *            The number for the run, increments each time
+     * 
      * @return The finished game
      */
-    public abstract Game performSingleGameTest(int numRuns);
+    public abstract Game performSingleGameTest(int numRun);
 
     /**
-     * Performs the test <code>numRuns</code> times and prints the mean average.
-     * 
-     * @param numRuns
-     *            The amount of tests to perform
+     * {@inheritDoc}
      */
-    public int performSingleTest(final int numRuns) {
-		return performSingleGameTest(numRuns).getRoundsPlayed();
-	}
+    public int performSingleTest(final int numRun) {
+        return performSingleGameTest(numRun).getRoundsPlayed();
+    }
 }

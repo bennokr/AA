@@ -15,14 +15,11 @@ import com.uva.aa.enums.Action;
  * him can evaluate his current policy and thus estimate the true value function for that policy
  * 
  * An estimation of the value function V which maps a value to each state that the agent can be in will be updated
- * incrementally using the Bellman equation: 
- * V(s) <- sum_{a}[policy(s,a)*sum_{s'}P_{s,s'}^{a}*(R_{s,s'}^{a}+gamma*V(s'))]
- * where the first sum is over all possible actions in state s,
- * policy(s,a) gives the probability for taking action a in state s due to that policy,
- * P_{s,s'}^{a} is the transition function (see environment.getTransitionProbability),
- * R_{s,s'}^{a} is the immediate reward function (see environment.getImmediateReward),
- * gamma is the discount factor of the Bellman equation and
- * V is our (estimation of the) value function
+ * incrementally using the Bellman equation: V(s)<-sum_{a}[policy(s,a)*sum_{s'}P_{s,s'}^{a}*(R_{s,s'}^{a}+gamma*V(s'))]
+ * where the first sum is over all possible actions in state s, policy(s,a) gives the probability for taking action a in
+ * state s due to that policy, P_{s,s'}^{a} is the transition function (see environment.getTransitionProbability),
+ * R_{s,s'}^{a} is the immediate reward function (see environment.getImmediateReward), gamma is the discount factor of
+ * the Bellman equation and V is our (estimation of the) value function
  * 
  */
 public class IterativePolicyEvaluation {
@@ -51,13 +48,11 @@ public class IterativePolicyEvaluation {
      */
     public IterativePolicyEvaluation(final Agent agent, final List<State> possibleStatesExclTerminal,
             final List<State> possibleStatesInclTerminal) {
-
         mAgent = agent;
         mEnvironment = agent.getEnvironment();
         mPreys = mEnvironment.getPreys();
         mPossibleStatesExclTerminal = possibleStatesExclTerminal;
         mPossibleStatesInclTerminal = possibleStatesInclTerminal;
-
     }
 
     /**
@@ -80,8 +75,9 @@ public class IterativePolicyEvaluation {
 
         // update the value function until it converges...
         do {
+            // Reset the delta for this update
             maxValErrDelta = 0;
-            
+
             // ... by sweeping through the state space
             for (final State state : mPossibleStatesExclTerminal) {
 
@@ -105,11 +101,10 @@ public class IterativePolicyEvaluation {
      * Returns the next estimation of the state-value based on the Bellmann equation
      * 
      * @param policy
-     *          the policy that we are following
+     *            the policy that we are following
      * @param state
-     *          the state for which we want to estimate the value
-     * @return outerSum
-     *          the (next) estimation of the value of the given state
+     *            the state for which we want to estimate the value
+     * @return outerSum the (next) estimation of the value of the given state
      */
     private double getNextStateValue(Policy policy, State state) {
 
@@ -160,6 +155,11 @@ public class IterativePolicyEvaluation {
         return outerSum;
     }
 
+    /**
+     * Retrieves the number of iterations performed in the last evaluation.
+     * 
+     * @return The number of iterations
+     */
     public int getNumberOfIterations() {
         return mIterations;
     }
