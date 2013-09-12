@@ -27,8 +27,6 @@ public class PredatorAgent extends Agent {
      */
     public PredatorAgent(final Location location) {
         super(location);
-
-        initPolicy();
     }
 
     /**
