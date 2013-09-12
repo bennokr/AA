@@ -1,4 +1,4 @@
-package testers;
+package com.uva.aa.testers;
 
 import java.util.List;
 import java.util.LinkedList;

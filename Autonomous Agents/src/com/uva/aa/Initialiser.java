@@ -1,7 +1,7 @@
 package com.uva.aa;
 
-import testers.SimpleTester;
-import testers.Tester;
+import com.uva.aa.testers.SimpleTester;
+import com.uva.aa.testers.Tester;
 
 /**
  * Prepares the game(s) and starts the required actions.
