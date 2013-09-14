@@ -6,21 +6,36 @@ import com.uva.aa.Game;
  * A tester class that performs multiple tests and finds the mean average.
  */
 public abstract class GameTester extends Tester {
+    
+    /** The game to test */
+    final Game mGame;
+    
+    /**
+     * Prepares the game tester.
+     */
+    public GameTester() {
+        mGame = getGame();
+        mGame.setHumanTest(false);
+    }
 
     /**
-     * Performs the test once and returns the resulting game after this has finished.
+     * Returns the game that should be tested.
      * 
-     * @param numRun
-     *            The number for the run, increments each time
-     * 
-     * @return The finished game
+     * @return The game to test
      */
-    public abstract Game performSingleGameTest(int numRun);
+    public abstract Game getGame();
 
     /**
      * {@inheritDoc}
      */
     public int performSingleTest(final int numRun) {
-        return performSingleGameTest(numRun).getRoundsPlayed();
+        // Make sure that the game is ready
+        mGame.resetGame();
+        
+        // Perform the test
+        mGame.start();
+        
+        // Return the amount of rounds it took to finish the game as a result
+        return mGame.getRoundsPlayed();
     }
 }

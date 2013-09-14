@@ -4,10 +4,11 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import com.uva.aa.Game;
 import com.uva.aa.Location;
-import com.uva.aa.policies.State;
+import com.uva.aa.State;
 
 /**
  * The environment which holds the agents and state.
@@ -31,6 +32,12 @@ public class Environment {
 
     /** The list of predators in the order in which they were added */
     private final List<PredatorAgent> mPredators = new ArrayList<PredatorAgent>();
+
+    /** The possible states that can occur, excluding terminal state */
+    private List<State> mNonTerminalPossibleStates;
+
+    /** The possible states that can occur, including terminal state */
+    private List<State> mAllPossibleStates;
 
     /**
      * Creates a new environment within the specified game with the given dimensions.
@@ -92,6 +99,15 @@ public class Environment {
     }
 
     /**
+     * Removes all agents from this environment.
+     */
+    public void clearAgents() {
+        mAgents.clear();
+        mPreys.clear();
+        mPredators.clear();
+    }
+
+    /**
      * Retrieves the list of agents within the environment, both preys and predators, in the order in which they were
      * added.
      * 
@@ -122,30 +138,36 @@ public class Environment {
      * @return The possible states
      */
     public List<State> getPossibleStates(final boolean includeTerminal) {
-        // TODO: Cache this
-        
-        final List<State> possibleStates = new ArrayList<State>();
+        List<State> possibleStates = (includeTerminal ? mAllPossibleStates : mNonTerminalPossibleStates);
 
-        // Loop over the possible locations of the predator
-        for (int xPred = 0; xPred < mWidth; ++xPred) {
-            for (int yPred = 0; yPred < mHeight; ++yPred) {
-                final Location locPred = new Location(this, xPred, yPred);
+        if (possibleStates == null) {
+            possibleStates = new ArrayList<State>();
+            final PredatorAgent predator = mPredators.get(0);
+            final PreyAgent prey = mPreys.get(0);
 
-                // Loop over the possible locations of the prey
-                for (int xPrey = 0; xPrey < mWidth; ++xPrey) {
-                    for (int yPrey = 0; yPrey < mHeight; ++yPrey) {
-                        final Location locPrey = new Location(this, xPrey, yPrey);
+            // Loop over the possible locations of the predator
+            for (int xPred = 0; xPred < mWidth; ++xPred) {
+                for (int yPred = 0; yPred < mHeight; ++yPred) {
+                    final Location predatorLocation = new Location(this, xPred, yPred);
 
-                        // Only include the state if it's not terminal or if terminal states should be included
-                        if (includeTerminal || !locPred.equals(locPrey)) {
-                            final HashMap<Agent, Location> stateMap = new HashMap<Agent, Location>();
-                            stateMap.put(mPredators.get(0), locPred);
-                            stateMap.put(mPreys.get(0), locPrey);
-                            possibleStates.add(new State(stateMap));
+                    // Loop over the possible locations of the prey
+                    for (int xPrey = 0; xPrey < mWidth; ++xPrey) {
+                        for (int yPrey = 0; yPrey < mHeight; ++yPrey) {
+                            final Location preyLocation = new Location(this, xPrey, yPrey);
+
+                            // Only include the state if it's not terminal or if terminal states should be included
+                            if (includeTerminal || !predatorLocation.equals(preyLocation)) {
+                                possibleStates.add(State.buildState(predator, predatorLocation, prey, preyLocation));
+                            }
                         }
                     }
                 }
-
+            }
+            
+            if (includeTerminal) {
+                mAllPossibleStates = possibleStates;
+            } else {
+                mNonTerminalPossibleStates = possibleStates;
             }
         }
 
@@ -159,11 +181,28 @@ public class Environment {
      */
     public State getState() {
         final HashMap<Agent, Location> stateMap = new HashMap<Agent, Location>();
-        
+
         for (final Agent agent : mAgents) {
             stateMap.put(agent, agent.getLocation());
         }
+
         return new State(stateMap);
+    }
+
+    /**
+     * Modifies the environment and its agents so that it matches the given state.
+     * 
+     * @param state
+     *            The new state of the environment
+     */
+    public void setState(final State state) {
+        clearAgents();
+
+        for (final Entry<Agent, Location> agentLocation : state.getAgentLocations().entrySet()) {
+            final Agent agent = agentLocation.getKey();
+            agent.moveTo(agentLocation.getValue());
+            addAgent(agent);
+        }
     }
 
     /**

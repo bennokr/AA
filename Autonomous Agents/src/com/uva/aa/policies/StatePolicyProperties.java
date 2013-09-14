@@ -69,4 +69,11 @@ public class StatePolicyProperties {
         mActionProbabilities.put(action, probability);
     }
 
+    /**
+     * Clears the action probabilities. Useful to reset them.
+     */
+    public void clearActionProbabilities() {
+        mActionProbabilities.clear();
+    }
+
 }

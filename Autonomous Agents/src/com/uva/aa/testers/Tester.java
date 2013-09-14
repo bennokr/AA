@@ -36,7 +36,7 @@ public abstract class Tester {
 		for (final int result : results) {
 			resultSum += result;
 		}
-		final int mean = resultSum / results.size();
+		final double mean = ((double)resultSum) / results.size();
 		
 		System.out.println("Average result: " + mean);
 	}

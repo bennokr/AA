@@ -1,15 +1,15 @@
 package com.uva.aa.agents;
 
 import com.uva.aa.Location;
+import com.uva.aa.State;
 import com.uva.aa.enums.Action;
 import com.uva.aa.policies.Policy;
-import com.uva.aa.policies.State;
 
 /**
  * An agent that will act within the environment.
  */
 public abstract class Agent {
-    
+
     /** The policy that the agent should follow */
     protected final Policy mPolicy = new Policy();
 
@@ -42,11 +42,11 @@ public abstract class Agent {
      *            The location to move to
      */
     public void moveTo(final Location location) {
-    	// Print the move taken if needed
-    	if (getEnvironment().getGame().shouldPrintMoves()) {
-	        System.out.println(getClass().getSimpleName() + " moves from (" + mLocation.getX() + ", " + mLocation.getY()
-	                + ") to (" + location.getX() + ", " + location.getY() + ")");
-    	}
+        // Print the move taken if needed
+        if (getEnvironment().getGame().shouldPrintMoves()) {
+            System.out.println(getClass().getSimpleName() + " moves from (" + mLocation.getX() + ", "
+                    + mLocation.getY() + ") to (" + location.getX() + ", " + location.getY() + ")");
+        }
 
         // Kills the agent present at the location, if any
         final Agent occupyingAgent = getEnvironment().getOccupyingAgent(location);
@@ -81,38 +81,48 @@ public abstract class Agent {
     public Location getLocation() {
         return mLocation;
     }
-    
+
     /**
      * Prepares the agent before starting a game.
      */
     public abstract void prepare();
-    
+
     /**
      * Retrieves the probability of going from initialState to resultingState when this agent performs action.
      * 
-     * @param The initial state
-     * @param The resulting state
-     * @param This agents action
-     * @return Probability
+     * @param initialState
+     *            The initial state
+     * @param resultingState
+     *            The resulting state
+     * @param action
+     *            This agent's action
+     * 
+     * @return The probability of the action getting to the resulting state
      */
-    public abstract double getTransitionProbability(final State initialState, final State resultingState, final Action action);
+    public abstract double getTransitionProbability(final State initialState, final State resultingState,
+            final Action action);
 
     /**
-     * Retrieves this agents immediate reward for going from initialState to resultingState when this agent performs action.
+     * Retrieves this agents immediate reward for going from initialState to resultingState when this agent performs
+     * action.
      * 
      * @param initialState
+     *            The initial state
      * @param resultingState
+     *            The resulting state
      * @param action
-     * @return Probability
+     *            This agent's action
+     * 
+     * @return The reward of moving states through the given action
      */
     public abstract double getImmediateReward(final State initialState, final State resultingState, final Action action);
-    
+
     /**
      * Retrieves the policy that the agent is following.
      * 
      * @return The agent's policy
      */
     public Policy getPolicy() {
-		return mPolicy;
-	}
+        return mPolicy;
+    }
 }

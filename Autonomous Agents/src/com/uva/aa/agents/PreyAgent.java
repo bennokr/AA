@@ -4,8 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.uva.aa.Location;
+import com.uva.aa.State;
 import com.uva.aa.enums.Action;
-import com.uva.aa.policies.State;
 
 /**
  * An agent that acts as a prey within the environment. Will randomly move and won't kill other agents.
@@ -24,7 +24,7 @@ public class PreyAgent extends Agent {
     public PreyAgent(final Location location) {
         super(location);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -47,7 +47,7 @@ public class PreyAgent extends Agent {
             } else {
                 mPolicy.setActionProbability(state, Action.WAIT, 1 - MOVE_PROBABILITY);
             }
-            
+
             // Assign the changes to move to a different location
             final double moveProbability = MOVE_PROBABILITY / possibleActions.size();
             for (final Action action : possibleActions) {
@@ -56,6 +56,9 @@ public class PreyAgent extends Agent {
         }
     }
 
+    /**
+     * Has a 0.8 chance of waiting, and a spread chance of moving to a free adjacent space.
+     */
     @Override
     public double getTransitionProbability(State initialState, State resultingState, Action action) {
         // Return the probability of the prey moving to its location in the resulting state from where it is in
@@ -73,6 +76,9 @@ public class PreyAgent extends Agent {
         return 0.0;
     }
 
+    /**
+     * Preys don't get rewards, thus this always returns 0.
+     */
     @Override
     public double getImmediateReward(State initialState, State resultingState, Action action) {
         return 0;

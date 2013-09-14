@@ -1,9 +1,11 @@
-package com.uva.aa.policies;
+package com.uva.aa;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import com.uva.aa.Location;
 import com.uva.aa.agents.Agent;
+import com.uva.aa.agents.PredatorAgent;
+import com.uva.aa.agents.PreyAgent;
 
 /**
  * A description of the state within an environment.
@@ -12,6 +14,30 @@ public class State {
 
     /** The map of agents with their locations */
     private final Map<Agent, Location> mAgentLocations;
+
+    /**
+     * Builds a state based on a predator and a prey, both with a location. Only supports one predator and one prey.
+     * 
+     * @param predator
+     *            The predator in the state
+     * @param predatorLocation
+     *            The predator's location in the state
+     * @param prey
+     *            The prey in the state
+     * @param preyLocation
+     *            The prey's location in the state
+     * 
+     * @return The new state for the given arguments
+     */
+    public static State buildState(final PredatorAgent predator, final Location predatorLocation, final PreyAgent prey,
+            final Location preyLocation) {
+        final Map<Agent, Location> nextStateMap = new HashMap<Agent, Location>();
+        nextStateMap.put(predator, predatorLocation);
+        if (preyLocation != null && !predatorLocation.equals(preyLocation)) {
+            nextStateMap.put(prey, preyLocation);
+        }
+        return new State(nextStateMap);
+    }
 
     /**
      * Creates a new state with the given mapping.
@@ -101,7 +127,7 @@ public class State {
         if (!(other instanceof State)) {
             return false;
         }
-        
+
         final State state = (State) other;
 
         final Map<Agent, Location> otherAgentLocations = state.getAgentLocations();

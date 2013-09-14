@@ -3,13 +3,16 @@ package com.uva.aa.agents;
 import java.util.List;
 
 import com.uva.aa.Location;
+import com.uva.aa.State;
 import com.uva.aa.enums.Action;
-import com.uva.aa.policies.State;
 
 /**
  * An agent that acts as a predator within the environment. Will randomly move, hoping to catch a prey.
  */
 public class PredatorAgent extends Agent {
+
+    /** The reward for killing a prey */
+    public static final double KILL_REWARD = 10.0;
 
     /**
      * Creates a new predator on the specified coordinates within the environment.
@@ -36,7 +39,7 @@ public class PredatorAgent extends Agent {
     }
 
     /**
-     * The transition probability that accounts for the prey movement
+     * The transition probability that accounts for the prey movement.
      */
     public double getTransitionProbability(final State initialState, final State resultingState, final Action action) {
         // The moves should be deterministic
@@ -55,7 +58,7 @@ public class PredatorAgent extends Agent {
     }
 
     /**
-     * The deterministic immediate reward
+     * The deterministic immediate reward based on if a prey is caught.
      */
     public double getImmediateReward(final State initialState, final State resultingState, final Action action) {
         // The reward does not depend on the action, only on the locations
@@ -63,7 +66,7 @@ public class PredatorAgent extends Agent {
         // We assume one prey and one predator!
         PreyAgent prey = getEnvironment().getPreys().get(0);
         if (resultingState.getAgentLocation(this).equals(initialState.getAgentLocation(prey))) {
-            return 10.0;
+            return KILL_REWARD;
         } else {
             return 0.0;
         }

@@ -12,5 +12,8 @@ public enum GameState {
 	RUNNING,
 	
 	/** Indicates that the game has finished */
-	FINISHED;
+	FINISHED,
+	
+	/** Indicates that a game had been finished but has been reset for a next run */
+	RESET;
 }

@@ -1,10 +1,7 @@
 package com.uva.aa.agents;
 
-import java.util.List;
-
 import com.uva.aa.Location;
-import com.uva.aa.policies.IterativePolicyEvaluation;
-import com.uva.aa.policies.State;
+import com.uva.aa.policies.PolicyEvaluator;
 
 /**
  * An agent that acts as a predator within the environment. Will move towards the prey according to an evaluated policy.
@@ -28,11 +25,8 @@ public class EvaluatingPredatorAgent extends PredatorAgent {
     public void prepare() {
         super.prepare();
 
-        final List<State> possibleStatesExclTerminal = getEnvironment().getPossibleStates(false);
-        final List<State> possibleStatesInclTerminal = getEnvironment().getPossibleStates(true);
-
-        final IterativePolicyEvaluation ipe = new IterativePolicyEvaluation(this, possibleStatesExclTerminal,
-                possibleStatesInclTerminal);
-        ipe.estimateValueFunction(mPolicy);
+        final PolicyEvaluator policyEvaluator = new PolicyEvaluator(mPolicy, getEnvironment());
+        policyEvaluator.estimateValueFunction();
+        policyEvaluator.iterateValues();
     }
 }

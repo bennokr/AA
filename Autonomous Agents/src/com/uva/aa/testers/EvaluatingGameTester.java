@@ -5,7 +5,7 @@ import com.uva.aa.Game;
 /**
  * Runs a simple test with the default predator and prey behaviour.
  */
-public class SimpleGameTester extends GameTester {
+public class EvaluatingGameTester extends GameTester {
 
     /**
      * {@inheritDoc}
@@ -16,7 +16,7 @@ public class SimpleGameTester extends GameTester {
 
         // Adds the two required agents
         game.addPrey(5, 5);
-        game.addPredator(0, 0);
+        game.addEvaluatingPredator(0, 0);
 
         return game;
     }

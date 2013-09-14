@@ -3,6 +3,7 @@ package com.uva.aa.policies;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.uva.aa.State;
 import com.uva.aa.enums.Action;
 
 /**
@@ -43,6 +44,10 @@ public class Policy {
         return properties;
     }
 
+    public boolean containsState(final State state) {
+        return mStateMap.containsKey(state);
+    }
+
     /**
      * Retrieves the value of the state. Essentially returns a cached result of V^pi(s), but does not actually perform
      * the value function.
@@ -50,7 +55,7 @@ public class Policy {
      * @param state
      *            The state to get the value for
      * 
-     * @return The value of the state or a default value if not set
+     * @return The value of the state or a 0 if not set
      */
     public double getStateValue(final State state) {
         return getProperties(state).getValue();
@@ -102,17 +107,16 @@ public class Policy {
      * @param state
      *            The state to choose an action for
      * 
-     * @return A semi-random action
+     * @return A semi-random action or null if no actions are available
      */
     public Action getActionBasedOnProbability(final State state) {
         final double decision = Math.random();
         double decisionCount = 0;
 
-        final Map<Action, Double> actionProbabilities = getProperties(state).getActionProbabilities();
-        for (final Map.Entry<Action, Double> actionProbability : actionProbabilities.entrySet()) {
-            decisionCount += actionProbability.getValue();
+        for (final Map.Entry<Action, Double> actionProb : getProperties(state).getActionProbabilities().entrySet()) {
+            decisionCount += actionProb.getValue();
             if (decisionCount >= decision) {
-                return actionProbability.getKey();
+                return actionProb.getKey();
             }
         }
 
