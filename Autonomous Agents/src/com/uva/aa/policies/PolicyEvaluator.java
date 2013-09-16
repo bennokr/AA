@@ -23,7 +23,7 @@ import com.uva.aa.enums.Action;
 public class PolicyEvaluator {
 
     /** The threshold that determines at what point we stop our evaluation */
-    private static final double ERROR_THRESHOLD_THETA = 0.1;
+    private static final double ERROR_THRESHOLD_THETA = 0.0001;
 
     /** The discount factor of the bellman equation */
     private static final double DISCOUNT_FACTOR_GAMMA = 0.8;

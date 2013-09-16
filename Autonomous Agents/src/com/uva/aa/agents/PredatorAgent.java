@@ -1,7 +1,5 @@
 package com.uva.aa.agents;
 
-import java.util.List;
-
 import com.uva.aa.Location;
 import com.uva.aa.State;
 import com.uva.aa.enums.Action;
@@ -29,9 +27,7 @@ public class PredatorAgent extends Agent {
      * the same probability.
      */
     public void prepare() {
-        final List<State> possibleStatesExclTerminal = getEnvironment().getPossibleStates(false);
-
-        for (final State state : possibleStatesExclTerminal) {
+        for (final State state : getEnvironment().getPossibleStates(false)) {
             for (final Action action : Action.values()) {
                 mPolicy.setActionProbability(state, action, 1.0 / Action.values().length);
             }
