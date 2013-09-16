@@ -20,7 +20,7 @@ public class Initialiser {
 //        simpleTester.runTests(10);
         
         final Tester valueIterationTester = new EvaluatingGameTester();
-        valueIterationTester.runTests(10);
+        valueIterationTester.runTests(100000);
     }
 
 }

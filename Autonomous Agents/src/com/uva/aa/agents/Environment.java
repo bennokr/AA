@@ -3,8 +3,10 @@ package com.uva.aa.agents;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.uva.aa.Game;
 import com.uva.aa.Location;
@@ -33,11 +35,14 @@ public class Environment {
     /** The list of predators in the order in which they were added */
     private final List<PredatorAgent> mPredators = new ArrayList<PredatorAgent>();
 
+    /** Whether or not the state-space should exclude relative duplicates to reduce the state-space */
+    private boolean mReducedStateSpace = true;
+
     /** The possible states that can occur, excluding terminal state */
-    private List<State> mNonTerminalPossibleStates;
+    private Set<State> mNonTerminalPossibleStates;
 
     /** The possible states that can occur, including terminal state */
-    private List<State> mAllPossibleStates;
+    private Set<State> mAllPossibleStates;
 
     /**
      * Creates a new environment within the specified game with the given dimensions.
@@ -137,11 +142,11 @@ public class Environment {
      * 
      * @return The possible states
      */
-    public List<State> getPossibleStates(final boolean includeTerminal) {
-        List<State> possibleStates = (includeTerminal ? mAllPossibleStates : mNonTerminalPossibleStates);
+    public Set<State> getPossibleStates(final boolean includeTerminal) {
+        Set<State> possibleStates = (includeTerminal ? mAllPossibleStates : mNonTerminalPossibleStates);
 
         if (possibleStates == null) {
-            possibleStates = new ArrayList<State>();
+            possibleStates = new HashSet<State>();
             final PredatorAgent predator = mPredators.get(0);
             final PreyAgent prey = mPreys.get(0);
 
@@ -163,7 +168,7 @@ public class Environment {
                     }
                 }
             }
-            
+
             if (includeTerminal) {
                 mAllPossibleStates = possibleStates;
             } else {
@@ -203,6 +208,25 @@ public class Environment {
             agent.moveTo(agentLocation.getValue());
             addAgent(agent);
         }
+    }
+
+    /**
+     * Sets whether or not the state-space should be reduced.
+     * 
+     * @param reducedStateSpace
+     *            True for a reduced state-space, false for the full size
+     */
+    public void setReducedStateSpace(final boolean reducedStateSpace) {
+        mReducedStateSpace = reducedStateSpace;
+    }
+
+    /**
+     * Retrieves whether or not the state space should be reduced.
+     * 
+     * @return True for a reduced state-space, false for the full size
+     */
+    public boolean hasReducedStateSpace() {
+        return mReducedStateSpace;
     }
 
     /**
