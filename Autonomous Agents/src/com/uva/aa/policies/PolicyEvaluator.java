@@ -1,7 +1,9 @@
 package com.uva.aa.policies;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import com.uva.aa.Location;
@@ -13,6 +15,10 @@ import com.uva.aa.enums.Action;
 
 /**
  * A policy evaluator with the goal of improving a policy. Provides several methods for doing so.
+ */
+/**
+ * @author benno
+ *
  */
 public class PolicyEvaluator {
 
@@ -55,7 +61,7 @@ public class PolicyEvaluator {
     }
 
     /**
-     * Computes the real value function to a given policy with the iterative polic evaluation.
+     * Computes the real value function to a given policy with the iterative policy evaluation.
      * 
      * Uses the Iterative Policy Evaluation after Sutton, Barto, Chapter 4.1. An agent in an MDP-environment which is
      * fully known to him can evaluate his current policy and thus estimate the true value function for that policy.
@@ -130,7 +136,7 @@ public class PolicyEvaluator {
             final Location nextPredatorLocation = predatorAction.getLocation(predatorCurrLocation);
 
             if (nextPredatorLocation == preyCurrLocation) {
-                // If the predator catches the prey with its action, there is only only one possible next state
+                // If the predator catches the prey with its action, there is only one possible next state
                 possibleNextStates.add(State.buildState(mPredator, nextPredatorLocation, mPrey, null));
 
             } else {
@@ -157,18 +163,80 @@ public class PolicyEvaluator {
 
         return outerSum;
     }
-
+    
     /**
-     * Iterates the values of the policy and adjusts them according to the state values.
+     * Iterates the estimation of the value function and the improving of the current policy,
+     * until the optimal policy is reached. See [Sutton & Barto, 4.3: Policy Iteration].
+     * We continuously flip back and forth between estimating the value function and improving the policy until it's optimal.
      * 
      * Only supports one predator and prey.
      * 
-     * @param policy
-     *            The policy to modify
-     * @param agent
-     *            The agent for which the policy is
      */
+    public void iteratePolicy() {
+    	Boolean policyStable = false;
+    	do {
+    		estimateValueFunction();
+    		policyStable = improvePolicy();
+    	} while (! policyStable);
+    }
+    
+   /**
+    * Value iteration looks like Policy Evaluation, but we maximize wrt action-values to create an optimal policy.
+    * 
+    */
     public void iterateValues() {
+    	// TODO: implement value iteration
+    	
+    	// We use this variable to determine the changes we have made during a loop
+        double maxValErrDelta;
+
+        // Update the value function until it converges
+        do {
+            // Reset the delta for this update
+            maxValErrDelta = 0;
+
+            // Sweep through the state space of non-terminal states
+            for (final State state : mEnvironment.getPossibleStates(false)) {
+                // Save current estimate of the value of the current state (for later comparison)
+                final double previousStateValue = mPolicy.getStateValue(state);
+
+                // Replace the old values in place (like suggested in Sutton, Barto, Chapter 4.1)
+                final double updatedStateValue = getMaximizedStateValue(state);
+                mPolicy.setStateValue(state, updatedStateValue);
+
+                // Update the maximum error we have
+                maxValErrDelta = Math.max(maxValErrDelta, Math.abs(previousStateValue - updatedStateValue));
+            }
+
+            // Keep track of how many iterations we've done
+            ++mIterations;
+
+        } while (maxValErrDelta > ERROR_THRESHOLD_THETA);
+        
+        // TODO Set the policy to a deterministic policy such that for every state, it's the argmax wrt $a$ of the getMaximizedStateValue
+    }
+    /**
+     * Similar to getUpdatedStateValue but maximizing wrt $a$ instead of summing
+     * 
+     * @param state
+     * @return
+     */
+    private double getMaximizedStateValue(State state) {
+		// TODO Auto-generated method stub
+    	
+    	
+		return 0;
+	}
+
+	/**
+     * Adjusts the policy in every state to the best action according to the current state value function.
+     * 
+     * Only supports one predator and prey.
+     * 
+     * @return Return whether the policy has not improved
+     */
+    public Boolean improvePolicy() {
+    	Boolean policyStable = true;
 
         // Update actions the values for each state
         for (final Entry<State, StatePolicyProperties> stateMapping : mPolicy.getStateMap().entrySet()) {
@@ -202,13 +270,23 @@ public class PolicyEvaluator {
                 }
             }
 
+            // Save the policy in this state for now
+            Map b = new HashMap<Action, Double>(properties.getActionProbabilities());
+            
             // Update the action probabilities based on the best values
             properties.clearActionProbabilities();
             final double bestActionProbability = 1.0 / bestActions.size();
             for (final Action bestAction : bestActions) {
-                properties.setActionProbability(bestAction, bestActionProbability);
+            	properties.setActionProbability(bestAction, bestActionProbability);
+            }
+            
+            // Check whether we've changed the policy in this state
+            if (!properties.getActionProbabilities().equals(b)) {
+            	policyStable = false;
             }
         }
+        
+        return policyStable;
     }
 
     /**

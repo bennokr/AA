@@ -26,7 +26,6 @@ public class EvaluatingPredatorAgent extends PredatorAgent {
         super.prepare();
 
         final PolicyEvaluator policyEvaluator = new PolicyEvaluator(mPolicy, getEnvironment());
-        policyEvaluator.estimateValueFunction();
-        policyEvaluator.iterateValues();
+        policyEvaluator.iteratePolicy();
     }
 }
