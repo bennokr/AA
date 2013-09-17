@@ -1,4 +1,4 @@
-package com.uva.aa.agents;
+package com.uva.aa;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -9,9 +9,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.uva.aa.Game;
-import com.uva.aa.Location;
-import com.uva.aa.State;
+import com.uva.aa.agents.Agent;
+import com.uva.aa.agents.PredatorAgent;
+import com.uva.aa.agents.PreyAgent;
 
 /**
  * The environment which holds the agents and state.

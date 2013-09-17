@@ -15,7 +15,7 @@ import com.uva.aa.enums.Action;
 /**
  * A policy evaluator with the goal of improving a policy. Provides several methods for doing so.
  */
-public class PolicyIterater {
+public class PolicyEvaluator {
 
     /** The threshold that determines at what point we stop our evaluation */
     private static final double ERROR_THRESHOLD_THETA = 0.00000001;
@@ -48,7 +48,7 @@ public class PolicyIterater {
      * @param possibleStatesInclTerminal
      *            All the possible states the agent can be in, including the terminal states
      */
-    public PolicyIterater(final Policy policy, final Environment environment) {
+    public PolicyEvaluator(final Policy policy, final Environment environment) {
         mPolicy = policy;
         mEnvironment = environment;
         mPredator = environment.getPredators().get(0);
@@ -65,11 +65,9 @@ public class PolicyIterater {
     public void iteratePolicy() {
         boolean policyStable = false;
         while (!policyStable) {
-            evaluatePolicy();
+            estimateValueFunction();
             policyStable = improvePolicy();
         }
-
-        iterateValues();
     }
 
     /**
@@ -89,7 +87,7 @@ public class PolicyIterater {
      * @param policy
      *            The policy for which the value function should be estimated
      */
-    public void evaluatePolicy() {
+    public void estimateValueFunction() {
         // Prepare all possible states (including terminal)
         for (final State state : mEnvironment.getPossibleStates(true)) {
             mPolicy.setStateValue(state, 0);
@@ -189,7 +187,7 @@ public class PolicyIterater {
             // Get pi(s,a)
             final double actionProbability = mPolicy.getActionProbability(state, predatorAction);
             final double actionValue = actionProbability * innerSum;
-            
+
             // Outer sum of the Bellman equation
             if (getMaxInsteadOfSum) {
                 maxStateValue = Math.max(maxStateValue, actionValue);

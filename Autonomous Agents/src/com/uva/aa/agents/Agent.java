@@ -1,5 +1,6 @@
 package com.uva.aa.agents;
 
+import com.uva.aa.Environment;
 import com.uva.aa.Location;
 import com.uva.aa.State;
 import com.uva.aa.enums.Action;

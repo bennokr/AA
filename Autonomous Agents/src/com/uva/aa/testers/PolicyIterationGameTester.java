@@ -5,7 +5,7 @@ import com.uva.aa.Game;
 /**
  * Runs a simple test with the default predator and prey behaviour.
  */
-public class EvaluatingGameTester extends GameTester {
+public class PolicyIterationGameTester extends GameTester {
 
     /**
      * {@inheritDoc}
