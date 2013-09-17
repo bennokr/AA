@@ -18,11 +18,12 @@ public class Initialiser {
      *            Not used
      */
     public static void main(String[] args) {
-        final Tester simpleTester = new SimpleGameTester();
-        simpleTester.runTests(10000);
+//        final Tester simpleTester = new SimpleGameTester();
+//        simpleTester.runTests(10000);
         
         // task 1.2: iterative policy evaluation
-//        new PolicyEvaluationTester();
+        final PolicyEvaluationTester policyEvaluationTester = new PolicyEvaluationTester();
+        policyEvaluationTester.performTest();
         
 //        final Tester policyIterationTester = new PolicyIterationGameTester();
 //        policyIterationTester.runTests(100000);

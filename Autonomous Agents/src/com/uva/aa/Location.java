@@ -103,6 +103,11 @@ public class Location {
 
         return new Location(mEnvironment != null ? mEnvironment : targetEnv, mX + location.getX(), mY + location.getY());
     }
+    
+    @Override
+    public String toString() {
+        return "(" + mX + "," + mY + ")";
+    }
 
     /**
      * Checks if this location has the same coordinates as the given one.

@@ -126,4 +126,10 @@ public abstract class Agent {
     public Policy getPolicy() {
         return mPolicy;
     }
+
+    @Override
+    public String toString() {
+        final String className = getClass().getSimpleName();
+        return className.substring(0, className.length() - 5);
+    }
 }

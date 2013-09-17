@@ -9,17 +9,17 @@ import java.util.LinkedList;
 public abstract class Tester {
 
     /**
-     * Performs the test once and returns the resulting game after this has finished.
+     * Performs the test once and returns the result after it has finished.
      * 
      * @param numRun
      *            The number for the run, increments each time
      * 
-     * @return The finished game
+     * @return The result value of the test
      */
 	public abstract int performSingleTest(int numRun);
 
 	/**
-	 * Performs the test <code>numRuns</code> times and prints the mean average.
+	 * Performs the test <code>numRuns</code> times and prints the mean average and standard deviation.
 	 * 
 	 * @param numRuns The amount of tests to perform
 	 */
