@@ -37,6 +37,10 @@ public class PolicyEvaluationTester {
         mEnvironment = game.getEnvironment();
         mPredator = mEnvironment.getPredators().get(0);
         mPrey = mEnvironment.getPreys().get(0);
+        
+        mPrey.prepare();
+        mPredator.prepare();
+        
         mPolicy = mPredator.getPolicy();
 
         // create a policy iterater, who can evaluate policies
