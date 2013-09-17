@@ -9,7 +9,7 @@ import com.uva.aa.Location;
 import com.uva.aa.State;
 import com.uva.aa.agents.Agent;
 import com.uva.aa.policies.Policy;
-import com.uva.aa.policies.PolicyIterater;
+import com.uva.aa.policies.PolicyManager;
 
 /**
  * Runs a simple test with the default predator and prey behaviour.
@@ -21,7 +21,7 @@ public class PolicyEvaluationTester {
     final Agent mPrey;
     final Policy mPolicy;
 
-    final PolicyIterater policyIterater;
+    final PolicyManager policyIterater;
 
     public PolicyEvaluationTester() {
 
@@ -40,7 +40,7 @@ public class PolicyEvaluationTester {
         mPolicy = mPredator.getPolicy();
 
         // create a policy iterater, who can evaluate policies
-        policyIterater = new PolicyIterater(mPolicy, mEnvironment);
+        policyIterater = new PolicyManager(mPolicy, mEnvironment);
 
         // evaluate the (random) policy of the predator
         policyIterater.evaluatePolicy();

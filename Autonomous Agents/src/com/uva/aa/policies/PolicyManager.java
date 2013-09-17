@@ -15,7 +15,7 @@ import com.uva.aa.enums.Action;
 /**
  * A policy evaluator with the goal of improving a policy. Provides several methods for doing so.
  */
-public class PolicyIterater {
+public class PolicyManager {
 
     /** The threshold that determines at what point we stop our evaluation */
     private static final double ERROR_THRESHOLD_THETA = 0.00000001;
@@ -48,7 +48,7 @@ public class PolicyIterater {
      * @param possibleStatesInclTerminal
      *            All the possible states the agent can be in, including the terminal states
      */
-    public PolicyIterater(final Policy policy, final Environment environment) {
+    public PolicyManager(final Policy policy, final Environment environment) {
         mPolicy = policy;
         mEnvironment = environment;
         mPredator = environment.getPredators().get(0);

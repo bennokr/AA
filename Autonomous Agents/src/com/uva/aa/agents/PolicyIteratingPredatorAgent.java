@@ -1,7 +1,7 @@
 package com.uva.aa.agents;
 
 import com.uva.aa.Location;
-import com.uva.aa.policies.PolicyIterater;
+import com.uva.aa.policies.PolicyManager;
 
 /**
  * An agent that acts as a predator within the environment. Will move towards the prey according to an evaluated policy.
@@ -25,7 +25,7 @@ public class PolicyIteratingPredatorAgent extends PredatorAgent {
     public void prepare() {
         super.prepare();
 
-        final PolicyIterater policyEvaluator = new PolicyIterater(mPolicy, getEnvironment());
+        final PolicyManager policyEvaluator = new PolicyManager(mPolicy, getEnvironment());
         policyEvaluator.iteratePolicy();
     }
 }
