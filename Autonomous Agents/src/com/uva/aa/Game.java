@@ -229,4 +229,14 @@ public class Game {
         mHumanTest = humanTest;
     }
 
+    /**
+     * Returns the environment of the game
+     * 
+     * @return
+     *      the environment in which the game takes place
+     */
+    public Environment getEnvironment() {
+        return mEnvironment;
+    }
+    
 }
