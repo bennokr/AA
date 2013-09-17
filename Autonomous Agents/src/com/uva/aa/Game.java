@@ -81,7 +81,7 @@ public class Game {
      * @param y
      *            The y coordinate where the predator is located at
      */
-    public void addEvaluatingPredator(final int x, final int y) {
+    public void addPolicyIteratingPredator(final int x, final int y) {
         mEnvironment.addAgent(new PolicyIteratingPredatorAgent(new Location(mEnvironment, x, y)));
     }
 

@@ -16,7 +16,7 @@ public class PolicyIterationGameTester extends GameTester {
 
         // Adds the two required agents
         game.addPrey(5, 5);
-        game.addEvaluatingPredator(0, 0);
+        game.addPolicyIteratingPredator(0, 0);
 
         return game;
     }

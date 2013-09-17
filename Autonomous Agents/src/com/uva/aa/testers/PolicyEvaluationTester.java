@@ -79,5 +79,6 @@ public class PolicyEvaluationTester {
         System.out.println("The value for the state Predator("+predatorLocation.getX()+","
                 +predatorLocation.getY()+"), Prey("+preyLocation.getX()+","+preyLocation.getY()
                 +") is "+stateValue);
+        System.out.println(policyIterater.getNumberOfIterations());
     }
 }
