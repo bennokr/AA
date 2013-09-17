@@ -3,7 +3,6 @@ package com.uva.aa;
 import com.uva.aa.testers.PolicyEvaluationTester;
 import com.uva.aa.testers.SimpleGameTester;
 import com.uva.aa.testers.Tester;
-import com.uva.aa.testers.PolicyIterationGameTester;
 
 /**
  * Prepares the game(s) and starts the required actions.

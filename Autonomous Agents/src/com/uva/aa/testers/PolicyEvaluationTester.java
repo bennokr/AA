@@ -21,7 +21,7 @@ public class PolicyEvaluationTester {
     final Agent mPrey;
     final Policy mPolicy;
 
-    final PolicyManager policyIterater;
+    final PolicyManager policyManager;
 
     public PolicyEvaluationTester() {
 
@@ -44,10 +44,10 @@ public class PolicyEvaluationTester {
         mPolicy = mPredator.getPolicy();
 
         // create a policy iterater, who can evaluate policies
-        policyIterater = new PolicyManager(mPolicy, mEnvironment);
+        policyManager = new PolicyManager(mPolicy, mEnvironment);
 
         // evaluate the (random) policy of the predator
-        policyIterater.evaluatePolicy();
+        policyManager.evaluatePolicy();
 
         // print some state-values
         printStateValues(new Location(mEnvironment, 0, 0), new Location(mEnvironment, 5, 5));
@@ -79,6 +79,6 @@ public class PolicyEvaluationTester {
         System.out.println("The value for the state Predator("+predatorLocation.getX()+","
                 +predatorLocation.getY()+"), Prey("+preyLocation.getX()+","+preyLocation.getY()
                 +") is "+stateValue);
-        System.out.println(policyIterater.getNumberOfIterations());
+        System.out.println(policyManager.getNumberOfIterations());
     }
 }
