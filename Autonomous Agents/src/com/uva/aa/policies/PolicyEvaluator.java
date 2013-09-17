@@ -69,7 +69,6 @@ public class PolicyEvaluator {
             policyStable = improvePolicy();
         }
 
-        iterateValues();
     }
 
     /**
