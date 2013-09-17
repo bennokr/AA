@@ -6,6 +6,7 @@ import com.uva.aa.agents.Agent;
 import com.uva.aa.agents.PolicyIteratingPredatorAgent;
 import com.uva.aa.agents.PredatorAgent;
 import com.uva.aa.agents.PreyAgent;
+import com.uva.aa.agents.ValueIteratingPredatorAgent;
 import com.uva.aa.enums.GameState;
 
 /**
@@ -74,7 +75,7 @@ public class Game {
     }
 
     /**
-     * Adds a policy-evaluating predator to the environment at the specified coordinates.
+     * Adds a policy-iterating predator to the environment at the specified coordinates.
      * 
      * @param x
      *            The x coordinate where the predator is located at
@@ -83,6 +84,18 @@ public class Game {
      */
     public void addPolicyIteratingPredator(final int x, final int y) {
         mEnvironment.addAgent(new PolicyIteratingPredatorAgent(new Location(mEnvironment, x, y)));
+    }
+
+    /**
+     * Adds a value-iterating predator to the environment at the specified coordinates.
+     * 
+     * @param x
+     *            The x coordinate where the predator is located at
+     * @param y
+     *            The y coordinate where the predator is located at
+     */
+    public void addValueIteratingPredator(final int x, final int y) {
+        mEnvironment.addAgent(new ValueIteratingPredatorAgent(new Location(mEnvironment, x, y)));
     }
 
     /**

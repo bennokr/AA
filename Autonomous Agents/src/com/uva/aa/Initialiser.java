@@ -4,6 +4,7 @@ import com.uva.aa.testers.PolicyEvaluationTester;
 import com.uva.aa.testers.SimpleGameTester;
 import com.uva.aa.testers.Tester;
 import com.uva.aa.testers.PolicyIterationGameTester;
+import com.uva.aa.testers.ValueIterationGameTester;
 
 /**
  * Prepares the game(s) and starts the required actions.
@@ -21,10 +22,13 @@ public class Initialiser {
 //        simpleTester.runTests(10);
         
         // task 1.2: iterative policy evaluation
-        new PolicyEvaluationTester();
+//        new PolicyEvaluationTester();
         
-       //final Tester valueIterationTester = new PolicyIterationGameTester();
-       //valueIterationTester.runTests(100000);
+        final Tester policyIterationTester = new PolicyIterationGameTester();
+        policyIterationTester.runTests(100000);
+       
+//        final Tester valueIterationTester = new ValueIterationGameTester();
+//        valueIterationTester.runTests(100000);
     }
 
 }

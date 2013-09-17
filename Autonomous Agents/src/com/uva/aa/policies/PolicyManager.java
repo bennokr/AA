@@ -169,8 +169,7 @@ public class PolicyManager {
         final Location preyCurrLocation = state.getAgentLocation(mPrey);
 
         // In the outer summation: iterate over all possible actions the predator can take
-        double outerSum = 0;
-        double maxStateValue = 0;
+        double stateValue = 0;
         for (final Action predatorAction : Action.values()) {
             final List<State> possibleNextStates = new ArrayList<State>();
             final Location nextPredatorLocation = predatorAction.getLocation(predatorCurrLocation);
@@ -200,13 +199,13 @@ public class PolicyManager {
             
             // Outer sum of the Bellman equation
             if (getMaxInsteadOfSum) {
-                maxStateValue = Math.max(maxStateValue, actionValue);
+                stateValue = Math.max(stateValue, actionValue);
             } else {
-                outerSum += actionValue;
+                stateValue += actionValue;
             }
         }
 
-        return outerSum;
+        return stateValue;
     }
 
     /**
