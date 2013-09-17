@@ -3,7 +3,6 @@ package com.uva.aa.policies;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import com.uva.aa.Location;
@@ -15,10 +14,6 @@ import com.uva.aa.enums.Action;
 
 /**
  * A policy evaluator with the goal of improving a policy. Provides several methods for doing so.
- */
-/**
- * @author benno
- *
  */
 public class PolicyEvaluator {
 
@@ -116,14 +111,14 @@ public class PolicyEvaluator {
     }
 
     /**
-     * Returns the next estimation of the state-value based on the Bellmann equation
+     * Returns the next estimation of the state-value based on the Bellmann equation.
      * 
      * @param policy
-     *            the policy that we are following
+     *            The policy that we are following
      * @param state
-     *            the state for which we want to estimate the value
+     *            The state for which we want to estimate the value
      * 
-     * @return outerSum the (next) estimation of the value of the given state
+     * @return The (next) estimation of the value of the given state
      */
     private double getUpdatedStateValue(final State state) {
         final Location predatorCurrLocation = state.getAgentLocation(mPredator);
@@ -163,31 +158,30 @@ public class PolicyEvaluator {
 
         return outerSum;
     }
-    
+
     /**
-     * Iterates the estimation of the value function and the improving of the current policy,
-     * until the optimal policy is reached. See [Sutton & Barto, 4.3: Policy Iteration].
-     * We continuously flip back and forth between estimating the value function and improving the policy until it's optimal.
+     * Iterates the estimation of the value function and the improving of the current policy, until the optimal policy
+     * is reached. See [Sutton & Barto, 4.3: Policy Iteration]. We continuously flip back and forth between estimating
+     * the value function and improving the policy until it's optimal.
      * 
      * Only supports one predator and prey.
-     * 
      */
     public void iteratePolicy() {
-    	Boolean policyStable = false;
-    	do {
-    		estimateValueFunction();
-    		policyStable = improvePolicy();
-    	} while (! policyStable);
+        boolean policyStable = false;
+        while (!policyStable) {
+            estimateValueFunction();
+            policyStable = improvePolicy();
+        }
     }
-    
-   /**
-    * Value iteration looks like Policy Evaluation, but we maximize wrt action-values to create an optimal policy.
-    * 
-    */
+
+    /**
+     * Value iteration looks like Policy Evaluation, but we maximize wrt action-values to create an optimal policy.
+     * 
+     */
     public void iterateValues() {
-    	// TODO: implement value iteration
-    	
-    	// We use this variable to determine the changes we have made during a loop
+        // TODO: implement value iteration
+
+        // We use this variable to determine the changes we have made during a loop
         double maxValErrDelta;
 
         // Update the value function until it converges
@@ -212,9 +206,11 @@ public class PolicyEvaluator {
             ++mIterations;
 
         } while (maxValErrDelta > ERROR_THRESHOLD_THETA);
-        
-        // TODO Set the policy to a deterministic policy such that for every state, it's the argmax wrt $a$ of the getMaximizedStateValue
+
+        // TODO Set the policy to a deterministic policy such that for every state, it's the argmax wrt $a$ of the
+        // getMaximizedStateValue
     }
+
     /**
      * Similar to getUpdatedStateValue but maximizing wrt $a$ instead of summing
      * 
@@ -222,21 +218,20 @@ public class PolicyEvaluator {
      * @return
      */
     private double getMaximizedStateValue(State state) {
-		// TODO Auto-generated method stub
-    	
-    	
-		return 0;
-	}
+        // TODO Auto-generated method stub
 
-	/**
+        return 0;
+    }
+
+    /**
      * Adjusts the policy in every state to the best action according to the current state value function.
      * 
      * Only supports one predator and prey.
      * 
-     * @return Return whether the policy has not improved
+     * @return True if the policy has not improved, false if it remained the same
      */
-    public Boolean improvePolicy() {
-    	Boolean policyStable = true;
+    public boolean improvePolicy() {
+        boolean policyStable = true;
 
         // Update actions the values for each state
         for (final Entry<State, StatePolicyProperties> stateMapping : mPolicy.getStateMap().entrySet()) {
@@ -270,22 +265,22 @@ public class PolicyEvaluator {
                 }
             }
 
-            // Save the policy in this state for now
-            Map b = new HashMap<Action, Double>(properties.getActionProbabilities());
-            
+            // Save the action probabilities for the current state to compare them after changing the policy
+            HashMap<Action, Double> tempActionProbabilities = new HashMap<Action, Double>(properties.getActionProbabilities());
+
             // Update the action probabilities based on the best values
             properties.clearActionProbabilities();
             final double bestActionProbability = 1.0 / bestActions.size();
             for (final Action bestAction : bestActions) {
-            	properties.setActionProbability(bestAction, bestActionProbability);
+                properties.setActionProbability(bestAction, bestActionProbability);
             }
-            
-            // Check whether we've changed the policy in this state
-            if (!properties.getActionProbabilities().equals(b)) {
-            	policyStable = false;
+
+            // Check whether we've changed the action probabilities for the current state
+            if (!properties.getActionProbabilities().equals(tempActionProbabilities)) {
+                policyStable = false;
             }
         }
-        
+
         return policyStable;
     }
 
