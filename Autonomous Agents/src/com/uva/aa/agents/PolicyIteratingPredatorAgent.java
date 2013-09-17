@@ -8,6 +8,8 @@ import com.uva.aa.policies.PolicyManager;
  */
 public class PolicyIteratingPredatorAgent extends PredatorAgent {
 
+    PolicyManager mPolicyManager;
+    
     /**
      * Creates a new predator on the specified coordinates within the environment.
      * 
@@ -25,7 +27,11 @@ public class PolicyIteratingPredatorAgent extends PredatorAgent {
     public void prepare() {
         super.prepare();
 
-        final PolicyManager policyEvaluator = new PolicyManager(mPolicy, getEnvironment());
-        policyEvaluator.iteratePolicy();
+        mPolicyManager = new PolicyManager(mPolicy, getEnvironment());
+        mPolicyManager.iteratePolicy();
+    }
+    
+    public PolicyManager getPolicyManager() {
+        return mPolicyManager;
     }
 }
