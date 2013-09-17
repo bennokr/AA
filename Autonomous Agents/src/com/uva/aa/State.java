@@ -1,6 +1,7 @@
 package com.uva.aa;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.uva.aa.agents.Agent;
@@ -34,7 +35,7 @@ public class State {
      */
     public static State buildState(final PredatorAgent predator, final Location predatorLocation, final PreyAgent prey,
             final Location preyLocation) {
-        final Map<Agent, Location> nextStateMap = new HashMap<Agent, Location>();
+        final Map<Agent, Location> nextStateMap = new LinkedHashMap<Agent, Location>();
         nextStateMap.put(predator, predatorLocation);
         if (preyLocation != null && !predatorLocation.equals(preyLocation)) {
             nextStateMap.put(prey, preyLocation);

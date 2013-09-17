@@ -2,9 +2,10 @@ package com.uva.aa.agents;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -185,7 +186,7 @@ public class Environment {
      * @return The environment's current state
      */
     public State getState() {
-        final HashMap<Agent, Location> stateMap = new HashMap<Agent, Location>();
+        final Map<Agent, Location> stateMap = new LinkedHashMap<Agent, Location>();
 
         for (final Agent agent : mAgents) {
             stateMap.put(agent, agent.getLocation());
