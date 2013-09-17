@@ -13,7 +13,17 @@ import com.uva.aa.agents.PreyAgent;
 import com.uva.aa.enums.Action;
 
 /**
- * A policy evaluator with the goal of improving a policy. Provides several methods for doing so.
+ * A policy manager with the goal of improving a policy. Provides several methods for doing so.
+ * 
+ * POLICY EVALUATION (Sutton, Barto, 4.1)
+ *      provided by the method evaluatePolicy()
+ * POLICY IMPROVEMENT (Sutton, Barto, 4.2)
+ *      provided by the method improvePolicy()
+ * POLICY ITERATION (Sutton, Barto, 4.3)
+ *      provided by the method iteratePolicy(), which uses policy evaluation and improvement
+ * VALUE ITERATION (Sutton, Barto, 4.4)
+ *      provided by iterateValue(), which uses a modified policy evaluation 
+ * 
  */
 public class PolicyManager {
 
