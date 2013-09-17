@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.uva.aa.agents.Agent;
 import com.uva.aa.agents.Environment;
-import com.uva.aa.agents.EvaluatingPredatorAgent;
+import com.uva.aa.agents.PolicyIteratingPredatorAgent;
 import com.uva.aa.agents.PredatorAgent;
 import com.uva.aa.agents.PreyAgent;
 import com.uva.aa.enums.GameState;
@@ -83,7 +83,7 @@ public class Game {
      *            The y coordinate where the predator is located at
      */
     public void addEvaluatingPredator(final int x, final int y) {
-        mEnvironment.addAgent(new EvaluatingPredatorAgent(new Location(mEnvironment, x, y)));
+        mEnvironment.addAgent(new PolicyIteratingPredatorAgent(new Location(mEnvironment, x, y)));
     }
 
     /**

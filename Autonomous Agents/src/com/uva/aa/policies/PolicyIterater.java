@@ -15,7 +15,7 @@ import com.uva.aa.enums.Action;
 /**
  * A policy evaluator with the goal of improving a policy. Provides several methods for doing so.
  */
-public class PolicyEvaluator {
+public class PolicyIterater {
 
     /** The threshold that determines at what point we stop our evaluation */
     private static final double ERROR_THRESHOLD_THETA = 0.00000001;
@@ -48,7 +48,7 @@ public class PolicyEvaluator {
      * @param possibleStatesInclTerminal
      *            All the possible states the agent can be in, including the terminal states
      */
-    public PolicyEvaluator(final Policy policy, final Environment environment) {
+    public PolicyIterater(final Policy policy, final Environment environment) {
         mPolicy = policy;
         mEnvironment = environment;
         mPredator = environment.getPredators().get(0);
@@ -65,7 +65,7 @@ public class PolicyEvaluator {
     public void iteratePolicy() {
         boolean policyStable = false;
         while (!policyStable) {
-            estimateValueFunction();
+            evaluatePolicy();
             policyStable = improvePolicy();
         }
 
@@ -89,7 +89,7 @@ public class PolicyEvaluator {
      * @param policy
      *            The policy for which the value function should be estimated
      */
-    public void estimateValueFunction() {
+    public void evaluatePolicy() {
         // Prepare all possible states (including terminal)
         for (final State state : mEnvironment.getPossibleStates(true)) {
             mPolicy.setStateValue(state, 0);
