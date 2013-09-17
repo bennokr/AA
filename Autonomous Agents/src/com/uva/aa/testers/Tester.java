@@ -32,12 +32,16 @@ public abstract class Tester {
 		}
 		
 		// Find the mean average of the results
-		int resultSum = 0;
+        int resultSum = 0;
+        int squaredSum = 0;
 		for (final int result : results) {
-			resultSum += result;
+            resultSum += result;
+            squaredSum += Math.pow(result, 2);
 		}
-		final double mean = ((double)resultSum) / results.size();
-		
-		System.out.println("Average result: " + mean);
+        final double mean = ((double)resultSum) / results.size();
+        final double variance = ((double)squaredSum) / results.size() - Math.pow(mean, 2);
+
+        System.out.println("Average result: " + mean);
+        System.out.println("Standard deviation: " + Math.sqrt(variance));
 	}
 }
