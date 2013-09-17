@@ -3,7 +3,6 @@ package com.uva.aa;
 import java.util.List;
 
 import com.uva.aa.agents.Agent;
-import com.uva.aa.agents.Environment;
 import com.uva.aa.agents.EvaluatingPredatorAgent;
 import com.uva.aa.agents.PredatorAgent;
 import com.uva.aa.agents.PreyAgent;
@@ -229,4 +228,14 @@ public class Game {
         mHumanTest = humanTest;
     }
 
+    /**
+     * Returns the environment of the game.
+     * 
+     * @return
+     *      The environment for this game
+     */
+    public Environment getEnvironment() {
+        return mEnvironment;
+    }
+    
 }

@@ -3,6 +3,7 @@ package com.uva.aa.agents;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.uva.aa.Environment;
 import com.uva.aa.Location;
 import com.uva.aa.enums.Action;
 

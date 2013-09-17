@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import com.uva.aa.Environment;
 import com.uva.aa.Location;
 import com.uva.aa.State;
-import com.uva.aa.agents.Environment;
 import com.uva.aa.agents.PredatorAgent;
 import com.uva.aa.agents.PreyAgent;
 import com.uva.aa.enums.Action;
@@ -68,8 +68,6 @@ public class PolicyEvaluator {
             estimateValueFunction();
             policyStable = improvePolicy();
         }
-
-        iterateValues();
     }
 
     /**
