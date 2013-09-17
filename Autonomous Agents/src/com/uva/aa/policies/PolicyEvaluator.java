@@ -18,7 +18,7 @@ import com.uva.aa.enums.Action;
 public class PolicyEvaluator {
 
     /** The threshold that determines at what point we stop our evaluation */
-    private static final double ERROR_THRESHOLD_THETA = 0.0001;
+    private static final double ERROR_THRESHOLD_THETA = 0.00000001;
 
     /** The discount factor of the bellman equation */
     private static final double DISCOUNT_FACTOR_GAMMA = 0.8;
@@ -56,6 +56,23 @@ public class PolicyEvaluator {
     }
 
     /**
+     * Iterates the estimation of the value function and the improving of the current policy, until the optimal policy
+     * is reached. See [Sutton & Barto, 4.3: Policy Iteration]. We continuously flip back and forth between estimating
+     * the value function and improving the policy until it's optimal.
+     * 
+     * Only supports one predator and prey.
+     */
+    public void iteratePolicy() {
+        boolean policyStable = false;
+        while (!policyStable) {
+            estimateValueFunction();
+            policyStable = improvePolicy();
+        }
+
+        iterateValues();
+    }
+
+    /**
      * Computes the real value function to a given policy with the iterative policy evaluation.
      * 
      * Uses the Iterative Policy Evaluation after Sutton, Barto, Chapter 4.1. An agent in an MDP-environment which is
@@ -73,14 +90,25 @@ public class PolicyEvaluator {
      *            The policy for which the value function should be estimated
      */
     public void estimateValueFunction() {
-
-        // Reset the number of iterations
-        mIterations = 0;
-
         // Prepare all possible states (including terminal)
         for (final State state : mEnvironment.getPossibleStates(true)) {
             mPolicy.setStateValue(state, 0);
         }
+        
+        // Modify the policy's state values
+        updateStateValues(false);
+    }
+
+    /**
+     * Updates the state values of a policy based on the actions, probabilities and rewards.
+     * 
+     * @param useMaxInsteadOfSum
+     *            True if the state value should be the maximum of action values instead of the sum
+     */
+    private void updateStateValues(final boolean useMaxInsteadOfSum) {
+
+        // Reset the number of iterations
+        mIterations = 0;
 
         // We use this variable to determine the changes we have made during a loop
         double maxValErrDelta;
@@ -96,7 +124,7 @@ public class PolicyEvaluator {
                 final double previousStateValue = mPolicy.getStateValue(state);
 
                 // Replace the old values in place (like suggested in Sutton, Barto, Chapter 4.1)
-                final double updatedStateValue = getUpdatedStateValue(state);
+                final double updatedStateValue = getUpdatedStateValue(state, useMaxInsteadOfSum);
                 mPolicy.setStateValue(state, updatedStateValue);
 
                 // Update the maximum error we have
@@ -107,25 +135,34 @@ public class PolicyEvaluator {
             ++mIterations;
 
         } while (maxValErrDelta > ERROR_THRESHOLD_THETA);
+    }
 
+    /**
+     * Retrieves the number of iterations performed in the last evaluation.
+     * 
+     * @return The number of iterations
+     */
+    public int getNumberOfIterations() {
+        return mIterations;
     }
 
     /**
      * Returns the next estimation of the state-value based on the Bellmann equation.
      * 
-     * @param policy
-     *            The policy that we are following
      * @param state
      *            The state for which we want to estimate the value
+     * @param getMax
+     *            True if the state value should be the maximum of action values instead of the sum
      * 
      * @return The (next) estimation of the value of the given state
      */
-    private double getUpdatedStateValue(final State state) {
+    private double getUpdatedStateValue(final State state, final boolean getMaxInsteadOfSum) {
         final Location predatorCurrLocation = state.getAgentLocation(mPredator);
         final Location preyCurrLocation = state.getAgentLocation(mPrey);
 
         // In the outer summation: iterate over all possible actions the predator can take
         double outerSum = 0;
+        double maxStateValue = 0;
         for (final Action predatorAction : Action.values()) {
             final List<State> possibleNextStates = new ArrayList<State>();
             final Location nextPredatorLocation = predatorAction.getLocation(predatorCurrLocation);
@@ -150,77 +187,18 @@ public class PolicyEvaluator {
             }
 
             // Get pi(s,a)
-            double actionProb = mPolicy.getActionProbability(state, predatorAction);
+            final double actionProbability = mPolicy.getActionProbability(state, predatorAction);
+            final double actionValue = actionProbability * innerSum;
 
             // Outer sum of the Bellman equation
-            outerSum += actionProb * innerSum;
+            if (getMaxInsteadOfSum) {
+                maxStateValue = Math.max(maxStateValue, actionValue);
+            } else {
+                outerSum += actionValue;
+            }
         }
 
         return outerSum;
-    }
-
-    /**
-     * Iterates the estimation of the value function and the improving of the current policy, until the optimal policy
-     * is reached. See [Sutton & Barto, 4.3: Policy Iteration]. We continuously flip back and forth between estimating
-     * the value function and improving the policy until it's optimal.
-     * 
-     * Only supports one predator and prey.
-     */
-    public void iteratePolicy() {
-        boolean policyStable = false;
-        while (!policyStable) {
-            estimateValueFunction();
-            policyStable = improvePolicy();
-        }
-    }
-
-    /**
-     * Value iteration looks like Policy Evaluation, but we maximize wrt action-values to create an optimal policy.
-     * 
-     */
-    public void iterateValues() {
-        // TODO: implement value iteration
-
-        // We use this variable to determine the changes we have made during a loop
-        double maxValErrDelta;
-
-        // Update the value function until it converges
-        do {
-            // Reset the delta for this update
-            maxValErrDelta = 0;
-
-            // Sweep through the state space of non-terminal states
-            for (final State state : mEnvironment.getPossibleStates(false)) {
-                // Save current estimate of the value of the current state (for later comparison)
-                final double previousStateValue = mPolicy.getStateValue(state);
-
-                // Replace the old values in place (like suggested in Sutton, Barto, Chapter 4.1)
-                final double updatedStateValue = getMaximizedStateValue(state);
-                mPolicy.setStateValue(state, updatedStateValue);
-
-                // Update the maximum error we have
-                maxValErrDelta = Math.max(maxValErrDelta, Math.abs(previousStateValue - updatedStateValue));
-            }
-
-            // Keep track of how many iterations we've done
-            ++mIterations;
-
-        } while (maxValErrDelta > ERROR_THRESHOLD_THETA);
-
-        // TODO Set the policy to a deterministic policy such that for every state, it's the argmax wrt $a$ of the
-        // getMaximizedStateValue
-    }
-
-    /**
-     * Similar to getUpdatedStateValue but maximizing wrt $a$ instead of summing
-     * 
-     * @param state
-     * @return
-     */
-    private double getMaximizedStateValue(State state) {
-        // TODO Auto-generated method stub
-
-        return 0;
     }
 
     /**
@@ -266,7 +244,8 @@ public class PolicyEvaluator {
             }
 
             // Save the action probabilities for the current state to compare them after changing the policy
-            HashMap<Action, Double> tempActionProbabilities = new HashMap<Action, Double>(properties.getActionProbabilities());
+            HashMap<Action, Double> tempActionProbabilities = new HashMap<Action, Double>(
+                    properties.getActionProbabilities());
 
             // Update the action probabilities based on the best values
             properties.clearActionProbabilities();
@@ -285,12 +264,11 @@ public class PolicyEvaluator {
     }
 
     /**
-     * Retrieves the number of iterations performed in the last evaluation.
-     * 
-     * @return The number of iterations
+     * Value iteration looks like Policy Evaluation, but we maximize wrt action-values to create an optimal policy.
      */
-    public int getNumberOfIterations() {
-        return mIterations;
+    public void iterateValues() {
+        updateStateValues(true);
+        improvePolicy();
     }
 
     /**
@@ -311,7 +289,6 @@ public class PolicyEvaluator {
         final double nextStateValue = mPolicy.getStateValue(resultingState);
 
         return transitionProbability * (immediateReward + DISCOUNT_FACTOR_GAMMA * nextStateValue);
-
     }
 
 }
