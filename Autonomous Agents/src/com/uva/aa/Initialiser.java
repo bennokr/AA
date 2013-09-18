@@ -6,7 +6,7 @@ import com.uva.aa.testers.StateSpaceTester;
 import com.uva.aa.testers.Tester;
 import com.uva.aa.testers.PolicyIterationGameTester;
 import com.uva.aa.testers.ValueIterationGameTester;
-import com.uva.aa.testers.ValueIterationTester;
+import com.uva.aa.testers.ValueIterationStateTester;
 
 /**
  * Prepares the game(s) and starts the required actions.
@@ -35,7 +35,7 @@ public class Initialiser {
         // Task 1.4: Value iteration
 //      final Tester valueIterationGameTester = new ValueIterationGameTester();
 //      valueIterationGameTester.runTests(100000);
-        final ValueIterationTester valueIterationTester = new ValueIterationTester();
+        final ValueIterationStateTester valueIterationTester = new ValueIterationStateTester();
         valueIterationTester.performTest();
         
         // Task 1.5: State-space reduction

@@ -15,7 +15,7 @@ import com.uva.aa.policies.PolicyManager;
 /**
  * Runs a simple test with the default predator and prey behaviour.
  */
-public class ValueIterationTester {
+public class ValueIterationStateTester {
 
     /** The environment of the game */
     final Environment mEnvironment;
@@ -32,7 +32,7 @@ public class ValueIterationTester {
     /**
      * Prepares a new policy evaluation test by creating a game and setting up the agents.
      */
-    public ValueIterationTester() {
+    public ValueIterationStateTester() {
         // Creates a game
         final Game game = new Game(11, 11);
 
@@ -82,7 +82,7 @@ public class ValueIterationTester {
         // Since we have evaluated the policy, we can now ask for the state value
         final double stateValue = mPolicy.getStateValue(state);
         
-        NumberFormat formatter = new DecimalFormat("00.00000");
+        final NumberFormat formatter = new DecimalFormat("00.00000");
         System.out.print(formatter.format(stateValue) + "    ");
     }
 }
