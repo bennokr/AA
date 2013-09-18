@@ -9,6 +9,8 @@ import com.uva.aa.Location;
 import com.uva.aa.State;
 import com.uva.aa.agents.Agent;
 import com.uva.aa.agents.PolicyIteratingPredatorAgent;
+import com.uva.aa.agents.PredatorAgent;
+import com.uva.aa.agents.PreyAgent;
 import com.uva.aa.policies.Policy;
 import com.uva.aa.policies.PolicyManager;
 
@@ -18,8 +20,8 @@ import com.uva.aa.policies.PolicyManager;
 public class PolicyIterationTester {
 
     final Environment mEnvironment;
-    final Agent mPredator;
-    final Agent mPrey;
+    final PredatorAgent mPredator;
+    final PreyAgent mPrey;
     final Policy mPolicy;
     final PolicyManager mPolicyManager;
 
@@ -59,13 +61,8 @@ public class PolicyIterationTester {
      *            the location in which the prey is
      */
     private void printStateValues(Location predatorLocation, Location preyLocation) {
-        // create an map which holds the agents and their locations
-        Map<Agent, Location> agentMap = new HashMap<Agent, Location>();
-        agentMap.put(mPrey, preyLocation);
-        agentMap.put(mPredator, predatorLocation);
-
         // create the state that holds the predator and the prey in the locations that we set in the agentMao
-        State state = new State(agentMap);
+        State state = State.buildState(mPredator, predatorLocation, mPrey, preyLocation);
 
         // since we have evaluated the policy, we can now ask for the state value
         double stateValue = mPolicy.getStateValue(state);

@@ -49,7 +49,7 @@ public class State {
      * @param agentLocations
      *            The agents mapped to their locations
      */
-    public State(final Map<Agent, Location> agentLocations) {
+    /* default */State(final Map<Agent, Location> agentLocations) {
         mAgentLocations = agentLocations;
 
         // Set relative locations based on the most top-left agent for reducing the state-space
@@ -146,13 +146,21 @@ public class State {
      * Prints this state to the console in a human readable way.
      */
     public void print() {
+        System.out.println(this);
+    }
+
+    @Override
+    public String toString() {
+        String message = "";
+
+        boolean first = true;
         for (final Map.Entry<Agent, Location> agentLocation : mAgentLocations.entrySet()) {
             final Agent agent = agentLocation.getKey();
-            final Location location = agentLocation.getValue();
-            System.out.print(agent.getClass().getSimpleName() + "-" + agent.hashCode() + "(" + location.getX() + ","
-                    + location.getY() + ") ");
+            message += (!first ? ", " : "") + agent + agentLocation.getValue();
+            first = false;
         }
-        System.out.println();
+
+        return message;
     }
 
     /**

@@ -4,6 +4,7 @@ import com.uva.aa.testers.PolicyEvaluationTester;
 import com.uva.aa.testers.PolicyIterationTester;
 import com.uva.aa.testers.SimpleGameTester;
 import com.uva.aa.testers.Tester;
+import com.uva.aa.testers.ValueIterationGameTester;
 
 /**
  * Prepares the game(s) and starts the required actions.
