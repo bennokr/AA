@@ -16,7 +16,7 @@ public class ValueIterationGameTester extends GameTester {
 
         // Adds the two required agents
         game.addPrey(5, 5);
-        game.addPolicyIteratingPredator(0, 0);
+        game.addValueIteratingPredator(0, 0);
 
         return game;
     }

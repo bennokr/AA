@@ -15,23 +15,19 @@ import com.uva.aa.enums.Action;
 /**
  * A policy manager with the goal of improving a policy. Provides several methods for doing so.
  * 
- * POLICY EVALUATION (Sutton, Barto, 4.1)
- *      provided by the method evaluatePolicy()
- * POLICY IMPROVEMENT (Sutton, Barto, 4.2)
- *      provided by the method improvePolicy()
- * POLICY ITERATION (Sutton, Barto, 4.3)
- *      provided by the method iteratePolicy(), which uses policy evaluation and improvement
- * VALUE ITERATION (Sutton, Barto, 4.4)
- *      provided by iterateValue(), which uses a modified policy evaluation 
+ * POLICY EVALUATION (Sutton, Barto, 4.1) provided by the method evaluatePolicy() POLICY IMPROVEMENT (Sutton, Barto,
+ * 4.2) provided by the method improvePolicy() POLICY ITERATION (Sutton, Barto, 4.3) provided by the method
+ * iteratePolicy(), which uses policy evaluation and improvement VALUE ITERATION (Sutton, Barto, 4.4) provided by
+ * iterateValue(), which uses a modified policy evaluation
  * 
  */
 public class PolicyManager {
 
     /** The threshold that determines at what point we stop our evaluation */
-    private static final double ERROR_THRESHOLD_THETA = 0.001;
+    public static final double ERROR_THRESHOLD_THETA = 0.001;
 
     /** The discount factor of the bellman equation */
-    private static final double DISCOUNT_FACTOR_GAMMA = 0.8;
+    public static final double DISCOUNT_FACTOR_GAMMA = 0.8;
 
     /** The policy evaluation to evaluate */
     private final Policy mPolicy;
@@ -45,8 +41,11 @@ public class PolicyManager {
     /** The prey which the agent chases */
     private final PreyAgent mPrey;
 
-    /** The number of iterations of the latest evaluation */
-    private int mIterations;
+    /** The number of iterations of the latest state value update */
+    private int mUpdateStateValueIterations;
+
+    /** The total number of iterations of the latest state value update for a policy iteration */
+    private int mPolicyUpdateStateValueIterations;
 
     /**
      * Prepares the policy evaluator.
@@ -73,6 +72,8 @@ public class PolicyManager {
      * Only supports one predator and prey.
      */
     public void iteratePolicy() {
+        mPolicyUpdateStateValueIterations = 0;
+
         boolean policyStable = false;
         while (!policyStable) {
             evaluatePolicy();
@@ -102,7 +103,7 @@ public class PolicyManager {
         for (final State state : mEnvironment.getPossibleStates(true)) {
             mPolicy.setStateValue(state, 0);
         }
-        
+
         // Modify the policy's state values
         updateStateValues(false);
     }
@@ -116,7 +117,7 @@ public class PolicyManager {
     private void updateStateValues(final boolean useMaxInsteadOfSum) {
 
         // Reset the number of iterations
-        mIterations = 0;
+        mUpdateStateValueIterations = 0;
 
         // We use this variable to determine the changes we have made during a loop
         double maxValErrDelta;
@@ -140,18 +141,28 @@ public class PolicyManager {
             }
 
             // Keep track of how many iterations we've done
-            ++mIterations;
+            ++mUpdateStateValueIterations;
+            ++mPolicyUpdateStateValueIterations;
 
         } while (maxValErrDelta > ERROR_THRESHOLD_THETA);
     }
 
     /**
-     * Retrieves the number of iterations performed in the last evaluation.
+     * Retrieves the total number of iterations of the latest state value update.
      * 
      * @return The number of iterations
      */
-    public int getNumberOfIterations() {
-        return mIterations;
+    public int getUpdateStateValueIterations() {
+        return mUpdateStateValueIterations;
+    }
+
+    /**
+     * Retrieves the total number of iterations of the latest state value update for a policy iteration.
+     * 
+     * @return The number of iterations
+     */
+    public int getPolicyUpdateStateValueIterations() {
+        return mPolicyUpdateStateValueIterations;
     }
 
     /**
@@ -174,7 +185,7 @@ public class PolicyManager {
             final List<State> possibleNextStates = new ArrayList<State>();
             final Location nextPredatorLocation = predatorAction.getLocation(predatorCurrLocation);
 
-            if (nextPredatorLocation == preyCurrLocation) {
+            if (nextPredatorLocation.equals(preyCurrLocation)) {
                 // If the predator catches the prey with its action, there is only one possible next state
                 possibleNextStates.add(State.buildState(mPredator, nextPredatorLocation, mPrey, null));
 
@@ -193,10 +204,13 @@ public class PolicyManager {
                 innerSum += getActionValue(state, nextState, predatorAction);
             }
 
-            // Get pi(s,a)
-            final double actionProbability = mPolicy.getActionProbability(state, predatorAction);
-            final double actionValue = actionProbability * innerSum;
-            
+            // Determine the value of this action
+            double actionValue = innerSum;
+            if (!getMaxInsteadOfSum) {
+                // When we want the maximum instead of the sum, don't care about pi(s,a)
+                actionValue *= mPolicy.getActionProbability(state, predatorAction);
+            }
+
             // Outer sum of the Bellman equation
             if (getMaxInsteadOfSum) {
                 stateValue = Math.max(stateValue, actionValue);
