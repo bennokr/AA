@@ -304,30 +304,15 @@ public class PolicyManager {
         // In the inner sum: iterate over all the possible next states
         double innerSum = 0;
         for (final State nextState : possibleNextStates) {
-            innerSum += getActionValue(initialState, nextState, predatorAction);
+            final double transitionProbability = mPredator.getTransitionProbability(initialState, nextState,
+                    predatorAction);
+            final double immediateReward = mPredator.getImmediateReward(initialState, nextState, predatorAction);
+            final double nextStateValue = mPolicy.getStateValue(nextState);
+
+            innerSum += transitionProbability * (immediateReward + DISCOUNT_FACTOR_GAMMA * nextStateValue);
         }
 
         return innerSum;
-    }
-
-    /**
-     * Retrieves the value of the action when performing it to get from one state to the other.
-     * 
-     * @param initialState
-     *            The initial state
-     * @param resultingState
-     *            The resulting state
-     * @param action
-     *            This agent's action
-     * 
-     * @return The value of the action based on P[R+gamma*V(s')]
-     */
-    private double getActionValue(final State initialState, final State resultingState, final Action action) {
-        final double transitionProbability = mPredator.getTransitionProbability(initialState, resultingState, action);
-        final double immediateReward = mPredator.getImmediateReward(initialState, resultingState, action);
-        final double nextStateValue = mPolicy.getStateValue(resultingState);
-
-        return transitionProbability * (immediateReward + DISCOUNT_FACTOR_GAMMA * nextStateValue);
     }
 
     /**
