@@ -1,7 +1,9 @@
 package com.uva.aa.testers;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.util.Locale;
 
 import com.uva.aa.Environment;
 import com.uva.aa.Game;
@@ -15,24 +17,27 @@ import com.uva.aa.policies.PolicyManager;
 /**
  * Runs a simple test with the default predator and prey behaviour.
  */
-public class ValueIterationStateTester {
+public abstract class StateValueTester {
 
     /** The environment of the game */
-    final Environment mEnvironment;
+    private final Environment mEnvironment;
 
     /** The predator within the game */
-    final PredatorAgent mPredator;
+    private final PredatorAgent mPredator;
 
     /** The prey within the game */
-    final PreyAgent mPrey;
+    private final PreyAgent mPrey;
 
     /** The policy of the predator */
-    final Policy mPolicy;
+    private final Policy mPolicy;
+
+    /** Whether the printing should be done for copy-pasting to LaTeX */
+    private boolean mPrintForLatex = false;
 
     /**
      * Prepares a new policy evaluation test by creating a game and setting up the agents.
      */
-    public ValueIterationStateTester() {
+    public StateValueTester() {
         // Creates a game
         final Game game = new Game(11, 11);
 
@@ -52,19 +57,48 @@ public class ValueIterationStateTester {
         mPolicy = mPredator.getPolicy();
     }
 
+    /**
+     * Uses the policy manager to prepare the state space.
+     * 
+     * @param policyManager
+     *            The policy manager for the predator
+     */
+    protected abstract void improvePolicy(PolicyManager policyManager);
+
+    /**
+     * Retrieves how many iterations have passed for the policy improvement.
+     * 
+     * @param policyManager
+     *            The policy manager for the predator
+     */
+    protected abstract int getIterations(PolicyManager policyManager);
+
+    /**
+     * Performs a new test and prints the state values for Prey(5,5).
+     */
     public void performTest() {
         // Evaluate the (random) policy of the predator
         final PolicyManager policyManager = new PolicyManager(mPolicy, mEnvironment);
-        policyManager.iterateValues();
+        improvePolicy(policyManager);
 
-        // Print some state-values
+        // Print all state-values
         for (int x = 0; x < mEnvironment.getWidth(); ++x) {
+            if (mPrintForLatex) {
+                System.out.print(x);
+            }
+
             for (int y = 0; y < mEnvironment.getHeight(); ++y) {
                 printStateValues(new Location(mEnvironment, x, y), new Location(mEnvironment, 5, 5));
             }
+
+            if (mPrintForLatex) {
+                System.out.print(" \\\\");
+                System.out.println();
+                System.out.print("\\hline");
+            }
             System.out.println();
         }
-        System.out.println("The amount of iterations taken is " + policyManager.getUpdateStateValueIterations());
+        System.out.println("The amount of iterations taken is " + getIterations(policyManager));
     }
 
     /**
@@ -81,8 +115,11 @@ public class ValueIterationStateTester {
 
         // Since we have evaluated the policy, we can now ask for the state value
         final double stateValue = mPolicy.getStateValue(state);
-        
-        final NumberFormat formatter = new DecimalFormat("00.00000");
-        System.out.print(formatter.format(stateValue) + "    ");
+
+        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.getDefault());
+        otherSymbols.setDecimalSeparator('.');
+        otherSymbols.setGroupingSeparator(',');
+        final NumberFormat formatter = new DecimalFormat((mPrintForLatex ? "#" : "0") + "0.000", otherSymbols);
+        System.out.print((mPrintForLatex ? " & " : "    ") + formatter.format(stateValue));
     }
 }

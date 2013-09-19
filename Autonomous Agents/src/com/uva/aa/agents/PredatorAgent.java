@@ -39,17 +39,20 @@ public class PredatorAgent extends Agent {
      */
     public double getTransitionProbability(final State initialState, final State resultingState, final Action action) {
         final Location nextPredatorLocation = resultingState.getAgentLocation(this);
-        
-        // The moves should be deterministic
+
+        // Verify that the action is possible
         if (nextPredatorLocation.equals(action.getLocation(initialState.getAgentLocation(this)))) {
             // We assume one prey and one predator!
             final PreyAgent prey = getEnvironment().getPreys().get(0);
+
             // Check if the prey is alive
             if (resultingState.getAgentLocation(prey) != null) {
+                // Return a probability based on the prey's movement
                 final Location initialPreyLocation = initialState.getAgentLocation(prey);
                 final State initialPreyState = State.buildState(this, nextPredatorLocation, prey, initialPreyLocation);
                 return prey.getTransitionProbability(initialPreyState, resultingState, null);
             } else {
+                // We'll catch the prey with this move
                 return 1.0;
             }
         } else {

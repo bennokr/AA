@@ -6,7 +6,7 @@ import java.util.LinkedList;
 /**
  * A tester class that performs multiple tests and finds the mean average.
  */
-public abstract class Tester {
+public abstract class MeanTester {
 
     /**
      * Performs the test once and returns the result after it has finished.

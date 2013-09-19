@@ -13,21 +13,24 @@ import com.uva.aa.agents.PreyAgent;
 import com.uva.aa.enums.Action;
 
 /**
- * A policy manager with the goal of improving a policy. Provides several methods for doing so.
+ * A policy manager with the goal of improving a policy. Provides several methods for doing so:
  * 
- * POLICY EVALUATION (Sutton, Barto, 4.1) provided by the method evaluatePolicy() POLICY IMPROVEMENT (Sutton, Barto,
- * 4.2) provided by the method improvePolicy() POLICY ITERATION (Sutton, Barto, 4.3) provided by the method
- * iteratePolicy(), which uses policy evaluation and improvement VALUE ITERATION (Sutton, Barto, 4.4) provided by
- * iterateValue(), which uses a modified policy evaluation
+ * POLICY EVALUATION (Sutton, Barto, 4.1) provided by the method evaluatePolicy().
  * 
+ * POLICY IMPROVEMENT (Sutton, Barto, 4.2) provided by the method improvePolicy().
+ * 
+ * POLICY ITERATION (Sutton, Barto, 4.3) provided by the method iteratePolicy(), which uses policy evaluation and
+ * improvement.
+ * 
+ * VALUE ITERATION (Sutton, Barto, 4.4) provided by iterateValue(), which uses a modified policy evaluation.
  */
 public class PolicyManager {
 
     /** The threshold that determines at what point we stop our evaluation */
-    public static final double ERROR_THRESHOLD_THETA = 0.001;
+    public static final double ERROR_THRESHOLD_THETA = 0.00001;
 
     /** The discount factor of the bellman equation */
-    public static final double DISCOUNT_FACTOR_GAMMA = 0.8;
+    public static final double DISCOUNT_FACTOR_GAMMA = 0.9;
 
     /** The policy evaluation to evaluate */
     private final Policy mPolicy;
@@ -46,7 +49,7 @@ public class PolicyManager {
 
     /** The total number of iterations of the latest state value update for a policy iteration */
     private int mPolicyUpdateStateValueIterations;
-    
+
     /** The number of iterations of the policy iteration (evaluation + improvement = 1 iteration) */
     private int mPolicyIterationIterations;
 
@@ -84,6 +87,19 @@ public class PolicyManager {
             policyStable = improvePolicy();
             mPolicyIterationIterations++;
         }
+    }
+
+    /**
+     * Value iteration looks like Policy Evaluation, but we maximize wrt action-values to create an optimal policy.
+     */
+    public void iterateValues() {
+        // Prepare all possible states (including terminal)
+        for (final State state : mEnvironment.getPossibleStates(true)) {
+            mPolicy.setStateValue(state, 0);
+        }
+
+        updateStateValues(true);
+        improvePolicy();
     }
 
     /**
@@ -138,7 +154,12 @@ public class PolicyManager {
                 final double previousStateValue = mPolicy.getStateValue(state);
 
                 // Replace the old values in place (like suggested in Sutton, Barto, Chapter 4.1)
-                final double updatedStateValue = getUpdatedStateValue(state, useMaxInsteadOfSum);
+                double updatedStateValue;
+                if (useMaxInsteadOfSum) {
+                    updatedStateValue = getUpdatedStateValueMax(state);
+                } else {
+                    updatedStateValue = getUpdatedStateValueSum(state);
+                }
                 mPolicy.setStateValue(state, updatedStateValue);
 
                 // Update the maximum error we have
@@ -150,6 +171,163 @@ public class PolicyManager {
             ++mPolicyUpdateStateValueIterations;
 
         } while (maxValErrDelta > ERROR_THRESHOLD_THETA);
+    }
+
+    /**
+     * Returns the next estimation of the state-value based on the Bellmann equation using a weighted sum.
+     * 
+     * @param state
+     *            The state for which we want to estimate the value
+     * 
+     * @return The (next) estimation of the value of the given state
+     */
+    private double getUpdatedStateValueSum(final State state) {
+        // In the outer summation: iterate over all possible actions the predator can take
+        double stateValue = 0;
+        for (final Action predatorAction : Action.values()) {
+            // When we want the maximum instead of the sum, don't care about pi(s,a)
+            double actionValue = mPolicy.getActionProbability(state, predatorAction)
+                    * getInnerSum(state, predatorAction);
+
+            // Outer sum of the Bellman equation
+            stateValue += actionValue;
+        }
+
+        return stateValue;
+    }
+
+    /**
+     * Returns the next estimation of the state-value based on the Bellmann equation using the maximum values.
+     * 
+     * @param state
+     *            The state for which we want to estimate the value
+     * 
+     * @return The (next) estimation of the value of the given state
+     */
+    private double getUpdatedStateValueMax(final State state) {
+        // In the outer summation: iterate over all possible actions the predator can take
+        double stateValue = 0;
+        for (final Action predatorAction : Action.values()) {
+            // Determine the value of this action
+            stateValue = Math.max(stateValue, getInnerSum(state, predatorAction));
+        }
+
+        return stateValue;
+    }
+
+    /**
+     * Adjusts the policy in every state to the best action according to the current state value function.
+     * 
+     * Only supports one predator and prey.
+     * 
+     * @return True if the policy has not improved, false if it remained the same
+     */
+    public boolean improvePolicy() {
+        boolean policyStable = true;
+
+        // Update actions the values for each state
+        for (final Entry<State, StatePolicyProperties> stateMapping : mPolicy.getStateMap().entrySet()) {
+            final State state = stateMapping.getKey();
+            final StatePolicyProperties properties = stateMapping.getValue();
+
+            // Determine the best actions for the state
+            final List<Action> bestActions = new ArrayList<Action>();
+            double bestActionValue = 0;
+            for (final Entry<Action, Double> actionProbability : properties.getActionProbabilities().entrySet()) {
+                final Action predatorAction = actionProbability.getKey();
+
+                // Note the action's value based on the next states' quality through the inner sum
+                final double actionValue = getInnerSum(state, predatorAction);
+
+                if (actionValue > bestActionValue) {
+                    // Clear the list of best actions if we found something better
+                    bestActions.clear();
+                    bestActionValue = actionValue;
+                }
+                if (actionValue >= bestActionValue) {
+                    // Append the list of best actions if we found an action at least just as good
+                    bestActions.add(predatorAction);
+                }
+            }
+
+            // Save the action probabilities for the current state to compare them after changing the policy
+            HashMap<Action, Double> tempActionProbabilities = new HashMap<Action, Double>(
+                    properties.getActionProbabilities());
+
+            // Update the action probabilities based on the best values
+            properties.clearActionProbabilities();
+            final double bestActionProbability = 1.0 / bestActions.size();
+            for (final Action bestAction : bestActions) {
+                properties.setActionProbability(bestAction, bestActionProbability);
+            }
+
+            // Check whether we've changed the action probabilities for the current state
+            if (!properties.getActionProbabilities().equals(tempActionProbabilities)) {
+                policyStable = false;
+            }
+        }
+
+        return policyStable;
+    }
+
+    /**
+     * Calculates the inner sum of DP, in the form of sum_s'{P[R+gamma*V(s')]}. The result is not weighted according to
+     * probability.
+     * 
+     * @param initialState
+     *            The state before the action is performed
+     * @param predatorAction
+     *            The action the predator will perform in the given state
+     * 
+     * @return The value of the inner sum
+     */
+    private double getInnerSum(final State initialState, final Action predatorAction) {
+        final List<State> possibleNextStates = new ArrayList<State>();
+        final Location predatorLocation = initialState.getAgentLocation(mPredator);
+        final Location preyLocation = initialState.getAgentLocation(mPrey);
+        final Location nextPredatorLocation = predatorAction.getLocation(predatorLocation);
+
+        if (nextPredatorLocation.equals(preyLocation)) {
+            // If the predator catches the prey with its action, there is only one possible next state
+            possibleNextStates.add(State.buildState(mPredator, nextPredatorLocation, mPrey, null));
+
+        } else {
+            // If the predator doesn't catch the prey, there are five possible actions we have to iterate over
+            for (final Action preyAction : Action.values()) {
+                final Location nextPreyLocation = preyAction.getLocation(preyLocation);
+                if (!nextPreyLocation.equals(nextPredatorLocation)) {
+                    possibleNextStates.add(State.buildState(mPredator, nextPredatorLocation, mPrey, nextPreyLocation));
+                }
+            }
+        }
+
+        // In the inner sum: iterate over all the possible next states
+        double innerSum = 0;
+        for (final State nextState : possibleNextStates) {
+            innerSum += getActionValue(initialState, nextState, predatorAction);
+        }
+
+        return innerSum;
+    }
+
+    /**
+     * Retrieves the value of the action when performing it to get from one state to the other.
+     * 
+     * @param initialState
+     *            The initial state
+     * @param resultingState
+     *            The resulting state
+     * @param action
+     *            This agent's action
+     * 
+     * @return The value of the action based on P[R+gamma*V(s')]
+     */
+    private double getActionValue(final State initialState, final State resultingState, final Action action) {
+        final double transitionProbability = mPredator.getTransitionProbability(initialState, resultingState, action);
+        final double immediateReward = mPredator.getImmediateReward(initialState, resultingState, action);
+        final double nextStateValue = mPolicy.getStateValue(resultingState);
+
+        return transitionProbability * (immediateReward + DISCOUNT_FACTOR_GAMMA * nextStateValue);
     }
 
     /**
@@ -178,180 +356,6 @@ public class PolicyManager {
      */
     public int getPolicyIterationIterations() {
         return mPolicyIterationIterations;
-    }
-
-    /**
-     * Returns the next estimation of the state-value based on the Bellmann equation.
-     * 
-     * @param state
-     *            The state for which we want to estimate the value
-     * @param getMax
-     *            True if the state value should be the maximum of action values instead of the sum
-     * 
-     * @return The (next) estimation of the value of the given state
-     */
-    private double getUpdatedStateValue(final State state, final boolean getMaxInsteadOfSum) {
-        final Location predatorCurrLocation = state.getAgentLocation(mPredator);
-        final Location preyCurrLocation = state.getAgentLocation(mPrey);
-
-        // In the outer summation: iterate over all possible actions the predator can take
-        double stateValue = 0;
-        for (final Action predatorAction : Action.values()) {
-            final List<State> possibleNextStates = new ArrayList<State>();
-            final Location nextPredatorLocation = predatorAction.getLocation(predatorCurrLocation);
-
-            if (nextPredatorLocation.equals(preyCurrLocation)) {
-                // If the predator catches the prey with its action, there is only one possible next state
-                possibleNextStates.add(State.buildState(mPredator, nextPredatorLocation, mPrey, null));
-
-            } else {
-                // If the predator doesn't catch the prey, there are five possible actions we have to iterate over (if
-                // the prey cannot perform an action, the possibility of this will be 0, so we don't care about this)
-                for (final Action preyAction : Action.values()) {
-                    possibleNextStates.add(State.buildState(mPredator, nextPredatorLocation, mPrey,
-                            preyAction.getLocation(preyCurrLocation)));
-                }
-            }
-
-            // In the inner sum: iterate over all the possible next states
-            double innerSum = 0;
-            for (final State nextState : possibleNextStates) {
-                innerSum += getActionValue(state, nextState, predatorAction);
-            }
-
-            // Determine the value of this action
-            double actionValue = innerSum;
-            if (!getMaxInsteadOfSum) {
-                // When we want the maximum instead of the sum, don't care about pi(s,a)
-                actionValue *= mPolicy.getActionProbability(state, predatorAction);
-            }
-
-            // Outer sum of the Bellman equation
-            if (getMaxInsteadOfSum) {
-                stateValue = Math.max(stateValue, actionValue);
-            } else {
-                stateValue += actionValue;
-            }
-        }
-
-        return stateValue;
-    }
-
-    /**
-     * Adjusts the policy in every state to the best action according to the current state value function.
-     * 
-     * Only supports one predator and prey.
-     * 
-     * @return True if the policy has not improved, false if it remained the same
-     */
-    public boolean improvePolicy() {
-        boolean policyStable = true;
-        
-        // Update actions the values for each state
-        for (final Entry<State, StatePolicyProperties> stateMapping : mPolicy.getStateMap().entrySet()) {
-            final State state = stateMapping.getKey();
-            final StatePolicyProperties properties = stateMapping.getValue();
-
-            final Location predatorLocation = state.getAgentLocation(mPredator);
-            final Location preyLocation = state.getAgentLocation(mPrey);
-
-            // Determine the best actions for the state
-            final List<Action> bestActions = new ArrayList<Action>();
-            double bestActionValue = 0;
-            for (final Entry<Action, Double> actionProbability : properties.getActionProbabilities().entrySet()) {
-                final Action action = actionProbability.getKey();
-
-//                // Find the state resulting of performing the action
-//                final Location nextPredatorLocation = action.getLocation(predatorLocation);
-//                final State nextState = State.buildState(mPredator, nextPredatorLocation, mPrey, preyLocation);
-//
-//                // Note the next state's value
-//                final double actionValue = getActionValue(state, nextState, action);
-                
-             // Find the states resulting of performing the action
-                final List<State> possibleNextStates = new ArrayList<State>();
-                final Location nextPredatorLocation = action.getLocation(predatorLocation);
-
-                if (nextPredatorLocation.equals(preyLocation)) {
-                    // If the predator catches the prey with its action, there is only one possible next state
-                    possibleNextStates.add(State.buildState(mPredator, nextPredatorLocation, mPrey, null));
-
-                } else {
-                    // If the predator doesn't catch the prey, there are five possible actions we have to iterate over
-                    // (if
-                    // the prey cannot perform an action, the possibility of this will be 0, so we don't care about
-                    // this)
-                    for (final Action preyAction : Action.values()) {
-                        possibleNextStates.add(State.buildState(mPredator, nextPredatorLocation, mPrey,
-                                preyAction.getLocation(preyLocation)));
-                    }
-                }
-
-                double innerSum = 0;
-                for (final State nextState : possibleNextStates) {
-                    innerSum += getActionValue(state, nextState, action);
-                }
-
-                // Note the next state's value
-                final double actionValue = innerSum;
-
-                if (actionValue > bestActionValue) {
-                    // Clear the list of best actions if we found something better
-                    bestActions.clear();
-                    bestActionValue = actionValue;
-                }
-                if (actionValue >= bestActionValue) {
-                    // Append the list of best actions if we found an action at least just as good
-                    bestActions.add(action);
-                }
-            }
-
-            // Save the action probabilities for the current state to compare them after changing the policy
-            HashMap<Action, Double> tempActionProbabilities = new HashMap<Action, Double>(
-                    properties.getActionProbabilities());
-
-            // Update the action probabilities based on the best values
-            properties.clearActionProbabilities();
-            final double bestActionProbability = 1.0 / bestActions.size();
-            for (final Action bestAction : bestActions) {
-                properties.setActionProbability(bestAction, bestActionProbability);
-            }
-
-            // Check whether we've changed the action probabilities for the current state
-            if (!properties.getActionProbabilities().equals(tempActionProbabilities)) {
-                policyStable = false;
-            }
-        }
-
-        return policyStable;
-    }
-
-    /**
-     * Value iteration looks like Policy Evaluation, but we maximize wrt action-values to create an optimal policy.
-     */
-    public void iterateValues() {
-        updateStateValues(true);
-        improvePolicy();
-    }
-
-    /**
-     * Retrieves the value of the action when performing it to get from one state to the other.
-     * 
-     * @param initialState
-     *            The initial state
-     * @param resultingState
-     *            The resulting state
-     * @param action
-     *            This agent's action
-     * 
-     * @return The value of the action based on P[R+gamma*V(s')]
-     */
-    private double getActionValue(final State initialState, final State resultingState, final Action action) {
-        final double transitionProbability = mPredator.getTransitionProbability(initialState, resultingState, action);
-        final double immediateReward = mPredator.getImmediateReward(initialState, resultingState, action);
-        final double nextStateValue = mPolicy.getStateValue(resultingState);
-
-        return transitionProbability * (immediateReward + DISCOUNT_FACTOR_GAMMA * nextStateValue);
     }
 
 }

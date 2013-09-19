@@ -5,7 +5,7 @@ import com.uva.aa.Game;
 /**
  * A tester class that performs multiple tests and finds the mean average.
  */
-public abstract class GameTester extends Tester {
+public abstract class GameTester extends MeanTester {
     
     /** The game to test */
     final Game mGame;

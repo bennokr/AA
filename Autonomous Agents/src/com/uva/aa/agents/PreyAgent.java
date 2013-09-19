@@ -60,14 +60,15 @@ public class PreyAgent extends Agent {
      * Has a 0.8 chance of waiting, and a spread chance of moving to a free adjacent space.
      */
     @Override
-    public double getTransitionProbability(State initialState, State resultingState, Action action) {
+    public double getTransitionProbability(final State initialState, final State resultingState, final Action action) {
+        final Location resultingPreyLocation = resultingState.getAgentLocation(this);
         // Return the probability of the prey moving to its location in the resulting state from where it is in
         // the initial state
         for (final Action possibleAction : Action.values()) {
-            // check if the prey moved in this direction
-            if (possibleAction.getLocation(initialState.getAgentLocation(this)).equals(
-                    resultingState.getAgentLocation(this))) {
-                // return the chance we moved here
+            // Check if the prey moved in this direction
+            final Location newLocation = possibleAction.getLocation(initialState.getAgentLocation(this));
+            if (newLocation.equals(resultingPreyLocation)) {
+                // Return the chance we moved here
                 return mPolicy.getActionProbability(initialState, possibleAction);
             }
         }
@@ -80,7 +81,7 @@ public class PreyAgent extends Agent {
      * Preys don't get rewards, thus this always returns 0.
      */
     @Override
-    public double getImmediateReward(State initialState, State resultingState, Action action) {
+    public double getImmediateReward(final State initialState, final State resultingState, final Action action) {
         return 0;
     }
 }
