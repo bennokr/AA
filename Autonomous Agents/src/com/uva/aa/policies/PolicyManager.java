@@ -261,12 +261,39 @@ public class PolicyManager {
             for (final Entry<Action, Double> actionProbability : properties.getActionProbabilities().entrySet()) {
                 final Action action = actionProbability.getKey();
 
-                // Find the state resulting of performing the action
+//                // Find the state resulting of performing the action
+//                final Location nextPredatorLocation = action.getLocation(predatorLocation);
+//                final State nextState = State.buildState(mPredator, nextPredatorLocation, mPrey, preyLocation);
+//
+//                // Note the next state's value
+//                final double actionValue = getActionValue(state, nextState, action);
+                
+             // Find the states resulting of performing the action
+                final List<State> possibleNextStates = new ArrayList<State>();
                 final Location nextPredatorLocation = action.getLocation(predatorLocation);
-                final State nextState = State.buildState(mPredator, nextPredatorLocation, mPrey, preyLocation);
+
+                if (nextPredatorLocation.equals(preyLocation)) {
+                    // If the predator catches the prey with its action, there is only one possible next state
+                    possibleNextStates.add(State.buildState(mPredator, nextPredatorLocation, mPrey, null));
+
+                } else {
+                    // If the predator doesn't catch the prey, there are five possible actions we have to iterate over
+                    // (if
+                    // the prey cannot perform an action, the possibility of this will be 0, so we don't care about
+                    // this)
+                    for (final Action preyAction : Action.values()) {
+                        possibleNextStates.add(State.buildState(mPredator, nextPredatorLocation, mPrey,
+                                preyAction.getLocation(preyLocation)));
+                    }
+                }
+
+                double innerSum = 0;
+                for (final State nextState : possibleNextStates) {
+                    innerSum += getActionValue(state, nextState, action);
+                }
 
                 // Note the next state's value
-                final double actionValue = getActionValue(state, nextState, action);
+                final double actionValue = innerSum;
 
                 if (actionValue > bestActionValue) {
                     // Clear the list of best actions if we found something better
