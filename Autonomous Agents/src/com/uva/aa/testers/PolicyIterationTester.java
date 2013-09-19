@@ -7,7 +7,6 @@ import com.uva.aa.Environment;
 import com.uva.aa.Game;
 import com.uva.aa.Location;
 import com.uva.aa.State;
-import com.uva.aa.agents.PolicyIteratingPredatorAgent;
 import com.uva.aa.agents.PredatorAgent;
 import com.uva.aa.agents.PreyAgent;
 import com.uva.aa.policies.Policy;

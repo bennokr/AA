@@ -29,14 +29,14 @@ public class Initialiser {
 //        policyEvaluationTester.performTest();
         
         // Task 1.3: Policy iteration
-      final PolicyIterationTester policyIterationTester = new PolicyIterationTester();
-      policyIterationTester.performTest();
+//        final PolicyIterationTester policyIterationTester = new PolicyIterationTester();
+//        policyIterationTester.performTest();
      
         // Task 1.4: Value iteration
 //      final Tester valueIterationGameTester = new ValueIterationGameTester();
 //      valueIterationGameTester.runTests(100000);
-//        final ValueIterationStateTester valueIterationTester = new ValueIterationStateTester();
-//        valueIterationTester.performTest();
+        final ValueIterationStateTester valueIterationTester = new ValueIterationStateTester();
+        valueIterationTester.performTest();
         
         // Task 1.5: State-space reduction
 //        final StateSpaceTester stateSpaceTester = new StateSpaceTester();
