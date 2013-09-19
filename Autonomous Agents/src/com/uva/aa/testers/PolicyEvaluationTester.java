@@ -59,7 +59,7 @@ public class PolicyEvaluationTester {
         printStateValues(new Location(mEnvironment, 2, 3), new Location(mEnvironment, 5, 4));
         printStateValues(new Location(mEnvironment, 2, 10), new Location(mEnvironment, 10, 0));
         printStateValues(new Location(mEnvironment, 10, 10), new Location(mEnvironment, 0, 0));
-        System.out.println("The amount of iterations taken is " + policyManager.getUpdateStateValueIterations());
+        System.out.println("The amount of iterations of the policy evaluation taken is " + policyManager.getPolicyUpdateStateValueIterations());
     }
 
     /**

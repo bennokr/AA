@@ -47,6 +47,12 @@ public class PolicyManager {
     /** The total number of iterations of the latest state value update for a policy iteration */
     private int mPolicyUpdateStateValueIterations;
 
+    /** The number of iterations of the latest policy improvement */
+    private int mPolicyImprovementIterations;
+
+    /** The number of iterations of the policy iteration (evaluation + improvement = 1 iteration) */
+    private int mPolicyIterationIterations;
+
     /**
      * Prepares the policy evaluator.
      * 
@@ -73,11 +79,13 @@ public class PolicyManager {
      */
     public void iteratePolicy() {
         mPolicyUpdateStateValueIterations = 0;
+        mPolicyIterationIterations = 0;
 
         boolean policyStable = false;
         while (!policyStable) {
             evaluatePolicy();
             policyStable = improvePolicy();
+            mPolicyIterationIterations++;
         }
     }
 
@@ -166,6 +174,25 @@ public class PolicyManager {
     }
 
     /**
+     * Retrieves the number of iterations of the latest policy improvement.
+     * 
+     * @return The number of iterations
+     */
+    public int getPolicyImprovementIterations() {
+        return mPolicyImprovementIterations;
+    }
+
+    /**
+     * Retrieves the number of iterations of the latest policy iteration (policy evaluation + policy improbement = 1
+     * iteration).
+     * 
+     * @return The number of iterations
+     */
+    public int getPolicyIterationIterations() {
+        return mPolicyIterationIterations;
+    }
+
+    /**
      * Returns the next estimation of the state-value based on the Bellmann equation.
      * 
      * @param state
@@ -232,6 +259,8 @@ public class PolicyManager {
     public boolean improvePolicy() {
         boolean policyStable = true;
 
+        mPolicyImprovementIterations = 0;
+        
         // Update actions the values for each state
         for (final Entry<State, StatePolicyProperties> stateMapping : mPolicy.getStateMap().entrySet()) {
             final State state = stateMapping.getKey();

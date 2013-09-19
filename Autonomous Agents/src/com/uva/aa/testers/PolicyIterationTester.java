@@ -1,13 +1,9 @@
 package com.uva.aa.testers;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.uva.aa.Environment;
 import com.uva.aa.Game;
 import com.uva.aa.Location;
 import com.uva.aa.State;
-import com.uva.aa.agents.Agent;
 import com.uva.aa.agents.PolicyIteratingPredatorAgent;
 import com.uva.aa.agents.PredatorAgent;
 import com.uva.aa.agents.PreyAgent;
@@ -45,13 +41,16 @@ public class PolicyIterationTester {
 
         mPolicyManager = ((PolicyIteratingPredatorAgent) mPredator).getPolicyManager();
 
+    }
+
+    public void performTest() {
         for (int i = 0; i <= 10; i++) {
             for (int j = 0; j <= 10; j++) {
                 printStateValues(new Location(mEnvironment, i, j), new Location(mEnvironment, 5, 5));
             }
         }
     }
-
+    
     /**
      * Prints the state value for a given predator-location and prey-location
      * 
@@ -69,6 +68,6 @@ public class PolicyIterationTester {
 
         System.out.println("The value for the state Predator(" + predatorLocation.getX() + ","
                 + predatorLocation.getY() + "), Prey(" + preyLocation.getX() + "," + preyLocation.getY() + ") is "
-                + stateValue + " and the number of iterations was " + mPolicyManager.getNumberOfIterations());
+                + stateValue + " and the number of iterations was "+mPolicyManager.getPolicyIterationIterations());
     }
 }
