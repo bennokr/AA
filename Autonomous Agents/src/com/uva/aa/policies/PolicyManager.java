@@ -15,14 +15,21 @@ import com.uva.aa.enums.Action;
 /**
  * A policy manager with the goal of improving a policy. Provides several methods for doing so:
  * 
- * POLICY EVALUATION (Sutton, Barto, 4.1) provided by the method evaluatePolicy().
+ * POLICY EVALUATION (Sutton, Barto, 4.1) provided by the method evaluatePolicy(). In that method, we initialize V(s)=0
+ * for all s in S^+ (all states, including terminal states). The actual loop can be called by the function
+ * updatedStateValues(). The reason we did this is that we can then easily re-use that part for later exercises. In the
+ * policy evaluation, we at one point updated the value of a state incrementally using the Bellman equation
+ * V(s)<-sum_{a}[policy(s,a)*sum_{s'}P_{s,s'}^{a}*(R_{s,s'}^{a}+gamma*V(s'))]. This calculation is implemented in the
+ * method getUpdatedStateValue().
  * 
  * POLICY IMPROVEMENT (Sutton, Barto, 4.2) provided by the method improvePolicy().
  * 
- * POLICY ITERATION (Sutton, Barto, 4.3) provided by the method iteratePolicy(), which uses policy evaluation and
- * improvement.
+ * POLICY ITERATION (Sutton, Barto, 4.3) provided by the method iteratePolicy(). Loops over poliva evaluation and policy
+ * improvement, until the improved policy is stable, that is it doesn't change anymore during an improvement step. The
+ * corresponding value function then fulfills the Bellman equation.
  * 
- * VALUE ITERATION (Sutton, Barto, 4.4) provided by iterateValue(), which uses a modified policy evaluation.
+ * VALUE ITERATION (Sutton, Barto, 4.4) provided by iterateValue(). Makes uses of the updateStateValues() which was
+ * implemented for the policy evaluation.
  */
 public class PolicyManager {
 
@@ -30,7 +37,7 @@ public class PolicyManager {
     public static final double ERROR_THRESHOLD_THETA = 0.00001;
 
     /** The discount factor of the bellman equation */
-    public static final double DISCOUNT_FACTOR_GAMMA = 0.9;
+    public static final double DISCOUNT_FACTOR_GAMMA = 0.8;
 
     /** The policy evaluation to evaluate */
     private final Policy mPolicy;
