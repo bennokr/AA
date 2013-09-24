@@ -210,7 +210,7 @@ public class Game {
     }
 
     /**
-     * Resets the game so that it may be ran again.
+     * Resets the game so that it may be ran again. NB: This does not reset policies.
      */
     public void resetGame() {
         switch (mGameState) {

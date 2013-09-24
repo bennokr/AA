@@ -1,6 +1,8 @@
 package com.uva.aa.policies;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import com.uva.aa.State;
@@ -44,6 +46,14 @@ public class Policy {
         return properties;
     }
 
+    /**
+     * Checks if the state is mapped in this policy.
+     * 
+     * @param state
+     *            The state to check
+     * 
+     * @return True if it's mapped, false otherwise
+     */
     public boolean containsState(final State state) {
         return mStateMap.containsKey(state);
     }
@@ -81,10 +91,24 @@ public class Policy {
      * @param action
      *            The action to find the probability for
      * 
-     * @return The value of the state or a default value if not set
+     * @return The probability of the action or a default value if not set
      */
     public double getActionProbability(final State state, final Action action) {
         return getProperties(state).getActionProbability(action);
+    }
+
+    /**
+     * Retrieves the value of an action in the given state
+     * 
+     * @param state
+     *            The state to check the action for
+     * @param action
+     *            The action to find the value for
+     * 
+     * @return The value of the action or a default value if not set
+     */
+    public double getActionValue(final State state, final Action action) {
+        return getProperties(state).getActionValue(action);
     }
 
     /**
@@ -99,6 +123,20 @@ public class Policy {
      */
     public void setActionProbability(final State state, final Action action, final double probability) {
         getProperties(state).setActionProbability(action, probability);
+    }
+
+    /**
+     * Sets the value of an action for the given state.
+     * 
+     * @param state
+     *            The state from which the action is performed
+     * @param action
+     *            The action for which to set the probability
+     * @param value
+     *            The value of the action
+     */
+    public void setActionValue(final State state, final Action action, final double value) {
+        getProperties(state).setActionValue(action, value);
     }
 
     /**
@@ -124,6 +162,50 @@ public class Policy {
     }
 
     /**
+     * Returns a random action based on the value within the given state using epsilon-greedy.
+     * 
+     * @param state
+     *            The state to choose an action for
+     * @param epsilon
+     *            The epsilon to use for epsilon-greedy selection
+     * 
+     * @return A semi-random action or null if no actions are available
+     */
+    public Action getActionBasedOnValueEpsilonGreedy(final State state, final double epsilon) {
+        final double decision = Math.random();
+        final List<Action> allActions = new LinkedList<Action>();
+        final List<Action> bestActions = new LinkedList<Action>();
+        double bestValue = 0;
+        
+        // Determine the best action(s)
+        for (final Map.Entry<Action, Double> actionValue : getProperties(state).getActionValues().entrySet()) {
+            final Action action = actionValue.getKey();
+            final double value = actionValue.getValue();
+            
+            allActions.add(action);
+            
+            if (value > bestValue) {
+                bestActions.clear();
+                bestValue = value;
+            }
+            if (value >= bestValue) {
+                bestActions.add(action);
+            }
+        }
+
+        if (decision > epsilon || allActions.size() == bestActions.size()) {
+            // Pick a best action
+            return bestActions.get((int) Math.floor(Math.random() * bestActions.size()));
+        } else {
+            // Pick a non-best action for exploration
+            for (final Action bestAction : bestActions) {
+                allActions.remove(bestAction);
+            }
+            return allActions.get((int) Math.floor(Math.random() * allActions.size()));
+        }
+    }
+
+    /**
      * Prints out the full mapped contents.
      */
     public void print() {
@@ -138,6 +220,11 @@ public class Policy {
             for (Map.Entry<Action, Double> actionProbability : properties.getActionProbabilities().entrySet()) {
                 System.out.println("    Action probability " + actionProbability.getKey() + " = "
                         + actionProbability.getValue());
+            }
+            // Print the actions with their value
+            for (Map.Entry<Action, Double> actionValue : properties.getActionValues().entrySet()) {
+                System.out.println("    Action value " + actionValue.getKey() + " = "
+                        + actionValue.getValue());
             }
         }
         System.out.println();

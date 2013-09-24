@@ -16,6 +16,9 @@ public class StatePolicyProperties {
     /** The probabilities for actions within the state */
     private Map<Action, Double> mActionProbabilities = new HashMap<Action, Double>();
 
+    /** The values for actions within the state */
+    private Map<Action, Double> mActionValues = new HashMap<Action, Double>();
+
     /**
      * Retrieves the value for the state.
      * 
@@ -45,6 +48,15 @@ public class StatePolicyProperties {
     }
 
     /**
+     * Retrieves the mapping of actions to values
+     * 
+     * @return The actions' value mapping
+     */
+    public Map<Action, Double> getActionValues() {
+        return mActionValues;
+    }
+
+    /**
      * Retrieves the probability for an action within the state.
      * 
      * @param action
@@ -54,6 +66,19 @@ public class StatePolicyProperties {
      */
     public double getActionProbability(final Action action) {
         final Double val = mActionProbabilities.get(action);
+        return (val != null ? val : 0.0);
+    }
+
+    /**
+     * Retrieves the value for an action within the state.
+     * 
+     * @param action
+     *            The action to get the value for
+     * 
+     * @return The action's value
+     */
+    public double getActionValue(final Action action) {
+        final Double val = mActionValues.get(action);
         return (val != null ? val : 0.0);
     }
 
@@ -70,10 +95,29 @@ public class StatePolicyProperties {
     }
 
     /**
+     * Sets the value for an action within the state.
+     * 
+     * @param action
+     *            The action to set the value for
+     * @param value
+     *            The action's value
+     */
+    public void setActionValue(final Action action, final double value) {
+        mActionValues.put(action, value);
+    }
+
+    /**
      * Clears the action probabilities. Useful to reset them.
      */
     public void clearActionProbabilities() {
         mActionProbabilities.clear();
+    }
+
+    /**
+     * Clears the action values. Useful to reset them.
+     */
+    public void clearActionValues() {
+        mActionValues.clear();
     }
 
 }
