@@ -11,6 +11,9 @@ public abstract class LearningPredatorAgent extends PredatorAgent {
 
     /** The default value for any Q(s,a) in this agent's policy */
     private final static double DEFAULT_ACTION_VALUE = 15;
+    
+    private State mLastState;
+    private Action mLastAction;
 
     /**
      * Creates a new predator on the specified coordinates within the environment.
@@ -38,23 +41,29 @@ public abstract class LearningPredatorAgent extends PredatorAgent {
      * Performs an action during the agent's turn based on the policy.
      */
     public void performAction() {
-        final State initialState = getEnvironment().getState();
+        final State currentState = getEnvironment().getState();
+        
+        if (mLastState != null) {
+            postActionCallback(mLastState, currentState, mLastAction);
+        }
 
         // Move to a location based on an action determined by the policy
-        final Action action = getActionToPerform();
+        final Action action = getActionToPerform(currentState);
         moveTo(action.getLocation(this));
-
-        final State resultingState = getEnvironment().getState();
-
-        postActionCallback(initialState, resultingState, action);
+        
+        mLastAction = action;
+        mLastState = currentState;
     }
 
     /**
      * Decides what action should be performed for this agent's turn.
      * 
+     * @param state
+     *            The state that we're currently in
+     * 
      * @return The action to perform
      */
-    protected abstract Action getActionToPerform();
+    protected abstract Action getActionToPerform(State state);
 
     // TODO: document this
     /**
@@ -62,7 +71,17 @@ public abstract class LearningPredatorAgent extends PredatorAgent {
      * @param initialState
      * @param resultingState
      * @param action
+     * @param reward
      */
-    protected abstract void postActionCallback(final State initialState, final State resultingState, final Action action);
+    protected abstract void postActionCallback(State initialState, State resultingState, Action action);
 
+    /**
+     * {@inheritDoc}
+     */
+    public void postGameCallback() {
+        if (mLastState != null) {
+            postActionCallback(mLastState, getEnvironment().getState(), mLastAction);
+        }
+    }
+    
 }

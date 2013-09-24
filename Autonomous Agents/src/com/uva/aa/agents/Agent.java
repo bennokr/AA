@@ -127,6 +127,9 @@ public abstract class Agent {
         return mPolicy;
     }
 
+    // TODO: Document this
+    public void postGameCallback() {}
+
     @Override
     public String toString() {
         final String className = getClass().getSimpleName();

@@ -1,5 +1,7 @@
 package com.uva.aa.agents;
 
+import java.util.List;
+
 import com.uva.aa.Location;
 import com.uva.aa.State;
 import com.uva.aa.enums.Action;
@@ -67,7 +69,14 @@ public class PredatorAgent extends Agent {
         // The reward does not depend on the action, only on the locations
         // The prey moves 'after' the predator
         // We assume one prey and one predator!
-        PreyAgent prey = getEnvironment().getPreys().get(0);
+        
+        // TODO: Make this prettier
+        final List<PreyAgent> preys = getEnvironment().getPreys();
+        if (preys.isEmpty()) {
+            return KILL_REWARD;
+        }
+
+        final PreyAgent prey = preys.get(0);
         if (resultingState.getAgentLocation(this).equals(initialState.getAgentLocation(prey))) {
             return KILL_REWARD;
         } else {

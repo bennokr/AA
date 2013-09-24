@@ -6,6 +6,7 @@ import com.uva.aa.agents.Agent;
 import com.uva.aa.agents.PolicyIteratingPredatorAgent;
 import com.uva.aa.agents.PredatorAgent;
 import com.uva.aa.agents.PreyAgent;
+import com.uva.aa.agents.QLearningPredatorAgent;
 import com.uva.aa.agents.ValueIteratingPredatorAgent;
 import com.uva.aa.enums.GameState;
 
@@ -15,7 +16,7 @@ import com.uva.aa.enums.GameState;
 public class Game {
 
     /** The amount of time between turns in ms when performing a human test */
-    private final static int TURN_DELAY = 75;
+    private final static int TURN_DELAY = 55;
 
     /** The environment for this game */
     private final Environment mEnvironment;
@@ -96,6 +97,18 @@ public class Game {
      */
     public void addValueIteratingPredator(final int x, final int y) {
         mEnvironment.addAgent(new ValueIteratingPredatorAgent(new Location(mEnvironment, x, y)));
+    }
+
+    /**
+     * Adds a Q-Learning predator to the environment at the specified coordinates.
+     * 
+     * @param x
+     *            The x coordinate where the predator is located at
+     * @param y
+     *            The y coordinate where the predator is located at
+     */
+    public void addQLearningPredator(final int x, final int y) {
+        mEnvironment.addAgent(new QLearningPredatorAgent(new Location(mEnvironment, x, y)));
     }
 
     /**
@@ -203,6 +216,10 @@ public class Game {
                     Thread.sleep(TURN_DELAY);
                 } catch (InterruptedException e) {}
             }
+        }
+        
+        for (final Agent agent : agents) {
+            agent.postGameCallback();
         }
 
         System.out.println(mRoundsPlayed + " rounds played with a total of " + mTurnsPlayed + " turns.");
