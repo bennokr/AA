@@ -8,9 +8,12 @@ import com.uva.aa.enums.Action;
 
 /**
  * An agent that acts as a predator within the environment. Will learn about the prey by following its policy using
- * Q-Learning.
+ * Sarsa
  */
-public abstract class QLearningPredatorAgent extends LearningPredatorAgent {
+public class SarsaPredatorAgent extends LearningPredatorAgent {
+
+    /** The epsilon for the epsilon-greedy manner */
+    private final static double EPSILON = 0.1;
 
     /** The epsilon for the epsilon-greedy manner */
     private final static double STEP_SIZE_ALPHA = 0.1;
@@ -24,8 +27,15 @@ public abstract class QLearningPredatorAgent extends LearningPredatorAgent {
      * @param location
      *            The location to place the predator at
      */
-    public QLearningPredatorAgent(final Location location) {
+    public SarsaPredatorAgent(final Location location) {
         super(location);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected Action getActionToPerform(final State state) {
+        return mPolicy.getActionBasedOnValueEpsilonGreedy(state, EPSILON);
     }
 
     /**
@@ -42,22 +52,17 @@ public abstract class QLearningPredatorAgent extends LearningPredatorAgent {
                 initialState.getAgentLocation(prey));
         final double reward = getImmediateReward(initialState, immediateNextState, previousAction);
         final double initialActionValue = mPolicy.getActionValue(initialState, previousAction);
-
-        // Find the value of the best possible next action
-        double bestResultingActionValue = 0;
-        for (double actionValue : mPolicy.getProperties(resultingState).getActionValues().values()) {
-            bestResultingActionValue = Math.max(bestResultingActionValue, actionValue);
-        }
+        final double nextActionValue = mPolicy.getActionValue(resultingState, nextAction);
 
         // Update the value for the action we previously took
         mPolicy.setActionValue(initialState, previousAction, initialActionValue + STEP_SIZE_ALPHA
-                * (reward + DISCOUNT_FACTOR_GAMMA * bestResultingActionValue - initialActionValue));
+                * (reward + DISCOUNT_FACTOR_GAMMA * nextActionValue - initialActionValue));
     }
 
     /**
      * {@inheritDoc}
      */
     protected boolean shouldPickActionBeforeCallback() {
-        return false;
+        return true;
     }
 }

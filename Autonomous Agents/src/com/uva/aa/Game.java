@@ -8,6 +8,7 @@ import com.uva.aa.agents.PredatorAgent;
 import com.uva.aa.agents.PreyAgent;
 import com.uva.aa.agents.QLearningEGreedyPredatorAgent;
 import com.uva.aa.agents.QLearningSoftmaxPredatorAgent;
+import com.uva.aa.agents.SarsaPredatorAgent;
 import com.uva.aa.agents.ValueIteratingPredatorAgent;
 import com.uva.aa.enums.GameState;
 
@@ -122,6 +123,18 @@ public class Game {
      */
     public void addQLearningSoftmaxPredator(final int x, final int y) {
         mEnvironment.addAgent(new QLearningSoftmaxPredatorAgent(new Location(mEnvironment, x, y)));
+    }
+
+    /**
+     * Adds a Sarsa predator to the environment at the specified coordinates.
+     * 
+     * @param x
+     *            The x coordinate where the predator is located at
+     * @param y
+     *            The y coordinate where the predator is located at
+     */
+    public void addSarsaPredator(final int x, final int y) {
+        mEnvironment.addAgent(new SarsaPredatorAgent(new Location(mEnvironment, x, y)));
     }
 
     /**

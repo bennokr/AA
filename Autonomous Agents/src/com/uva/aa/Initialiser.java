@@ -5,6 +5,7 @@ import com.uva.aa.testers.PolicyEvaluationTester;
 import com.uva.aa.testers.PolicyIterationStateValueTester;
 import com.uva.aa.testers.QLearningEGreedyGameTester;
 import com.uva.aa.testers.QLearningSoftmaxGameTester;
+import com.uva.aa.testers.SarsaGameTester;
 import com.uva.aa.testers.SimpleGameTester;
 import com.uva.aa.testers.StateSpaceTester;
 import com.uva.aa.testers.StateValueTester;
@@ -24,7 +25,8 @@ public class Initialiser {
     private static boolean sTestStateSpace = false;
 
     private static boolean sTestQLearningEGreedyGame = false;
-    private static boolean sTestQLearningSoftmaxGame = true;
+    private static boolean sTestQLearningSoftmaxGame = false;
+    private static boolean sTestSarsaGame = true;
 
     /**
      * Sets everything in motion.
@@ -70,13 +72,19 @@ public class Initialiser {
         // Task 2.1: Q-Learning e-Greedy
         if (sTestQLearningEGreedyGame) {
             final GameTester qLearningEGreedyGameTester = new QLearningEGreedyGameTester();
-            qLearningEGreedyGameTester.runTests(100000);
+            qLearningEGreedyGameTester.runTests(10000);
         }
 
         // Task 2.3: Q-Learning Softmax
         if (sTestQLearningSoftmaxGame) {
             final GameTester qLearningSoftmaxGameTester = new QLearningSoftmaxGameTester();
             qLearningSoftmaxGameTester.runTests(10000);
+        }
+
+        // Task 2.4: Sarsa
+        if (sTestSarsaGame) {
+            final GameTester sarsaGameTester = new SarsaGameTester();
+            sarsaGameTester.runTests(100000);
         }
     }
 

@@ -11,7 +11,7 @@ public abstract class LearningPredatorAgent extends PredatorAgent {
 
     /** The default value for any Q(s,a) in this agent's policy */
     private final static double DEFAULT_ACTION_VALUE = 15;
-    
+
     private State mLastState;
     private Action mLastAction;
 
@@ -42,17 +42,37 @@ public abstract class LearningPredatorAgent extends PredatorAgent {
      */
     public void performAction() {
         final State currentState = getEnvironment().getState();
-        
+        Action nextAction = null;
+
+        // Pick an action if it should be picked before the learning step
+        if (shouldPickActionBeforeCallback()) {
+            nextAction = getActionToPerform(currentState);
+        }
+
+        // Allow the learning algorithm to update values
         if (mLastState != null) {
-            postActionCallback(mLastState, currentState, mLastAction);
+            postActionCallback(mLastState, currentState, mLastAction, nextAction);
+        }
+
+        // Pick the action if it wasn't picked before the callback
+        if (nextAction == null) {
+            nextAction = getActionToPerform(currentState);
         }
 
         // Move to a location based on an action determined by the policy
-        final Action action = getActionToPerform(currentState);
-        moveTo(action.getLocation(this));
-        
-        mLastAction = action;
+        moveTo(nextAction.getLocation(this));
+
+        mLastAction = nextAction;
         mLastState = currentState;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void postGameCallback() {
+        if (mLastState != null) {
+            postActionCallback(mLastState, getEnvironment().getState(), mLastAction, null);
+        }
     }
 
     /**
@@ -65,23 +85,27 @@ public abstract class LearningPredatorAgent extends PredatorAgent {
      */
     protected abstract Action getActionToPerform(State state);
 
-    // TODO: document this
     /**
+     * Called after an action when the next state right before the next action is known.
      * 
      * @param initialState
+     *            The state before performing the action
      * @param resultingState
-     * @param action
-     * @param reward
+     *            The state after performing the action and the other agents have taken turns
+     * @param previousAction
+     *            The action executed at the initial state
+     * @param nextAction
+     *            The action about to be executed in the resulting state
      */
-    protected abstract void postActionCallback(State initialState, State resultingState, Action action);
+    protected abstract void postActionCallback(State initialState, State resultingState, Action previousAction,
+            Action nextAction);
 
     /**
-     * {@inheritDoc}
+     * Should be overridden to indicate whether the next action should before allowing the learning algorithm to update
+     * values or after it.
+     * 
+     * @return True if an action should be picked first, false if it should be picked after calling the callback
      */
-    public void postGameCallback() {
-        if (mLastState != null) {
-            postActionCallback(mLastState, getEnvironment().getState(), mLastAction);
-        }
-    }
-    
+    protected abstract boolean shouldPickActionBeforeCallback();
+
 }
