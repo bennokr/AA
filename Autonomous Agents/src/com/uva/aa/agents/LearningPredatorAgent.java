@@ -1,5 +1,6 @@
 package com.uva.aa.agents;
 
+import com.uva.aa.Config;
 import com.uva.aa.Location;
 import com.uva.aa.State;
 import com.uva.aa.enums.Action;
@@ -8,9 +9,6 @@ import com.uva.aa.enums.Action;
  * An agent that acts as a predator within the environment. Will learn about the prey by following its policy.
  */
 public abstract class LearningPredatorAgent extends PredatorAgent {
-
-    /** The default value for any Q(s,a) in this agent's policy */
-    private final static double DEFAULT_ACTION_VALUE = 15;
 
     private State mLastState;
     private Action mLastAction;
@@ -32,7 +30,7 @@ public abstract class LearningPredatorAgent extends PredatorAgent {
     public void prepare() {
         for (final State state : getEnvironment().getPossibleStates(false)) {
             for (final Action action : Action.values()) {
-                mPolicy.setActionValue(state, action, DEFAULT_ACTION_VALUE);
+                mPolicy.setActionValue(state, action, Config.DEFAULT_ACTION_VALUE);
             }
         }
     }

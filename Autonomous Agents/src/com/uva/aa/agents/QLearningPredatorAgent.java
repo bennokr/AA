@@ -2,6 +2,7 @@ package com.uva.aa.agents;
 
 import java.util.List;
 
+import com.uva.aa.Config;
 import com.uva.aa.Location;
 import com.uva.aa.State;
 import com.uva.aa.enums.Action;
@@ -11,12 +12,6 @@ import com.uva.aa.enums.Action;
  * Q-Learning.
  */
 public abstract class QLearningPredatorAgent extends LearningPredatorAgent {
-
-    /** The epsilon for the epsilon-greedy manner */
-    private final static double STEP_SIZE_ALPHA = 0.1;
-
-    /** The discount factor of the bellman equation */
-    public static final double DISCOUNT_FACTOR_GAMMA = 0.7;
 
     /**
      * Creates a new predator on the specified coordinates within the environment.
@@ -50,8 +45,8 @@ public abstract class QLearningPredatorAgent extends LearningPredatorAgent {
         }
 
         // Update the value for the action we previously took
-        mPolicy.setActionValue(initialState, previousAction, initialActionValue + STEP_SIZE_ALPHA
-                * (reward + DISCOUNT_FACTOR_GAMMA * bestResultingActionValue - initialActionValue));
+        mPolicy.setActionValue(initialState, previousAction, initialActionValue + Config.STEP_SIZE_ALPHA
+                * (reward + Config.DISCOUNT_FACTOR_GAMMA * bestResultingActionValue - initialActionValue));
     }
 
     /**

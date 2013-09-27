@@ -1,5 +1,6 @@
 package com.uva.aa.agents;
 
+import com.uva.aa.Config;
 import com.uva.aa.Location;
 import com.uva.aa.State;
 import com.uva.aa.enums.Action;
@@ -9,9 +10,6 @@ import com.uva.aa.enums.Action;
  * Softmax manner using Q-Learning.
  */
 public class QLearningSoftmaxPredatorAgent extends QLearningPredatorAgent {
-
-    /** The temperature for the softmax selection */
-    private final static double TEMPERATURE = 5;
 
     /**
      * Creates a new predator on the specified coordinates within the environment.
@@ -27,6 +25,6 @@ public class QLearningSoftmaxPredatorAgent extends QLearningPredatorAgent {
      * {@inheritDoc}
      */
     protected Action getActionToPerform(final State state) {
-        return mPolicy.getActionBasedOnValueSoftmax(state, TEMPERATURE);
+        return mPolicy.getActionBasedOnValueSoftmax(state, Config.TEMPERATURE);
     }
 }

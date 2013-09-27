@@ -2,6 +2,7 @@ package com.uva.aa.agents;
 
 import java.util.List;
 
+import com.uva.aa.Config;
 import com.uva.aa.Location;
 import com.uva.aa.State;
 import com.uva.aa.enums.Action;
@@ -10,9 +11,6 @@ import com.uva.aa.enums.Action;
  * An agent that acts as a predator within the environment. Will randomly move, hoping to catch a prey.
  */
 public class PredatorAgent extends Agent {
-
-    /** The reward for killing a prey */
-    public static final double KILL_REWARD = 10.0;
 
     /**
      * Creates a new predator on the specified coordinates within the environment.
@@ -73,12 +71,12 @@ public class PredatorAgent extends Agent {
         // TODO: Make this prettier
         final List<PreyAgent> preys = getEnvironment().getPreys();
         if (preys.isEmpty()) {
-            return KILL_REWARD;
+            return Config.KILL_REWARD;
         }
 
         final PreyAgent prey = preys.get(0);
         if (resultingState.getAgentLocation(this).equals(initialState.getAgentLocation(prey))) {
-            return KILL_REWARD;
+            return Config.KILL_REWARD;
         } else {
             return 0.0;
         }

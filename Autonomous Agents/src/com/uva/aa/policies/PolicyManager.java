@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import com.uva.aa.Config;
 import com.uva.aa.Environment;
 import com.uva.aa.Location;
 import com.uva.aa.State;
@@ -32,12 +33,6 @@ import com.uva.aa.enums.Action;
  * implemented for the policy evaluation.
  */
 public class PolicyManager {
-
-    /** The threshold that determines at what point we stop our evaluation */
-    public static final double ERROR_THRESHOLD_THETA = 0.00001;
-
-    /** The discount factor of the bellman equation */
-    public static final double DISCOUNT_FACTOR_GAMMA = 0.8;
 
     /** The policy evaluation to evaluate */
     private final Policy mPolicy;
@@ -177,7 +172,7 @@ public class PolicyManager {
             ++mUpdateStateValueIterations;
             ++mPolicyUpdateStateValueIterations;
 
-        } while (maxValErrDelta > ERROR_THRESHOLD_THETA);
+        } while (maxValErrDelta > Config.ERROR_THRESHOLD_THETA);
     }
 
     /**
@@ -316,7 +311,7 @@ public class PolicyManager {
             final double immediateReward = mPredator.getImmediateReward(initialState, nextState, predatorAction);
             final double nextStateValue = mPolicy.getStateValue(nextState);
 
-            innerSum += transitionProbability * (immediateReward + DISCOUNT_FACTOR_GAMMA * nextStateValue);
+            innerSum += transitionProbability * (immediateReward + Config.DISCOUNT_FACTOR_GAMMA * nextStateValue);
         }
 
         return innerSum;

@@ -1,5 +1,6 @@
 package com.uva.aa.testers;
 
+import com.uva.aa.Config;
 import com.uva.aa.Environment;
 import com.uva.aa.Game;
 import com.uva.aa.agents.PredatorAgent;
@@ -62,7 +63,7 @@ public class StateSpaceTester {
 
         System.out.println((policyIterationInsteadOfValue ? "Policy" : "Value")
                 + " iteration with theta "
-                + PolicyManager.ERROR_THRESHOLD_THETA
+                + Config.ERROR_THRESHOLD_THETA
                 + " and "
                 + (reducedStateSpace ? "reduced" : "full")
                 + " state-space: "
