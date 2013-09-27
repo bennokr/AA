@@ -1,12 +1,13 @@
 package com.uva.aa;
 
+import com.uva.aa.testers.GameTester;
 import com.uva.aa.testers.PolicyEvaluationTester;
 import com.uva.aa.testers.PolicyIterationStateValueTester;
-import com.uva.aa.testers.QLearningGameTester;
+import com.uva.aa.testers.QLearningEGreedyGameTester;
+import com.uva.aa.testers.QLearningSoftmaxGameTester;
 import com.uva.aa.testers.SimpleGameTester;
 import com.uva.aa.testers.StateSpaceTester;
 import com.uva.aa.testers.StateValueTester;
-import com.uva.aa.testers.MeanTester;
 import com.uva.aa.testers.ValueIterationGameTester;
 import com.uva.aa.testers.ValueIterationStateValueTester;
 
@@ -22,7 +23,8 @@ public class Initialiser {
     private static boolean sTestValueIterationStateValue = false;
     private static boolean sTestStateSpace = false;
 
-    private static boolean sTestQLearningGame = true;
+    private static boolean sTestQLearningEGreedyGame = false;
+    private static boolean sTestQLearningSoftmaxGame = true;
 
     /**
      * Sets everything in motion.
@@ -33,7 +35,7 @@ public class Initialiser {
     public static void main(String[] args) {
         // Task 1.1: Random policy
         if (sTestRandomPolicy) {
-            final MeanTester simpleTester = new SimpleGameTester();
+            final GameTester simpleTester = new SimpleGameTester();
             simpleTester.runTests(100);
         }
 
@@ -51,7 +53,7 @@ public class Initialiser {
 
         // Task 1.4: Value iteration
         if (sTestValueIterationGame) {
-            final MeanTester valueIterationGameTester = new ValueIterationGameTester();
+            final GameTester valueIterationGameTester = new ValueIterationGameTester();
             valueIterationGameTester.runTests(100);
         }
         if (sTestValueIterationStateValue) {
@@ -65,10 +67,16 @@ public class Initialiser {
             stateSpaceTester.performTest();
         }
 
-        // Task 2.1: Q-Learning
-        if (sTestQLearningGame) {
-            final QLearningGameTester qLearningGameTester = new QLearningGameTester();
-            qLearningGameTester.runTests(10000);
+        // Task 2.1: Q-Learning e-Greedy
+        if (sTestQLearningEGreedyGame) {
+            final GameTester qLearningEGreedyGameTester = new QLearningEGreedyGameTester();
+            qLearningEGreedyGameTester.runTests(100000);
+        }
+
+        // Task 2.3: Q-Learning Softmax
+        if (sTestQLearningSoftmaxGame) {
+            final GameTester qLearningSoftmaxGameTester = new QLearningSoftmaxGameTester();
+            qLearningSoftmaxGameTester.runTests(10000);
         }
     }
 

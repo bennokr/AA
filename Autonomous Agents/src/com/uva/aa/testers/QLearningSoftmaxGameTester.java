@@ -3,9 +3,9 @@ package com.uva.aa.testers;
 import com.uva.aa.Game;
 
 /**
- * Runs simple test with a Q-Learning predator and prey behaviour.
+ * Runs simple test with a Q-Learning Softmax predator and prey behaviour.
  */
-public class QLearningGameTester extends GameTester {
+public class QLearningSoftmaxGameTester extends GameTester {
 
     /**
      * {@inheritDoc}
@@ -16,7 +16,7 @@ public class QLearningGameTester extends GameTester {
 
         // Adds the two required agents
         game.addPrey(5, 5);
-        game.addQLearningPredator(0, 0);
+        game.addQLearningSoftmaxPredator(0, 0);
 
         return game;
     }

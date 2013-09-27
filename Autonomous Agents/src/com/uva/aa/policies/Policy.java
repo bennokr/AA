@@ -176,14 +176,14 @@ public class Policy {
         final List<Action> allActions = new LinkedList<Action>();
         final List<Action> bestActions = new LinkedList<Action>();
         double bestValue = 0;
-        
+
         // Determine the best action(s)
         for (final Map.Entry<Action, Double> actionValue : getProperties(state).getActionValues().entrySet()) {
             final Action action = actionValue.getKey();
             final double value = actionValue.getValue();
-            
+
             allActions.add(action);
-            
+
             if (value > bestValue) {
                 bestActions.clear();
                 bestValue = value;
@@ -206,6 +206,48 @@ public class Policy {
     }
 
     /**
+     * Returns a random action based on the value within the given state using Softmax.
+     * 
+     * @param state
+     *            The state to choose an action for
+     * @param temperature
+     *            The temperature for Softmax selection, make sure that this isn't too low
+     * 
+     * @return A semi-random action or null if no actions are available
+     */
+    public Action getActionBasedOnValueSoftmax(final State state, final double temperature) {
+        final Map<Action, Double> actionValues = getProperties(state).getActionValues();
+        final double decision = Math.random();
+
+        // Determine the sum of Softmax values for the actions
+        double softmaxSum = 0;
+        for (final double value : actionValues.values()) {
+            softmaxSum += Math.exp(value / temperature);
+        }
+        
+        // Make sure that we've got a valid sum
+        if (softmaxSum == Double.POSITIVE_INFINITY) {
+            throw new RuntimeException("The temperature for softmax is likely too low. "
+                    + "The predator seems to be freezing! (Dohohh! Funny jokes...)");
+        }
+
+        // Pick a random action based on the Softmax probabilities
+        double decisionCount = 0;
+        for (final Map.Entry<Action, Double> actionValue : actionValues.entrySet()) {
+            final Action action = actionValue.getKey();
+            final double value = actionValue.getValue();
+
+            decisionCount += Math.exp(value / temperature) / softmaxSum;
+
+            if (decisionCount >= decision) {
+                return action;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Prints out the full mapped contents.
      */
     public void print() {
@@ -223,8 +265,7 @@ public class Policy {
             }
             // Print the actions with their value
             for (Map.Entry<Action, Double> actionValue : properties.getActionValues().entrySet()) {
-                System.out.println("    Action value " + actionValue.getKey() + " = "
-                        + actionValue.getValue());
+                System.out.println("    Action value " + actionValue.getKey() + " = " + actionValue.getValue());
             }
         }
         System.out.println();

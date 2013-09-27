@@ -6,7 +6,8 @@ import com.uva.aa.agents.Agent;
 import com.uva.aa.agents.PolicyIteratingPredatorAgent;
 import com.uva.aa.agents.PredatorAgent;
 import com.uva.aa.agents.PreyAgent;
-import com.uva.aa.agents.QLearningPredatorAgent;
+import com.uva.aa.agents.QLearningEGreedyPredatorAgent;
+import com.uva.aa.agents.QLearningSoftmaxPredatorAgent;
 import com.uva.aa.agents.ValueIteratingPredatorAgent;
 import com.uva.aa.enums.GameState;
 
@@ -100,15 +101,27 @@ public class Game {
     }
 
     /**
-     * Adds a Q-Learning predator to the environment at the specified coordinates.
+     * Adds a Q-Learning e-Greedy predator to the environment at the specified coordinates.
      * 
      * @param x
      *            The x coordinate where the predator is located at
      * @param y
      *            The y coordinate where the predator is located at
      */
-    public void addQLearningPredator(final int x, final int y) {
-        mEnvironment.addAgent(new QLearningPredatorAgent(new Location(mEnvironment, x, y)));
+    public void addQLearningEGreedyPredator(final int x, final int y) {
+        mEnvironment.addAgent(new QLearningEGreedyPredatorAgent(new Location(mEnvironment, x, y)));
+    }
+
+    /**
+     * Adds a Q-Learning Softmax predator to the environment at the specified coordinates.
+     * 
+     * @param x
+     *            The x coordinate where the predator is located at
+     * @param y
+     *            The y coordinate where the predator is located at
+     */
+    public void addQLearningSoftmaxPredator(final int x, final int y) {
+        mEnvironment.addAgent(new QLearningSoftmaxPredatorAgent(new Location(mEnvironment, x, y)));
     }
 
     /**
@@ -217,7 +230,7 @@ public class Game {
                 } catch (InterruptedException e) {}
             }
         }
-        
+
         for (final Agent agent : agents) {
             agent.postGameCallback();
         }
@@ -261,11 +274,10 @@ public class Game {
     /**
      * Returns the environment of the game.
      * 
-     * @return
-     *      The environment for this game
+     * @return The environment for this game
      */
     public Environment getEnvironment() {
         return mEnvironment;
     }
-    
+
 }

@@ -2,19 +2,15 @@ package com.uva.aa.agents;
 
 import java.util.List;
 
-import com.uva.aa.Environment;
 import com.uva.aa.Location;
 import com.uva.aa.State;
 import com.uva.aa.enums.Action;
 
 /**
- * An agent that acts as a predator within the environment. Will learn about the prey by following its policy in an
- * epsilon-greedy manner using Q-Learning.
+ * An agent that acts as a predator within the environment. Will learn about the prey by following its policy using
+ * Q-Learning.
  */
-public class QLearningPredatorAgent extends LearningPredatorAgent {
-
-    /** The epsilon for the epsilon-greedy manner */
-    private final static double EPSILON = 0.1;
+public abstract class QLearningPredatorAgent extends LearningPredatorAgent {
 
     /** The epsilon for the epsilon-greedy manner */
     private final static double STEP_SIZE_ALPHA = 0.1;
@@ -30,13 +26,6 @@ public class QLearningPredatorAgent extends LearningPredatorAgent {
      */
     public QLearningPredatorAgent(final Location location) {
         super(location);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected Action getActionToPerform(final State state) {
-        return mPolicy.getActionBasedOnValueEpsilonGreedy(state, EPSILON);
     }
 
     /**
