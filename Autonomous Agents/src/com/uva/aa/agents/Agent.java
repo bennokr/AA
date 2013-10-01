@@ -127,7 +127,9 @@ public abstract class Agent {
         return mPolicy;
     }
 
-    // TODO: Document this
+    /**
+     * Called after the game has finished to allow the agent to make final updates to its policy.
+     */
     public void postGameCallback() {}
 
     @Override

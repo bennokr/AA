@@ -24,9 +24,9 @@ public class Initialiser {
     private static boolean sTestValueIterationStateValue = false;
     private static boolean sTestStateSpace = false;
 
-    private static boolean sTestQLearningEGreedyGame = false;
+    private static boolean sTestQLearningEGreedyGame = true;
     private static boolean sTestQLearningSoftmaxGame = false;
-    private static boolean sTestSarsaGame = true;
+    private static boolean sTestSarsaGame = false;
 
     /**
      * Sets everything in motion.
@@ -72,7 +72,7 @@ public class Initialiser {
         // Task 2.1: Q-Learning e-Greedy
         if (sTestQLearningEGreedyGame) {
             final GameTester qLearningEGreedyGameTester = new QLearningEGreedyGameTester();
-            qLearningEGreedyGameTester.runTests(10000);
+            qLearningEGreedyGameTester.runTests(100000);
         }
 
         // Task 2.3: Q-Learning Softmax
