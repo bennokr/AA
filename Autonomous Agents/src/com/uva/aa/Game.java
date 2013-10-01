@@ -3,6 +3,7 @@ package com.uva.aa;
 import java.util.List;
 
 import com.uva.aa.agents.Agent;
+import com.uva.aa.agents.OnPolicyMCPredatorAgent;
 import com.uva.aa.agents.PolicyIteratingPredatorAgent;
 import com.uva.aa.agents.PredatorAgent;
 import com.uva.aa.agents.PreyAgent;
@@ -135,6 +136,18 @@ public class Game {
      */
     public void addSarsaPredator(final int x, final int y) {
         mEnvironment.addAgent(new SarsaPredatorAgent(new Location(mEnvironment, x, y)));
+    }
+    
+    /**
+     * Adds a Sarsa predator to the environment at the specified coordinates.
+     * 
+     * @param x
+     *            The x coordinate where the predator is located at
+     * @param y
+     *            The y coordinate where the predator is located at
+     */
+    public void addOnPolicyMCPredator(final int x, final int y) {
+        mEnvironment.addAgent(new OnPolicyMCPredatorAgent(new Location(mEnvironment, x, y)));
     }
 
     /**
