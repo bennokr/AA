@@ -1,6 +1,7 @@
 package com.uva.aa;
 
 import com.uva.aa.testers.GameTester;
+import com.uva.aa.testers.OnPolicyMCGameTester;
 import com.uva.aa.testers.PolicyEvaluationTester;
 import com.uva.aa.testers.PolicyIterationStateValueTester;
 import com.uva.aa.testers.QLearningEGreedyGameTester;
@@ -27,6 +28,7 @@ public class Initialiser {
     private static boolean sTestQLearningEGreedyGame = true;
     private static boolean sTestQLearningSoftmaxGame = false;
     private static boolean sTestSarsaGame = false;
+    private static boolean sTestOnPolicyMCGame = false;
 
     /**
      * Sets everything in motion.
@@ -85,6 +87,12 @@ public class Initialiser {
         if (sTestSarsaGame) {
             final GameTester sarsaGameTester = new SarsaGameTester();
             sarsaGameTester.runTests(100000);
+        }
+        
+        // Task 2.4(2): On-policy MC
+        if (sTestOnPolicyMCGame) {
+            final GameTester onPolicyMCGameTester = new OnPolicyMCGameTester();
+            onPolicyMCGameTester.runTests(100000);
         }
     }
 

@@ -1,27 +1,52 @@
 package com.uva.aa;
 
+import java.util.ArrayList;
+
 import com.uva.aa.enums.Action;
 
 public class Episode {
+	
+	private ArrayList<State>  states;
+	private ArrayList<Action>  actions;
+	private ArrayList<Double> rewards;
+	
+	public Episode() {
+		states = new ArrayList<State>();
+		actions = new ArrayList<Action>();
+		rewards = new ArrayList<Double>();		
+	}
+	public void clear() {
+		states.clear();
+		actions.clear();
+		rewards.clear();
+	}
 
 	public void addState(State currentState) {
-		// TODO Auto-generated method stub
-		
+		states.add(currentState);
 	}
 
 	public void addAction(Action nextAction) {
-		// TODO Auto-generated method stub
-		
+		actions.add(nextAction);
 	}
 
 	public void addReward(double immediateReward) {
-		// TODO Auto-generated method stub
-		
+		rewards.add(immediateReward);
+	}
+	
+	public int getLength() {
+		return actions.size();
 	}
 
-	public void clear() {
-		// TODO Auto-generated method stub
-		
+	public Double getReward(int t) {
+		return rewards.get(t);
+	}
+
+	public State getState(int t) {
+		return states.get(t);
+	}
+
+	public Action getAction(int t) {
+		return actions.get(t);
 	}
 
 }
