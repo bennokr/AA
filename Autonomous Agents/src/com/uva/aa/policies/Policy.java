@@ -216,32 +216,58 @@ public class Policy {
      * 
      * @return A semi-random action or null if no actions are available
      */
-    public Action getActionBasedOnValueSoftmax(final State state, final double temperature) {
-        final Map<Action, Double> actionValues = getProperties(state).getActionValues();
+    public Action getActionBasedOnValueSoftmax(final State state, final double epsilon, final double temperature) {
         final double decision = Math.random();
+        final List<Action> allActions = new LinkedList<Action>();
+        final List<Action> bestActions = new LinkedList<Action>();
+        double bestValue = Double.MIN_VALUE;
 
-        // Determine the sum of Softmax values for the actions
-        double softmaxSum = 0;
-        for (final double value : actionValues.values()) {
-            softmaxSum += Math.exp(value / temperature);
-        }
-        
-        // Make sure that we've got a valid sum
-        if (softmaxSum == Double.POSITIVE_INFINITY) {
-            throw new RuntimeException("The temperature for softmax is likely too low. "
-                    + "The predator seems to be freezing! (Dohohh! Funny jokes...)");
-        }
-
-        // Pick a random action based on the Softmax probabilities
-        double decisionCount = 0;
-        for (final Map.Entry<Action, Double> actionValue : actionValues.entrySet()) {
+        // Determine the best action(s)
+        for (final Map.Entry<Action, Double> actionValue : getProperties(state).getActionValues().entrySet()) {
             final Action action = actionValue.getKey();
             final double value = actionValue.getValue();
 
-            decisionCount += Math.exp(value / temperature) / softmaxSum;
+            allActions.add(action);
 
-            if (decisionCount >= decision) {
-                return action;
+            if (value > bestValue) {
+                bestActions.clear();
+                bestValue = value;
+            }
+            if (value >= bestValue) {
+                bestActions.add(action);
+            }
+        }
+
+        if (decision > epsilon || allActions.size() == bestActions.size()) {
+            // Pick a best action
+            return bestActions.get((int) Math.floor(Math.random() * bestActions.size()));
+
+        } else {
+            final Map<Action, Double> actionValues = getProperties(state).getActionValues();
+            
+            // Determine the sum of Softmax values for the actions
+            double softmaxSum = 0;
+            for (final double value : actionValues.values()) {
+                softmaxSum += Math.exp(value / temperature);
+            }
+
+            // Make sure that we've got a valid sum
+            if (softmaxSum == Double.POSITIVE_INFINITY) {
+                throw new RuntimeException("The temperature for softmax is likely too low. "
+                        + "The predator seems to be freezing! (Dohohh! Funny jokes...)");
+            }
+
+            // Pick a random action based on the Softmax probabilities
+            double decisionCount = 0;
+            for (final Map.Entry<Action, Double> actionValue : actionValues.entrySet()) {
+                final Action action = actionValue.getKey();
+                final double value = actionValue.getValue();
+
+                decisionCount += Math.exp(value / temperature) / softmaxSum;
+
+                if (decisionCount >= decision) {
+                    return action;
+                }
             }
         }
 

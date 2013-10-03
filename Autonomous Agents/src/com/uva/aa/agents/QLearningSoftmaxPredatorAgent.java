@@ -25,6 +25,6 @@ public class QLearningSoftmaxPredatorAgent extends QLearningPredatorAgent {
      * {@inheritDoc}
      */
     protected Action getActionToPerform(final State state) {
-        return mPolicy.getActionBasedOnValueSoftmax(state, Config.TEMPERATURE);
+        return mPolicy.getActionBasedOnValueSoftmax(state, Config.EPSILON, Config.TEMPERATURE);
     }
 }
