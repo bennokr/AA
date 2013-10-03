@@ -12,7 +12,7 @@ public class Config {
     public final static double STEP_SIZE_ALPHA = 0.1;
 
     /** The discount factor for updating algorithms */
-    public static final double DISCOUNT_FACTOR_GAMMA = 0.7;
+    public static final double DISCOUNT_FACTOR_GAMMA = 0.3;
 
     /** The epsilon for epsilon-greedy selection */
     public final static double EPSILON = 0.1;

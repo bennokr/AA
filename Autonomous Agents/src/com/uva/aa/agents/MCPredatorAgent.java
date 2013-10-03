@@ -81,7 +81,7 @@ public abstract class MCPredatorAgent extends PredatorAgent {
     protected double getDiscountedReward(Episode episode, int t) {
     	double R = 0.0;
 		for (int _t=t; _t < episode.getLength(); _t++) {
-			double d = Math.pow(Config.DISCOUNT_FACTOR_GAMMA,_t-t);
+			double d = Math.pow(Config.DISCOUNT_FACTOR_GAMMA, (double) _t-t);
 			R += d * episode.getReward(_t);
 		}
 		return R;
