@@ -31,7 +31,10 @@ public abstract class MCPredatorAgent extends PredatorAgent {
     public void prepare() {
         for (final State state : getEnvironment().getPossibleStates(false)) {
             for (final Action action : Action.values()) {
+            	// initialize action values
                 mPolicy.setActionValue(state, action, Config.DEFAULT_ACTION_VALUE);
+                // initialize action probabilities
+                mPolicy.setActionProbability(state, action, 1.0 / Action.values().length);
             }
         }
     }

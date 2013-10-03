@@ -139,7 +139,7 @@ public class Game {
     }
     
     /**
-     * Adds a Sarsa predator to the environment at the specified coordinates.
+     * Adds a On-Policy MC predator to the environment at the specified coordinates.
      * 
      * @param x
      *            The x coordinate where the predator is located at

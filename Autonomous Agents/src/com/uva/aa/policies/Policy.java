@@ -158,6 +158,7 @@ public class Policy {
             }
         }
 
+        System.err.println("Error: cannot choose action!");
         return null;
     }
 
@@ -175,7 +176,7 @@ public class Policy {
         final double decision = Math.random();
         final List<Action> allActions = new LinkedList<Action>();
         final List<Action> bestActions = new LinkedList<Action>();
-        double bestValue = 0;
+        double bestValue = Double.MIN_VALUE;
 
         // Determine the best action(s)
         for (final Map.Entry<Action, Double> actionValue : getProperties(state).getActionValues().entrySet()) {

@@ -25,10 +25,10 @@ public class Initialiser {
     private static boolean sTestValueIterationStateValue = false;
     private static boolean sTestStateSpace = false;
 
-    private static boolean sTestQLearningEGreedyGame = true;
+    private static boolean sTestQLearningEGreedyGame = false;
     private static boolean sTestQLearningSoftmaxGame = false;
     private static boolean sTestSarsaGame = false;
-    private static boolean sTestOnPolicyMCGame = false;
+    private static boolean sTestOnPolicyMCGame = true;
 
     /**
      * Sets everything in motion.
