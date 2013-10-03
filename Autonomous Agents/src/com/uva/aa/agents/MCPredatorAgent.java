@@ -70,6 +70,22 @@ public abstract class MCPredatorAgent extends PredatorAgent {
         // Clear episode logging
         episode.clear();
     }
+    
+    /**
+     * Get the discounted reward at this timestep in the episode
+     * 
+     * @param episode
+     * @param t timestep
+     * @return discounted reward
+     */
+    protected double getDiscountedReward(Episode episode, int t) {
+    	double R = 0.0;
+		for (int _t=t; _t < episode.getLength(); _t++) {
+			double d = Math.pow(Config.DISCOUNT_FACTOR_GAMMA,_t-t);
+			R += d * episode.getReward(_t);
+		}
+		return R;
+    }
 
     /**
      * Decides what action should be performed for this agent's turn.

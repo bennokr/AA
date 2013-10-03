@@ -42,6 +42,7 @@ public class Episode {
 	}
 
 	public State getState(int t) {
+		//System.out.println("t: " +t+ ", s" + states.size() + " a" + actions.size() + " r" + rewards.size());
 		return states.get(t);
 	}
 

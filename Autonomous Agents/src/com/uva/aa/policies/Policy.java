@@ -1,9 +1,12 @@
 package com.uva.aa.policies;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.uva.aa.State;
 import com.uva.aa.enums.Action;
@@ -159,7 +162,31 @@ public class Policy {
         }
 
         System.err.println("Error: cannot choose action!");
+        System.err.println(getProperties(state).getActionProbabilities());
         return null;
+    }
+    
+    /**
+     * Returns the set of actions with maximum probability (argmax)
+     * 
+     * @param state
+     * @return
+     */
+    public Set<Action> getActionSetBasedOnProbability(final State state) {        
+        // max[pi]
+        double max = 0;
+        for (double p : getProperties(state).getActionProbabilities().values()) {
+        	max = Math.max(max, p);
+        }
+        
+        // argmax
+        Set<Action> out = new HashSet<Action>();
+        for (final Map.Entry<Action, Double> actionProb : getProperties(state).getActionProbabilities().entrySet()) {
+            if (actionProb.getValue().equals(max)) {
+            	out.add(actionProb.getKey());
+            }
+        }
+        return out;
     }
 
     /**

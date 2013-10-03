@@ -3,6 +3,7 @@ package com.uva.aa;
 import java.util.List;
 
 import com.uva.aa.agents.Agent;
+import com.uva.aa.agents.OffPolicyMCPredatorAgent;
 import com.uva.aa.agents.OnPolicyMCPredatorAgent;
 import com.uva.aa.agents.PolicyIteratingPredatorAgent;
 import com.uva.aa.agents.PredatorAgent;
@@ -148,6 +149,18 @@ public class Game {
      */
     public void addOnPolicyMCPredator(final int x, final int y) {
         mEnvironment.addAgent(new OnPolicyMCPredatorAgent(new Location(mEnvironment, x, y)));
+    }
+    
+    /**
+     * Adds a Off-Policy MC predator to the environment at the specified coordinates.
+     * 
+     * @param x
+     *            The x coordinate where the predator is located at
+     * @param y
+     *            The y coordinate where the predator is located at
+     */
+    public void addOffPolicyMCPredator(final int x, final int y) {
+        mEnvironment.addAgent(new OffPolicyMCPredatorAgent(new Location(mEnvironment, x, y)));
     }
 
     /**

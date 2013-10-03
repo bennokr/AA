@@ -10,7 +10,6 @@ public class OnPolicyMCPredatorAgent extends MCPredatorAgent {
 
 	public OnPolicyMCPredatorAgent(Location location) {
 		super(location);
-		// TODO init epsilon-soft policy?
 	}
 
 	@Override
@@ -22,13 +21,8 @@ public class OnPolicyMCPredatorAgent extends MCPredatorAgent {
 	protected void updatePolicyFromEpisode(Episode episode) {
 		// iterate over every (s,a)
 		for (int t=0; t < episode.getLength(); t++) {
-			//  get reward *(discounted or end)*
-			double R = 0.0;
-			for (int _t=t; _t < episode.getLength(); _t++) {
-				double d = Math.pow(Config.DISCOUNT_FACTOR_GAMMA,_t-t);
-				R += d * episode.getReward(_t);
-			}
-			mPolicy.setActionValue(episode.getState(t), episode.getAction(t), R);
+			// Set Q to the discounted reward R
+			mPolicy.setActionValue(episode.getState(t), episode.getAction(t), getDiscountedReward(episode, t));
 		}
 		
 		for (int t=0; t < episode.getLength(); t++) {
