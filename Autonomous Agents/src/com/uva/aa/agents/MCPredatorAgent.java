@@ -11,7 +11,7 @@ import com.uva.aa.enums.Action;
  */
 public abstract class MCPredatorAgent extends PredatorAgent {
 
-    private Episode episode;
+    private final Episode mEpisode = new Episode();
 
     /**
      * Creates a new predator on the specified coordinates within the environment.
@@ -21,7 +21,6 @@ public abstract class MCPredatorAgent extends PredatorAgent {
      */
     public MCPredatorAgent(final Location location) {
         super(location);
-        episode = new Episode();
     }
 
     /**
@@ -31,7 +30,7 @@ public abstract class MCPredatorAgent extends PredatorAgent {
     public void prepare() {
         for (final State state : getEnvironment().getPossibleStates(false)) {
             for (final Action action : Action.values()) {
-            	// initialize action values
+                // initialize action values
                 mPolicy.setActionValue(state, action, Config.DEFAULT_ACTION_VALUE);
                 // initialize action probabilities
                 mPolicy.setActionProbability(state, action, 1.0 / Action.values().length);
@@ -45,16 +44,16 @@ public abstract class MCPredatorAgent extends PredatorAgent {
     public void performAction() {
         // Log state
         final State currentState = getEnvironment().getState();
-        episode.addState(currentState);
-        
+        mEpisode.addState(currentState);
+
         // Log action
         Action nextAction = getActionToPerform(currentState);
-        episode.addAction(nextAction);
-        
+        mEpisode.addAction(nextAction);
+
         // Move to a location based on an action determined by the policy
         moveTo(nextAction.getLocation(this));
-        
-        episode.addReward(getImmediateReward(currentState, getEnvironment().getState(), nextAction));
+
+        mEpisode.addReward(getImmediateReward(currentState, getEnvironment().getState(), nextAction));
     }
 
     /**
@@ -62,29 +61,31 @@ public abstract class MCPredatorAgent extends PredatorAgent {
      */
     public void postGameCallback() {
         // Log the last state
-        episode.addState(getEnvironment().getState());
-        
+        mEpisode.addState(getEnvironment().getState());
+
         // Run update stuff
-        updatePolicyFromEpisode(episode);
-        
+        updatePolicyFromEpisode(mEpisode);
+
         // Clear episode logging
-        episode.clear();
+        mEpisode.clear();
     }
-    
+
     /**
      * Get the discounted reward at this timestep in the episode
      * 
      * @param episode
-     * @param t timestep
+     * @param t
+     *            timestep
+     * 
      * @return discounted reward
      */
     protected double getDiscountedReward(Episode episode, int t) {
-    	double R = 0.0;
-		for (int _t=t; _t < episode.getLength(); _t++) {
-			double d = Math.pow(Config.DISCOUNT_FACTOR_GAMMA, (double) _t-t);
-			R += d * episode.getReward(_t);
-		}
-		return R;
+        double R = 0.0;
+        for (int _t = t; _t < episode.getLength(); _t++) {
+            double d = Math.pow(Config.DISCOUNT_FACTOR_GAMMA, (double) _t - t);
+            R += d * episode.getReward(_t);
+        }
+        return R;
     }
 
     /**
@@ -96,11 +97,12 @@ public abstract class MCPredatorAgent extends PredatorAgent {
      * @return The action to perform
      */
     protected abstract Action getActionToPerform(State state);
-    
+
     /**
      * Updates the current policy based on information from the episode we've run
      * 
-     * @param episode The episode to base our update on
+     * @param episode
+     *            The episode to base our update on
      */
     protected abstract void updatePolicyFromEpisode(Episode episode);
 

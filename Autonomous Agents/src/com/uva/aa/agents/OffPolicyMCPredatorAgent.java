@@ -26,12 +26,12 @@ public class OffPolicyMCPredatorAgent extends MCPredatorAgent {
     public void prepare() {
         Qn = new HashMap<State, HashMap<Action, Double>>();
         Qd = new HashMap<State, HashMap<Action, Double>>();
-        for(State s : getEnvironment().getPossibleStates(true)) {
-        	Qn.put(s, new HashMap<Action, Double>());
-        	Qd.put(s, new HashMap<Action, Double>());
-        	for (Action a : Action.values()) {
-        		Qn.get(s).put(a, 1.0);
-        		Qd.get(s).put(a, 1.0);
+        for(State state : getEnvironment().getPossibleStates(true)) {
+        	Qn.put(state, new HashMap<Action, Double>());
+        	Qd.put(state, new HashMap<Action, Double>());
+        	for (Action action : Action.values()) {
+        		Qn.get(state).put(action, 1.0);
+        		Qd.get(state).put(action, 1.0);
           	}
         }
         super.prepare();
@@ -81,25 +81,25 @@ public class OffPolicyMCPredatorAgent extends MCPredatorAgent {
 		}
 		
 		// Make the policy greedy wrt Q
-		for (State s : getEnvironment().getPossibleStates(true)) {
+		for (State state : getEnvironment().getPossibleStates(true)) {
 			double bestActionValue = Double.MIN_VALUE;
 			for (final Action action : Action.values()) {
-				bestActionValue = Math.max(bestActionValue, mPolicy.getActionValue(s, action));
+				bestActionValue = Math.max(bestActionValue, mPolicy.getActionValue(state, action));
 			}
 			double countBest = 0;
 			for (final Action action : Action.values()) {
-				if (mPolicy.getActionValue(s,action) == bestActionValue) {
+				if (mPolicy.getActionValue(state,action) == bestActionValue) {
 					countBest++;
 				}
 			}
 			
 			double total = 0;
 			for (final Action action : Action.values()) {
-				if (mPolicy.getActionValue(s,action) == bestActionValue) {
-					mPolicy.setActionProbability(s,	action, 1/countBest);
+				if (mPolicy.getActionValue(state,action) == bestActionValue) {
+					mPolicy.setActionProbability(state,	action, 1/countBest);
 					total += 1/countBest;
 				} else {
-					mPolicy.setActionProbability(s,	action, 0);
+					mPolicy.setActionProbability(state,	action, 0);
 				}
 			}
 		}

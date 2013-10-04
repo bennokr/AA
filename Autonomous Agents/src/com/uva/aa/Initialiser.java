@@ -29,8 +29,8 @@ public class Initialiser {
     private static boolean sTestQLearningEGreedyGame = false;
     private static boolean sTestQLearningSoftmaxGame = false;
     private static boolean sTestSarsaGame = false;
-    private static boolean sTestOnPolicyMCGame = true;
-    private static boolean sTestOffPolicyMCGame = false;
+    private static boolean sTestOnPolicyMCGame = false;
+    private static boolean sTestOffPolicyMCGame = true;
 
     /**
      * Sets everything in motion.
@@ -94,13 +94,13 @@ public class Initialiser {
         // Task 2.4(2): On-policy MC
         if (sTestOnPolicyMCGame) {
             final GameTester onPolicyMCGameTester = new OnPolicyMCGameTester();
-            onPolicyMCGameTester.runTests(1000);
+            onPolicyMCGameTester.runTests(10000);
         }
         
         // Task 2.4(3): Off-policy MC
         if (sTestOffPolicyMCGame) {
             final GameTester offPolicyMCGameTester = new OffPolicyMCGameTester();
-            offPolicyMCGameTester.runTests(1);
+            offPolicyMCGameTester.runTests(1000);
         }
     }
 
