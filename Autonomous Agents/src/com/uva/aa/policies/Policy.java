@@ -165,28 +165,29 @@ public class Policy {
         System.err.println(getProperties(state).getActionProbabilities());
         return null;
     }
-    
+
     /**
      * Returns the set of actions with maximum probability (argmax)
      * 
      * @param state
      * @return
      */
-    public Set<Action> getActionSetBasedOnProbability(final State state) {        
-        // max[pi]
-        double max = 0;
-        for (double p : getProperties(state).getActionProbabilities().values()) {
-        	max = Math.max(max, p);
-        }
-        
-        // argmax
-        Set<Action> out = new HashSet<Action>();
+    public List<Action> getActionsBasedOnProbability(final State state) {
+        double bestProbability = 0;
+        final List<Action> bestActions = new LinkedList<Action>();
+
         for (final Map.Entry<Action, Double> actionProb : getProperties(state).getActionProbabilities().entrySet()) {
-            if (actionProb.getValue().equals(max)) {
-            	out.add(actionProb.getKey());
+            final double probability = actionProb.getValue();
+            if (probability > bestProbability) {
+                bestActions.clear();
+                bestProbability = probability;
+            }
+            if (probability >= bestProbability) {
+                bestActions.add(actionProb.getKey());
             }
         }
-        return out;
+        
+        return bestActions;
     }
 
     /**
@@ -203,7 +204,7 @@ public class Policy {
         final double decision = Math.random();
         final List<Action> allActions = new LinkedList<Action>();
         final List<Action> bestActions = new LinkedList<Action>();
-        double bestValue = Double.MIN_VALUE;
+        double bestValue = Integer.MIN_VALUE;
 
         // Determine the best action(s)
         for (final Map.Entry<Action, Double> actionValue : getProperties(state).getActionValues().entrySet()) {
@@ -247,7 +248,7 @@ public class Policy {
         final double decision = Math.random();
         final List<Action> allActions = new LinkedList<Action>();
         final List<Action> bestActions = new LinkedList<Action>();
-        double bestValue = Double.MIN_VALUE;
+        double bestValue = Integer.MIN_VALUE;
 
         // Determine the best action(s)
         for (final Map.Entry<Action, Double> actionValue : getProperties(state).getActionValues().entrySet()) {
@@ -271,7 +272,7 @@ public class Policy {
 
         } else {
             final Map<Action, Double> actionValues = getProperties(state).getActionValues();
-            
+
             // Determine the sum of Softmax values for the actions
             double softmaxSum = 0;
             for (final double value : actionValues.values()) {

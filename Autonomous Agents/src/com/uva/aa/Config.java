@@ -21,7 +21,7 @@ public class Config {
     public final static double TEMPERATURE = 5;
 
     /** The default value for any Q(s,a) in an agent's policy */
-    public final static double DEFAULT_ACTION_VALUE = 15;
+    public final static double DEFAULT_ACTION_VALUE = -5;
 
     /** The reward for killing a prey */
     public static final double KILL_REWARD = 10.0;
