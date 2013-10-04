@@ -18,7 +18,6 @@ public class OffPolicyMCPredatorAgent extends MCPredatorAgent {
 
     public OffPolicyMCPredatorAgent(Location location) {
         super(location);
-
     }
 
     /**
@@ -76,8 +75,7 @@ public class OffPolicyMCPredatorAgent extends MCPredatorAgent {
 
             // t is the time of first occurrence of (s,a) such that t >= tau
             int t = tau;
-            while (episode.getState(t).equals(state) && episode.getAction(t) == action) {
-                // We've seen this state-action pair before
+            while (!episode.getState(t).equals(state) || !episode.getAction(t).equals(action)) {
                 ++t;
             }
 
@@ -92,8 +90,12 @@ public class OffPolicyMCPredatorAgent extends MCPredatorAgent {
             // Update Denominator: $D_{sa} += w$
             Qd.get(state).put(action, Qd.get(state).get(action) + w);
             // Update Q
-            mPolicy.setActionValue(state, action, Qn.get(state).get(action) / Qd.get(state).get(action));
-            System.out.println(Qn.get(state).get(action) / Qd.get(state).get(action));
+            double Q = Qn.get(state).get(action) / Qd.get(state).get(action);
+            if (Double.isNaN(Q)) {
+                Q = 0;
+            }
+            mPolicy.setActionValue(state, action, Q);
+            System.out.println(Q);
         }
 
         // Make the policy greedy wrt Q
