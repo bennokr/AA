@@ -7,10 +7,12 @@ import com.uva.aa.Episode;
 import com.uva.aa.enums.Action;
 
 /**
- * An agent that acts as a predator within the environment. Will learn about the prey by following its policy.
+ * An agent that acts as a predator within the environment. Will learn about the prey by following a Monte Carlo based
+ * policy.
  */
 public abstract class MCPredatorAgent extends PredatorAgent {
 
+    /** The episode of the current game */
     private final Episode mEpisode = new Episode();
 
     /**
@@ -53,12 +55,14 @@ public abstract class MCPredatorAgent extends PredatorAgent {
         // Move to a location based on an action determined by the policy
         moveTo(nextAction.getLocation(this));
 
+        // Log the reward that was received by taking the action
         mEpisode.addReward(getImmediateReward(currentState, getEnvironment().getState(), nextAction));
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void postGameCallback() {
         // Log the last state
         mEpisode.addState(getEnvironment().getState());
@@ -71,19 +75,19 @@ public abstract class MCPredatorAgent extends PredatorAgent {
     }
 
     /**
-     * Get the discounted reward at this timestep in the episode
+     * Get the discounted return at this timestep in the episode
      * 
      * @param episode
-     * @param t
-     *            timestep
+     *            The episode to get the return from
+     * @param timestep
+     *            Which step the reward should be discounted for
      * 
-     * @return discounted reward
+     * @return A discounted return based on how many steps away we are
      */
-    protected double getDiscountedReward(Episode episode, int t) {
+    protected double getDiscountedReturn(final Episode episode, final int timestep) {
         double R = 0.0;
-        for (int _t = t; _t < episode.getLength(); _t++) {
-            double d = Math.pow(Config.DISCOUNT_FACTOR_GAMMA, (double) _t - t);
-            R += d * episode.getReward(_t);
+        for (int tempTimestep = timestep; tempTimestep < episode.getLength(); tempTimestep++) {
+            R += Math.pow(Config.DISCOUNT_FACTOR_GAMMA, tempTimestep - timestep) * episode.getReward(tempTimestep);
         }
         return R;
     }

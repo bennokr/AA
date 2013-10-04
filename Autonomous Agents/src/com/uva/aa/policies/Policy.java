@@ -1,12 +1,9 @@
 package com.uva.aa.policies;
 
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.uva.aa.State;
 import com.uva.aa.enums.Action;
@@ -186,7 +183,7 @@ public class Policy {
                 bestActions.add(actionProb.getKey());
             }
         }
-        
+
         return bestActions;
     }
 

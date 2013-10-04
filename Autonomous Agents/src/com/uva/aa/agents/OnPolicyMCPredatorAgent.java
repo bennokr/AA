@@ -10,53 +10,66 @@ import com.uva.aa.Location;
 import com.uva.aa.State;
 import com.uva.aa.enums.Action;
 
+/**
+ * An agent that acts as a predator within the environment. Will learn about the prey by following On-Policy Monte
+ * Carlo.
+ */
 public class OnPolicyMCPredatorAgent extends MCPredatorAgent {
 
-    PreyAgent somePrey;
-    private HashMap<State, HashMap<Action, Integer>> countReturn;
+    /** The mapped rewards for each state-action pair */
+    private final HashMap<State, HashMap<Action, Integer>> countReturn = new HashMap<State, HashMap<Action, Integer>>();
 
-    public OnPolicyMCPredatorAgent(Location location) {
+    /**
+     * Creates a new predator on the specified coordinates within the environment.
+     * 
+     * @param location
+     *            The location to place the predator at
+     */
+    public OnPolicyMCPredatorAgent(final Location location) {
         super(location);
-        countReturn = new HashMap<State, HashMap<Action, Integer>>();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected Action getActionToPerform(State state) {
-        // save our prey before it gets eaten and lost (don't ask)
-        somePrey = getEnvironment().getPreys().get(0);
-
         return mPolicy.getActionBasedOnProbability(state);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void updatePolicyFromEpisode(Episode episode) {
-        // iterate over every (s,a)
+        // Iterate over every (s,a)
         for (int timestep = 0; timestep < episode.getLength(); timestep++) {
-            State s = episode.getState(timestep);
-            Action a = episode.getAction(timestep);
+            final State state = episode.getState(timestep);
+            final Action action = episode.getAction(timestep);
 
-            // make sure the counter is initialized
-            if (!countReturn.containsKey(s)) {
-                countReturn.put(s, new HashMap<Action, Integer>());
+            // Make sure the counter is initialized
+            if (!countReturn.containsKey(state)) {
+                countReturn.put(state, new HashMap<Action, Integer>());
             }
-            if (!countReturn.get(s).containsKey(a)) {
-                countReturn.get(s).put(a, 0);
+            if (!countReturn.get(state).containsKey(action)) {
+                countReturn.get(state).put(action, 0);
             }
 
             // Set Q to the average discounted reward R
             // updated incrementally
-            double i = countReturn.get(s).get(a) + 1.0;
-            double q = (1 - (1 / i)) * mPolicy.getActionValue(s, a) + getDiscountedReward(episode, timestep) / i;
+            double i = countReturn.get(state).get(action) + 1.0;
+            double q = (1 - (1 / i)) * mPolicy.getActionValue(state, action) + getDiscountedReturn(episode, timestep)
+                    / i;
             mPolicy.setActionValue(episode.getState(timestep), episode.getAction(timestep), q);
-            countReturn.get(s).put(a, (int) i);
+            countReturn.get(state).put(action, (int) i);
         }
 
+        // Update epsilon-soft policy
         for (int timestep = 0; timestep < episode.getLength(); timestep++) {
-            State loopState = episode.getState(timestep);
-            // update epsilon-soft policy
+            final State loopState = episode.getState(timestep);
             final List<Action> bestActions = new LinkedList<Action>();
             double bestValue = Double.MIN_VALUE;
-            
+
             for (final Action action : Action.values()) {
                 double loopValue = mPolicy.getActionValue(loopState, action);
                 if (loopValue > bestValue) {
