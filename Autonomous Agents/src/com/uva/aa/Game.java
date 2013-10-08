@@ -7,6 +7,8 @@ import com.uva.aa.agents.OffPolicyMCPredatorAgent;
 import com.uva.aa.agents.OnPolicyMCPredatorAgent;
 import com.uva.aa.agents.ParallelPredatorAgent;
 import com.uva.aa.agents.ParallelPreyAgent;
+import com.uva.aa.agents.ParallelQLearningEGreedyPredatorAgent;
+import com.uva.aa.agents.ParallelQLearningEGreedyPreyAgent;
 import com.uva.aa.agents.PolicyIteratingPredatorAgent;
 import com.uva.aa.agents.PredatorAgent;
 import com.uva.aa.agents.PreyAgent;
@@ -193,6 +195,32 @@ public class Game {
     }
 
     /**
+     * Adds a parallel q-learning predator that uses an epsilon-greedy policy to the environment at the specified
+     * coordinates.
+     * 
+     * @param x
+     *            The x coordinate where the predator is located at
+     * @param y
+     *            The y coordinate where the predator is located at
+     */
+    public void addParallelQLearningEGreedyPredator(final int x, final int y) {
+        mEnvironment.addAgent(new ParallelQLearningEGreedyPredatorAgent(new Location(mEnvironment, x, y)));
+    }
+
+    /**
+     * Adds a parallel q-learning prey that uses an epsilon-greedy policy to the environment at the specified
+     * coordinates.
+     * 
+     * @param x
+     *            The x coordinate where the prey is located at
+     * @param y
+     *            The y coordinate where the prey is located at
+     */
+    public void addParallelQLearningEGreedyPrey(final int x, final int y) {
+        mEnvironment.addAgent(new ParallelQLearningEGreedyPreyAgent(new Location(mEnvironment, x, y)));
+    }
+
+    /**
      * Checks whether or not moves taken should be printed.
      * 
      * @return True of moves should be printed, false otherwise
@@ -257,23 +285,23 @@ public class Game {
     public void start() {
         // Makes sure that the game can be started and prepare it if needed
         switch (mGameState) {
-        case PREPARATION:
-            // The preys must be prepared first as the predators depend on them
-            for (final Agent agent : mEnvironment.getPreys()) {
-                agent.prepare();
-            }
-            for (final Agent agent : mEnvironment.getPredators()) {
-                agent.prepare();
-            }
-            break;
+            case PREPARATION:
+                // The preys must be prepared first as the predators depend on them
+                for (final Agent agent : mEnvironment.getPreys()) {
+                    agent.prepare();
+                }
+                for (final Agent agent : mEnvironment.getPredators()) {
+                    agent.prepare();
+                }
+                break;
 
-        case RESET:
-            break;
+            case RESET:
+                break;
 
-        case RUNNING:
-        case FINISHED:
-            // Should throw a proper exception when the game can be started dynamically
-            throw new RuntimeException("This game is already running or finished.");
+            case RUNNING:
+            case FINISHED:
+                // Should throw a proper exception when the game can be started dynamically
+                throw new RuntimeException("This game is already running or finished.");
         }
 
         mInitialState = mEnvironment.getState();
@@ -338,17 +366,17 @@ public class Game {
      */
     public void resetGame() {
         switch (mGameState) {
-        case PREPARATION:
-        case RESET:
-            // There's nothing to reset
-            return;
+            case PREPARATION:
+            case RESET:
+                // There's nothing to reset
+                return;
 
-        case FINISHED:
-            break;
+            case FINISHED:
+                break;
 
-        case RUNNING:
-            // Should throw a proper exception when the game can be reset dynamically
-            throw new RuntimeException("This game is currently running.");
+            case RUNNING:
+                // Should throw a proper exception when the game can be reset dynamically
+                throw new RuntimeException("This game is currently running.");
         }
 
         mEnvironment.setState(mInitialState);

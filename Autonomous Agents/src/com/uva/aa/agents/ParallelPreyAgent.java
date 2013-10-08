@@ -9,23 +9,23 @@ import com.uva.aa.State;
 import com.uva.aa.enums.Action;
 
 /**
- * An agent that acts as a predator within the environment. Will randomly move, hoping to catch a prey.
+ * An agent that acts as a prey within the environment. 
  */
 public class ParallelPreyAgent extends PredatorAgent {
 
     /**
-     * Creates a new predator on the specified coordinates within the environment.
+     * Creates a new prey on the specified coordinates within the environment.
      * 
      * @param location
-     *            The location to place the predator at
+     *            The location to place the prey at
      */
     public ParallelPreyAgent(final Location location) {
         super(location);
     }
 
     /**
-     * The deterministic immediate reward based on if a prey is caught by any predator. Will punish for colliding with
-     * other predators.
+     * The deterministic immediate reward based on if a prey is caught by any predator. Will be rewarded if predators
+     * collide and punished if it is caught by a predator.
      */
     @Override
     public double getImmediateReward(final State initialState, final State resultingState, final Action action) {
@@ -34,8 +34,8 @@ public class ParallelPreyAgent extends PredatorAgent {
         for (final PredatorAgent predator : initialState.getPredators()) {
             final Location location = resultingState.getAgentLocation(predator);
             if (predatorLocations.contains(location)) {
-                // The prey gets rewarded when predators end up in the same location
-                return -Config.COLLISION_REWARD;
+                // The prey gets rewarded when prey end up in the same location
+                return Config.PREY_ESCAPE_REWARD;
             }
             predatorLocations.add(location);
         }
@@ -44,7 +44,7 @@ public class ParallelPreyAgent extends PredatorAgent {
         for (final PreyAgent prey : initialState.getPreys()) {
             final Location location = resultingState.getAgentLocation(prey);
             if (location == null || predatorLocations.contains(location)) {
-                return -Config.KILL_REWARD;
+                return Config.PREY_DIE_REWARD;
             }
         }
 

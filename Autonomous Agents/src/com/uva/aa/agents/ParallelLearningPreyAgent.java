@@ -6,20 +6,20 @@ import com.uva.aa.State;
 import com.uva.aa.enums.Action;
 
 /**
- * An agent that acts as a predator within the environment. Will learn about the prey by following its policy.
+ * An agent that acts as a prey within the environment. Will learn about the predator by following its policy.
  */
-public abstract class ParallelLearningPredatorAgent extends ParallelPredatorAgent {
+public abstract class ParallelLearningPreyAgent extends ParallelPreyAgent {
 
     private State mLastState;
     private Action mLastAction;
 
     /**
-     * Creates a new predator on the specified coordinates within the environment.
+     * Creates a new prey on the specified coordinates within the environment.
      * 
      * @param location
-     *            The location to place the predator at
+     *            The location to place the prey at
      */
-    public ParallelLearningPredatorAgent(final Location location) {
+    public ParallelLearningPreyAgent(final Location location) {
         super(location);
     }
 
@@ -30,7 +30,7 @@ public abstract class ParallelLearningPredatorAgent extends ParallelPredatorAgen
     public void prepare() {
         for (final State state : getEnvironment().getPossibleStates(false)) {
             for (final Action action : Action.values()) {
-                mPolicy.setActionValue(state, action, Config.DEFAULT_ACTION_VALUE);
+                mPolicy.setActionValue(state, action, Config.PREY_DEFAULT_ACTION_VALUE);
             }
         }
     }
