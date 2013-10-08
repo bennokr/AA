@@ -2,6 +2,8 @@ package com.uva.aa;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import com.uva.aa.agents.Agent;
@@ -49,7 +51,7 @@ public class State {
      * @param agentLocations
      *            The agents mapped to their locations
      */
-    /* default */State(final Map<Agent, Location> agentLocations) {
+    public State(final Map<Agent, Location> agentLocations) {
         mAgentLocations = agentLocations;
 
         // Set relative locations based on the most top-left agent for reducing the state-space
@@ -75,6 +77,40 @@ public class State {
      */
     public Map<Agent, Location> getAgentLocations() {
         return mAgentLocations;
+    }
+
+    /**
+     * Retrieves the all predators in this state.
+     * 
+     * @return The predators
+     */
+    public List<PredatorAgent> getPredators() {
+        final List<PredatorAgent> predators = new LinkedList<PredatorAgent>();
+
+        for (final Agent agent : mAgentLocations.keySet()) {
+            if (agent instanceof PredatorAgent) {
+                predators.add((PredatorAgent) agent);
+            }
+        }
+
+        return predators;
+    }
+
+    /**
+     * Retrieves the all preys in this state.
+     * 
+     * @return The preys
+     */
+    public List<PreyAgent> getPreys() {
+        final List<PreyAgent> preys = new LinkedList<PreyAgent>();
+
+        for (final Agent agent : mAgentLocations.keySet()) {
+            if (agent instanceof PreyAgent) {
+                preys.add((PreyAgent) agent);
+            }
+        }
+
+        return preys;
     }
 
     /**

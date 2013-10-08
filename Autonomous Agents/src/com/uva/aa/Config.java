@@ -25,4 +25,13 @@ public class Config {
 
     /** The reward for killing a prey */
     public static final double KILL_REWARD = 10.0;
+    
+    /** The punishment for colliding with another predator - treated as a reward so should be negative */
+    public final static double COLLISION_REWARD = -10.0;
+
+    /** The punishment for dying as a prey - treated as a reward so should be negative */
+    public static final double PREY_DIE_REWARD = -10.0;
+
+    /** The reward for escaping the predators as a prey */
+    public final static double PREY_ESCAPE_REWARD = 10.0;
 }

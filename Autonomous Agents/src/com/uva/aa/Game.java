@@ -5,6 +5,8 @@ import java.util.List;
 import com.uva.aa.agents.Agent;
 import com.uva.aa.agents.OffPolicyMCPredatorAgent;
 import com.uva.aa.agents.OnPolicyMCPredatorAgent;
+import com.uva.aa.agents.ParallelPredatorAgent;
+import com.uva.aa.agents.ParallelPreyAgent;
 import com.uva.aa.agents.PolicyIteratingPredatorAgent;
 import com.uva.aa.agents.PredatorAgent;
 import com.uva.aa.agents.PreyAgent;
@@ -43,6 +45,9 @@ public class Game {
     /** Whether to print the UI or just a simple textual state when performing a human test */
     private boolean mPrintUi = true;
 
+    /** Whether or not the game should run in parallel */
+    private boolean mParallelActions = false;
+
     /**
      * Creates a new game with an environment with the specified dimensions.
      * 
@@ -65,6 +70,18 @@ public class Game {
      */
     public void addPrey(final int x, final int y) {
         mEnvironment.addAgent(new PreyAgent(new Location(mEnvironment, x, y)));
+    }
+
+    /**
+     * Adds a parallel prey to the environment at the specified coordinates.
+     * 
+     * @param x
+     *            The x coordinate where the prey is located at
+     * @param y
+     *            The y coordinate where the prey is located at
+     */
+    public void addParallelPrey(final int x, final int y) {
+        mEnvironment.addAgent(new ParallelPreyAgent(new Location(mEnvironment, x, y)));
     }
 
     /**
@@ -138,7 +155,7 @@ public class Game {
     public void addSarsaPredator(final int x, final int y) {
         mEnvironment.addAgent(new SarsaPredatorAgent(new Location(mEnvironment, x, y)));
     }
-    
+
     /**
      * Adds a On-Policy MC predator to the environment at the specified coordinates.
      * 
@@ -150,7 +167,7 @@ public class Game {
     public void addOnPolicyMCPredator(final int x, final int y) {
         mEnvironment.addAgent(new OnPolicyMCPredatorAgent(new Location(mEnvironment, x, y)));
     }
-    
+
     /**
      * Adds a Off-Policy MC predator to the environment at the specified coordinates.
      * 
@@ -161,6 +178,18 @@ public class Game {
      */
     public void addOffPolicyMCPredator(final int x, final int y) {
         mEnvironment.addAgent(new OffPolicyMCPredatorAgent(new Location(mEnvironment, x, y)));
+    }
+
+    /**
+     * Adds a parallel predator to the environment at the specified coordinates.
+     * 
+     * @param x
+     *            The x coordinate where the predator is located at
+     * @param y
+     *            The y coordinate where the predator is located at
+     */
+    public void addParallelPredator(final int x, final int y) {
+        mEnvironment.addAgent(new ParallelPredatorAgent(new Location(mEnvironment, x, y)));
     }
 
     /**
@@ -191,6 +220,25 @@ public class Game {
     }
 
     /**
+     * Sets whether or not the game should run in parallel so that actions are performed simultaneously.
+     * 
+     * @param parallelActions
+     *            True for a performing action simultaneously, false for in series
+     */
+    public void setParallelActions(final boolean parallelActions) {
+        mParallelActions = parallelActions;
+    }
+
+    /**
+     * Retrieves whether or not the game should run in parallel so that actions are performed simultaneously.
+     * 
+     * @return True for a performing action simultaneously, false for in series
+     */
+    public boolean hasParallelActions() {
+        return mParallelActions;
+    }
+
+    /**
      * Finishes the game if it's currently running.
      */
     public void finish() {
@@ -209,26 +257,27 @@ public class Game {
     public void start() {
         // Makes sure that the game can be started and prepare it if needed
         switch (mGameState) {
-            case PREPARATION:
-                // The preys must be prepared first as the predators depend on them
-                for (final Agent agent : mEnvironment.getPreys()) {
-                    agent.prepare();
-                }
-                for (final Agent agent : mEnvironment.getPredators()) {
-                    agent.prepare();
-                }
-                break;
+        case PREPARATION:
+            // The preys must be prepared first as the predators depend on them
+            for (final Agent agent : mEnvironment.getPreys()) {
+                agent.prepare();
+            }
+            for (final Agent agent : mEnvironment.getPredators()) {
+                agent.prepare();
+            }
+            break;
 
-            case RESET:
-                break;
+        case RESET:
+            break;
 
-            case RUNNING:
-            case FINISHED:
-                // Should throw a proper exception when the game can be started dynamically
-                throw new RuntimeException("This game is already running or finished.");
+        case RUNNING:
+        case FINISHED:
+            // Should throw a proper exception when the game can be started dynamically
+            throw new RuntimeException("This game is already running or finished.");
         }
 
         mInitialState = mEnvironment.getState();
+        State roundStartState = mInitialState;
 
         // Mark the game as running
         mGameState = GameState.RUNNING;
@@ -243,7 +292,7 @@ public class Game {
             ++mTurnsPlayed;
 
             // Make a move
-            activeAgent.performAction();
+            activeAgent.performAction(mParallelActions ? roundStartState : null);
 
             // Show the current state of the environment
             if (mHumanTest) {
@@ -259,6 +308,12 @@ public class Game {
             if (nextAgent == agents.size()) {
                 ++mRoundsPlayed;
                 nextAgent = 0;
+
+                if (mParallelActions) {
+                    // Update the environment, can end the game
+                    mEnvironment.updateParallelActionState();
+                    roundStartState = mEnvironment.getState();
+                }
             }
             activeAgent = agents.get(nextAgent);
 
@@ -283,17 +338,17 @@ public class Game {
      */
     public void resetGame() {
         switch (mGameState) {
-            case PREPARATION:
-            case RESET:
-                // There's nothing to reset
-                return;
+        case PREPARATION:
+        case RESET:
+            // There's nothing to reset
+            return;
 
-            case FINISHED:
-                break;
+        case FINISHED:
+            break;
 
-            case RUNNING:
-                // Should throw a proper exception when the game can be reset dynamically
-                throw new RuntimeException("This game is currently running.");
+        case RUNNING:
+            // Should throw a proper exception when the game can be reset dynamically
+            throw new RuntimeException("This game is currently running.");
         }
 
         mEnvironment.setState(mInitialState);

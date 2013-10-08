@@ -41,9 +41,10 @@ public abstract class MCPredatorAgent extends PredatorAgent {
     }
 
     /**
-     * Performs an action during the agent's turn based on the policy.
+     * {@inheritDoc}
      */
-    public void performAction() {
+    @Override
+    public void performAction(final State roundStartState) {
         // Log state
         final State currentState = getEnvironment().getState();
         mEpisode.addState(currentState);

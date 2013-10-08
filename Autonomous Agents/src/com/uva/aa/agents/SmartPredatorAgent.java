@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.uva.aa.Environment;
 import com.uva.aa.Location;
+import com.uva.aa.State;
 import com.uva.aa.enums.Action;
 
 /**
@@ -28,7 +29,7 @@ public class SmartPredatorAgent extends PredatorAgent {
      * Will target a prey and try to move towards it.
      */
     @Override
-    public void performAction() {
+    public void performAction(final State roundStartState) {
         final Environment environment = getEnvironment();
         final int environmentHalfWidth = environment.getHalfWidth();
         final int environmentHalfHeight = environment.getHalfHeight();

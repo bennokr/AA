@@ -8,7 +8,7 @@ import com.uva.aa.enums.Action;
 /**
  * An agent that acts as a predator within the environment. Will learn about the prey by following its policy.
  */
-public abstract class LearningPredatorAgent extends PredatorAgent {
+public abstract class ParallelLearningPredatorAgent extends PredatorAgent {
 
     private State mLastState;
     private Action mLastAction;
@@ -19,7 +19,7 @@ public abstract class LearningPredatorAgent extends PredatorAgent {
      * @param location
      *            The location to place the predator at
      */
-    public LearningPredatorAgent(final Location location) {
+    public ParallelLearningPredatorAgent(final Location location) {
         super(location);
     }
 
@@ -40,29 +40,28 @@ public abstract class LearningPredatorAgent extends PredatorAgent {
      */
     @Override
     public void performAction(final State roundStartState) {
-        final State currentState = getEnvironment().getState();
         Action nextAction = null;
 
         // Pick an action if it should be picked before the learning step
         if (shouldPickActionBeforeCallback()) {
-            nextAction = getActionToPerform(currentState);
+            nextAction = getActionToPerform(roundStartState);
         }
 
         // Allow the learning algorithm to update values
         if (mLastState != null) {
-            postActionCallback(mLastState, currentState, mLastAction, nextAction);
+            postActionCallback(mLastState, roundStartState, mLastAction, nextAction);
         }
 
         // Pick the action if it wasn't picked before the callback
         if (nextAction == null) {
-            nextAction = getActionToPerform(currentState);
+            nextAction = getActionToPerform(roundStartState);
         }
 
         // Move to a location based on an action determined by the policy
         moveTo(nextAction.getLocation(this));
 
         mLastAction = nextAction;
-        mLastState = currentState;
+        mLastState = roundStartState;
     }
 
     /**

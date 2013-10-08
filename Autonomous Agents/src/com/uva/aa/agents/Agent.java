@@ -29,10 +29,13 @@ public abstract class Agent {
 
     /**
      * Performs an action during the agent's turn based on the policy.
+     * 
+     * @param roundStartState The state that we act for, or null to act for the environment's current state
      */
-    public void performAction() {
+    public void performAction(final State roundStartState) {
         // Move to a location based on an action determined by the policy
-        moveTo(mPolicy.getActionBasedOnProbability(getEnvironment().getState()).getLocation(this));
+        moveTo(mPolicy.getActionBasedOnProbability(
+                roundStartState != null ? roundStartState : getEnvironment().getState()).getLocation(this));
     }
 
     /**
@@ -50,9 +53,11 @@ public abstract class Agent {
         }
 
         // Kills the agent present at the location, if any
-        final Agent occupyingAgent = getEnvironment().getOccupyingAgent(location);
-        if (occupyingAgent != null && occupyingAgent != this) {
-            occupyingAgent.die();
+        if (!getEnvironment().getGame().hasParallelActions()) {
+            final Agent occupyingAgent = getEnvironment().getOccupyingAgent(location);
+            if (occupyingAgent != null && occupyingAgent != this) {
+                occupyingAgent.die();
+            }
         }
 
         mLocation = location;

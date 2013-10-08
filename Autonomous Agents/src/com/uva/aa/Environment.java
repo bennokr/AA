@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -375,6 +376,37 @@ public class Environment {
         // When there are no preys left, end the game
         if (mPreys.isEmpty() && mGame.isRunning()) {
             mGame.finish();
+        }
+    }
+
+    /**
+     * Called at the end of a round in a parallel running game. Updates the environment's state and the game's state
+     * when needed.
+     */
+    public void updateParallelActionState() {
+        // Check all the predator locations
+        final List<Location> predatorLocations = new LinkedList<Location>();
+        for (final PredatorAgent predator : mPredators) {
+            final Location location = predator.getLocation();
+            if (predatorLocations.contains(location)) {
+                // The predators lose when they end up in the same location
+                mGame.finish();
+                return;
+            }
+            predatorLocations.add(location);
+        }
+
+        // Kill all preys that are on the spots of the predators
+        for (final PreyAgent prey : mPreys) {
+            if (predatorLocations.contains(prey.getLocation())) {
+                prey.die();
+            }
+        }
+
+        // The predators win when all preys are dead
+        if (mPreys.isEmpty()) {
+            mGame.finish();
+            return;
         }
     }
 
