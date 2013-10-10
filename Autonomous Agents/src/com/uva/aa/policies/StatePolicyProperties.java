@@ -120,4 +120,17 @@ public class StatePolicyProperties {
         mActionValues.clear();
     }
 
+    /**
+     * Creates an identical clone of these properties.
+     * 
+     * @return Properties with the same contents
+     */
+    public StatePolicyProperties clone() {
+        final StatePolicyProperties clone = new StatePolicyProperties();
+        clone.mActionProbabilities = mActionProbabilities;
+        clone.mActionValues = mActionValues;
+        clone.mValue = mValue;
+        return clone;
+    }
+
 }

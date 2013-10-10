@@ -1,6 +1,5 @@
 package com.uva.aa.agents;
 
-import com.uva.aa.Config;
 import com.uva.aa.Location;
 import com.uva.aa.State;
 import com.uva.aa.enums.Action;
@@ -21,18 +20,6 @@ public abstract class ParallelLearningPredatorAgent extends ParallelPredatorAgen
      */
     public ParallelLearningPredatorAgent(final Location location) {
         super(location);
-    }
-
-    /**
-     * Starts with a random policy but will evaluate that to improve.
-     */
-    @Override
-    public void prepare() {
-        for (final State state : getEnvironment().getPossibleStates(false)) {
-            for (final Action action : Action.values()) {
-                mPolicy.setActionValue(state, action, Config.DEFAULT_ACTION_VALUE);
-            }
-        }
     }
 
     /**

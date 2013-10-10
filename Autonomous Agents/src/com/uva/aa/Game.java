@@ -357,6 +357,8 @@ public class Game {
             agent.postGameCallback();
         }
 
+        System.out.println((mEnvironment.getPreys().isEmpty() ? "Predators" : "Preys") + " win!");
+        System.out.println(mEnvironment.getPredators().get(0).getPolicy().getStateMap().size() + " states visited.");
         System.out.println(mRoundsPlayed + " rounds played with a total of " + mTurnsPlayed + " turns.");
         System.out.println();
     }

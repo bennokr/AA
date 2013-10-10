@@ -15,6 +15,9 @@ public class Policy {
 
     /** The map holding the values actions with probabilities for their state */
     private Map<State, StatePolicyProperties> mStateMap = new HashMap<State, StatePolicyProperties>();
+    
+    /** The default properties that will be set when an unknown state is required */
+    final private StatePolicyProperties mDefaultProperties = new StatePolicyProperties();
 
     /**
      * Returns the mapped values and actions with probabilities for their state.
@@ -39,7 +42,7 @@ public class Policy {
 
         // Prepare the state if it wasn't mapped yet
         if (properties == null) {
-            properties = new StatePolicyProperties();
+            properties = mDefaultProperties.clone();
             mStateMap.put(state, properties);
         }
 
@@ -56,6 +59,15 @@ public class Policy {
      */
     public boolean containsState(final State state) {
         return mStateMap.containsKey(state);
+    }
+
+    /**
+     * Retrieves the default properties for this policy.
+     * 
+     * @return The default properties for this policy
+     */
+    public StatePolicyProperties getDefaultProperties() {
+        return mDefaultProperties;
     }
 
     /**

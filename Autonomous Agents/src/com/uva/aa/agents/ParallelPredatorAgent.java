@@ -7,6 +7,7 @@ import com.uva.aa.Config;
 import com.uva.aa.Location;
 import com.uva.aa.State;
 import com.uva.aa.enums.Action;
+import com.uva.aa.policies.StatePolicyProperties;
 
 /**
  * An agent that acts as a predator within the environment. Will randomly move, hoping to catch a prey.
@@ -21,6 +22,26 @@ public class ParallelPredatorAgent extends PredatorAgent {
      */
     public ParallelPredatorAgent(final Location location) {
         super(location);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void prepare() {
+        // Prepare the default properties instead of the properties for each state
+        final StatePolicyProperties defaultProperties = mPolicy.getDefaultProperties();
+
+        final List<Action> possibleActions = new LinkedList<Action>();
+        for (final Action action : Action.values()) {
+            possibleActions.add(action);
+        }
+
+        // Assign the changes to move to a different location
+        final double moveProbability = 1.0 / possibleActions.size();
+        for (final Action action : possibleActions) {
+            defaultProperties.setActionProbability(action, moveProbability);
+        }
     }
 
     /**

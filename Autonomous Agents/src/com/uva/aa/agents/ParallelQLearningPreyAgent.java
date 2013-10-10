@@ -33,7 +33,7 @@ public abstract class ParallelQLearningPreyAgent extends ParallelLearningPreyAge
         final PreyAgent prey = (!preys.isEmpty() ? preys.get(0) : null);
 
         // Determine the transation's details
-        final State immediateNextState = State.buildState(this, resultingState.getAgentLocation(this), prey,
+        final State immediateNextState = State.buildState(getEnvironment().getPredators().get(0), resultingState.getAgentLocation(this), prey,
                 initialState.getAgentLocation(prey));
         final double reward = getImmediateReward(initialState, immediateNextState, previousAction);
         final double initialActionValue = mPolicy.getActionValue(initialState, previousAction);

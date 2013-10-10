@@ -397,10 +397,15 @@ public class Environment {
         }
 
         // Kill all preys that are on the spots of the predators
+        final List<PreyAgent> preysToKill = new LinkedList<PreyAgent>();
         for (final PreyAgent prey : mPreys) {
             if (predatorLocations.contains(prey.getLocation())) {
-                prey.die();
+                // kill after loop to prevent ConcurrentModificationException
+                preysToKill.add(prey);
             }
+        }
+        for (final PreyAgent prey : preysToKill) {
+            prey.die();
         }
 
         // The predators win when all preys are dead

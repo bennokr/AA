@@ -7,11 +7,12 @@ import com.uva.aa.Config;
 import com.uva.aa.Location;
 import com.uva.aa.State;
 import com.uva.aa.enums.Action;
+import com.uva.aa.policies.StatePolicyProperties;
 
 /**
- * An agent that acts as a prey within the environment. 
+ * An agent that acts as a prey within the environment.
  */
-public class ParallelPreyAgent extends PredatorAgent {
+public class ParallelPreyAgent extends PreyAgent {
 
     /**
      * Creates a new prey on the specified coordinates within the environment.
@@ -21,6 +22,32 @@ public class ParallelPreyAgent extends PredatorAgent {
      */
     public ParallelPreyAgent(final Location location) {
         super(location);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void prepare() {
+        // Prepare the default properties instead of the properties for each state
+        final StatePolicyProperties defaultProperties = mPolicy.getDefaultProperties();
+
+        final List<Action> possibleActions = new LinkedList<Action>();
+        for (final Action action : Action.values()) {
+            if (action == Action.WAIT) {
+                continue;
+            }
+            possibleActions.add(action);
+        }
+
+        // Determine the chance to wait
+        defaultProperties.setActionProbability(Action.WAIT, 1 - MOVE_PROBABILITY);
+
+        // Assign the changes to move to a different location
+        final double moveProbability = MOVE_PROBABILITY / possibleActions.size();
+        for (final Action action : possibleActions) {
+            defaultProperties.setActionProbability(action, moveProbability);
+        }
     }
 
     /**

@@ -13,7 +13,7 @@ import com.uva.aa.enums.Action;
 public class PreyAgent extends Agent {
 
     /** The probability that the prey will move instead of wait */
-    private final static double MOVE_PROBABILITY = 0.2;
+    protected final static double MOVE_PROBABILITY = 0.2;
 
     /**
      * Creates a new prey on the specified coordinates within the environment.
