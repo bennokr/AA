@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.uva.aa.agents.Agent;
 import com.uva.aa.agents.PredatorAgent;
@@ -20,6 +21,9 @@ public class State {
 
     /** The map of agents with their locations relative to the most top-left location */
     private final Map<Agent, Location> mRelativeAgentLocations = new HashMap<Agent, Location>();
+
+    /** The agent from whose perspective the state is considered */
+    private final Agent mTargetAgent;
 
     /**
      * Builds a state based on a predator and a prey, both with a location. Only supports one predator and one prey.
@@ -50,8 +54,12 @@ public class State {
      * 
      * @param agentLocations
      *            The agents mapped to their locations
+     * 
+     * @param agent
+     *            The agent from whose perspective the state is considered
      */
-    public State(final Map<Agent, Location> agentLocations) {
+    public State(final Map<Agent, Location> agentLocations, final Agent targetAgent) {
+        mTargetAgent = targetAgent;
         mAgentLocations = agentLocations;
 
         // Set relative locations based on the most top-left agent for reducing the state-space
@@ -68,6 +76,28 @@ public class State {
             final Location relativeLocation = new Location(null, location.getX() - minX, location.getY() - minY);
             mRelativeAgentLocations.put(agentLocation.getKey(), relativeLocation);
         }
+    }
+
+    /**
+     * Creates a new state with the given mapping.
+     * 
+     * @param agentLocations
+     *            The agents mapped to their locations
+     */
+    public State(final Map<Agent, Location> agentLocations) {
+        this(agentLocations, null);
+    }
+
+    /**
+     * Returns this state with respect to the agent from whose perspective the state is considered
+     * 
+     * @param agent
+     *            The target agent
+     * 
+     * @return A clone of the state
+     */
+    public State getStateWithRespectToAgent(final Agent agent) {
+        return new State(mAgentLocations, agent);
     }
 
     /**
@@ -228,9 +258,36 @@ public class State {
         }
 
         // Checks if all agents and their locations match with those in the other set
-        for (final Map.Entry<Agent, Location> agentLocation : agentLocations.entrySet()) {
-            if (!agentLocation.getValue().equals(otherAgentLocations.get(agentLocation.getKey()))) {
-                return false;
+        if (mTargetAgent != null) {
+            for (final Map.Entry<Agent, Location> agentLocation : agentLocations.entrySet()) {
+                final Agent agent = agentLocation.getKey();
+                final Location location = agentLocation.getValue();
+
+                // If this agent is the target one, check if it's in the right location
+                if (mTargetAgent == agent && !location.equals(otherAgentLocations.get(agent))) {
+                    return false;
+                }
+
+                // For other agents, see if there is an agent of the same class there
+                boolean locationFound = false;
+                for (final Map.Entry<Agent, Location> otherAgentLocation : otherAgentLocations.entrySet()) {
+                    if (agent.getClass().equals(otherAgentLocation.getKey().getClass())
+                            && location.equals(otherAgentLocation.getValue())) {
+                        locationFound = true;
+                    }
+                }
+
+                if (!locationFound) {
+                    // There's a difference found
+                    return false;
+                }
+            }
+        } else {
+            // A simple check is sufficient when we don't have a target agent
+            for (final Map.Entry<Agent, Location> agentLocation : agentLocations.entrySet()) {
+                if (!agentLocation.getValue().equals(otherAgentLocations.get(agentLocation.getKey()))) {
+                    return false;
+                }
             }
         }
 
@@ -246,6 +303,19 @@ public class State {
      */
     @Override
     public int hashCode() {
-        return (hasReducedStateSpace() ? mRelativeAgentLocations : mAgentLocations).hashCode();
+        final Map<Agent, Location> agentLocations = (hasReducedStateSpace() ? mRelativeAgentLocations : mAgentLocations);
+        if (mTargetAgent != null) {
+            // With a target agent, treat every other agent by their class instead of object
+            int hashCode = 0;
+            for (final Entry<Agent, Location> agentLocation : agentLocations.entrySet()) {
+                final Agent agent = agentLocation.getKey();
+
+                hashCode += (agent == mTargetAgent ? agent.hashCode() : agent.getClass().hashCode())
+                        ^ agentLocation.getValue().hashCode();
+            }
+            return hashCode;
+        } else {
+            return agentLocations.hashCode();
+        }
     }
 }

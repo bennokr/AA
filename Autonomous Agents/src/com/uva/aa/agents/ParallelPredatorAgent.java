@@ -22,6 +22,7 @@ public class ParallelPredatorAgent extends PredatorAgent {
      */
     public ParallelPredatorAgent(final Location location) {
         super(location);
+        mPolicy.setTargetAgent(this);
     }
 
     /**

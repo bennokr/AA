@@ -367,6 +367,7 @@ public class Game {
             }
         }
 
+        // Let agents finish up
         for (final Agent agent : agents) {
             agent.postGameCallback();
         }

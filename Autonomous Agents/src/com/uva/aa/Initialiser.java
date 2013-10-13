@@ -44,6 +44,7 @@ public class Initialiser {
      *            Not used
      */
     public static void main(String[] args) {
+
         // Task 1.1: Random policy
         if (sTestRandomPolicy) {
             final GameTester simpleTester = new SimpleGameTester();
@@ -95,7 +96,7 @@ public class Initialiser {
             final GameTester sarsaGameTester = new SarsaGameTester();
             sarsaGameTester.runTests(100000);
         }
-        
+
         // Task 2.4(2): On-policy MC
         if (sTestOnPolicyMCGame) {
             final GameTester onPolicyMCGameTester = new OnPolicyMCGameTester();
@@ -107,17 +108,17 @@ public class Initialiser {
             final GameTester offPolicyMCGameTester = new OffPolicyMCGameTester();
             offPolicyMCGameTester.runTests(1000);
         }
-        
+
         // Task 3(1): Parallel
         if (sTestParallelGame) {
             final GameTester parallelTester = new ParallelGameTester();
             parallelTester.runTests(1000);
         }
-        
+
         // Task 3(2): Parallel R-Learning
         if (sTestParallelRLearningGame) {
             final GameTester parallelRLearningTester = new ParallelRLearningGameTester();
-            parallelRLearningTester.runTests(100000);
+            parallelRLearningTester.runTests(1000);
         }
     }
 

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.uva.aa.State;
+import com.uva.aa.agents.Agent;
 import com.uva.aa.enums.Action;
 
 /**
@@ -15,9 +16,12 @@ public class Policy {
 
     /** The map holding the values actions with probabilities for their state */
     private Map<State, StatePolicyProperties> mStateMap = new HashMap<State, StatePolicyProperties>();
-    
+
     /** The default properties that will be set when an unknown state is required */
     final private StatePolicyProperties mDefaultProperties = new StatePolicyProperties();
+
+    /** The agent from whose perspective the state is considered */
+    private Agent mTargetAgent = null;
 
     /**
      * Returns the mapped values and actions with probabilities for their state.
@@ -26,6 +30,16 @@ public class Policy {
      */
     public Map<State, StatePolicyProperties> getStateMap() {
         return mStateMap;
+    }
+
+    /**
+     * Set the agent from whose perspective the state is considered.
+     * 
+     * @param agent
+     *            The target agent
+     */
+    public void setTargetAgent(final Agent agent) {
+        mTargetAgent = agent;
     }
 
     /**
@@ -38,12 +52,13 @@ public class Policy {
      * @return The state's properties
      */
     public StatePolicyProperties getProperties(final State state) {
-        StatePolicyProperties properties = mStateMap.get(state);
+        final State relativeState = (mTargetAgent != null ? state.getStateWithRespectToAgent(mTargetAgent) : state);
+        StatePolicyProperties properties = mStateMap.get(relativeState);
 
         // Prepare the state if it wasn't mapped yet
         if (properties == null) {
             properties = mDefaultProperties.clone();
-            mStateMap.put(state, properties);
+            mStateMap.put(relativeState, properties);
         }
 
         return properties;
@@ -58,7 +73,8 @@ public class Policy {
      * @return True if it's mapped, false otherwise
      */
     public boolean containsState(final State state) {
-        return mStateMap.containsKey(state);
+        final State relativeState = (mTargetAgent != null ? state.getStateWithRespectToAgent(mTargetAgent) : state);
+        return mStateMap.containsKey(relativeState);
     }
 
     /**
