@@ -127,8 +127,8 @@ public class StatePolicyProperties {
      */
     public StatePolicyProperties clone() {
         final StatePolicyProperties clone = new StatePolicyProperties();
-        clone.mActionProbabilities = mActionProbabilities;
-        clone.mActionValues = mActionValues;
+        clone.mActionProbabilities = new HashMap<Action, Double>(mActionProbabilities);
+        clone.mActionValues = new HashMap<Action, Double>(mActionValues);
         clone.mValue = mValue;
         return clone;
     }
