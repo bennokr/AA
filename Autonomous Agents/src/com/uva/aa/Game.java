@@ -9,6 +9,7 @@ import com.uva.aa.agents.ParallelPredatorAgent;
 import com.uva.aa.agents.ParallelPreyAgent;
 import com.uva.aa.agents.ParallelQLearningEGreedyPredatorAgent;
 import com.uva.aa.agents.ParallelQLearningEGreedyPreyAgent;
+import com.uva.aa.agents.ParallelRLearningPredatorAgent;
 import com.uva.aa.agents.PolicyIteratingPredatorAgent;
 import com.uva.aa.agents.PredatorAgent;
 import com.uva.aa.agents.PreyAgent;
@@ -195,7 +196,7 @@ public class Game {
     }
 
     /**
-     * Adds a parallel q-learning predator that uses an epsilon-greedy policy to the environment at the specified
+     * Adds a parallel Q-learning predator that uses an epsilon-greedy policy to the environment at the specified
      * coordinates.
      * 
      * @param x
@@ -205,6 +206,19 @@ public class Game {
      */
     public void addParallelQLearningEGreedyPredator(final int x, final int y) {
         mEnvironment.addAgent(new ParallelQLearningEGreedyPredatorAgent(new Location(mEnvironment, x, y)));
+    }
+
+    /**
+     * Adds a parallel R-learning predator that uses an epsilon-greedy policy to the environment at the specified
+     * coordinates.
+     * 
+     * @param x
+     *            The x coordinate where the predator is located at
+     * @param y
+     *            The y coordinate where the predator is located at
+     */
+    public void addParallelRLearningPredator(final int x, final int y) {
+        mEnvironment.addAgent(new ParallelRLearningPredatorAgent(new Location(mEnvironment, x, y)));
     }
 
     /**

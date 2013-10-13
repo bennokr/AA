@@ -11,6 +11,9 @@ public class Config {
     /** The step size for updating algorithms */
     public final static double STEP_SIZE_ALPHA = 0.1;
 
+    /** The step size for updating algorithms */
+    public final static double STEP_SIZE_BETA = 0.1;
+
     /** The step size for the prey's updating algorithms */
     public final static double PREY_STEP_SIZE_ALPHA = 0.1;
     

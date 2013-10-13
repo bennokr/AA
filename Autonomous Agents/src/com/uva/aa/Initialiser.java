@@ -4,6 +4,7 @@ import com.uva.aa.testers.GameTester;
 import com.uva.aa.testers.OffPolicyMCGameTester;
 import com.uva.aa.testers.OnPolicyMCGameTester;
 import com.uva.aa.testers.ParallelGameTester;
+import com.uva.aa.testers.ParallelRLearningGameTester;
 import com.uva.aa.testers.PolicyEvaluationTester;
 import com.uva.aa.testers.PolicyIterationStateValueTester;
 import com.uva.aa.testers.QLearningEGreedyGameTester;
@@ -32,8 +33,9 @@ public class Initialiser {
     private static boolean sTestSarsaGame = false;
     private static boolean sTestOnPolicyMCGame = false;
     private static boolean sTestOffPolicyMCGame = false;
-    
-    private static boolean sTestParallelGame = true;
+
+    private static boolean sTestParallelGame = false;
+    private static boolean sTestParallelRLearningGame = true;
 
     /**
      * Sets everything in motion.
@@ -110,6 +112,12 @@ public class Initialiser {
         if (sTestParallelGame) {
             final GameTester parallelTester = new ParallelGameTester();
             parallelTester.runTests(1000);
+        }
+        
+        // Task 3(2): Parallel R-Learning
+        if (sTestParallelRLearningGame) {
+            final GameTester parallelRLearningTester = new ParallelRLearningGameTester();
+            parallelRLearningTester.runTests(100000);
         }
     }
 

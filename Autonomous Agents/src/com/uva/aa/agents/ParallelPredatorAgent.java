@@ -41,6 +41,7 @@ public class ParallelPredatorAgent extends PredatorAgent {
         final double moveProbability = 1.0 / possibleActions.size();
         for (final Action action : possibleActions) {
             defaultProperties.setActionProbability(action, moveProbability);
+            defaultProperties.setActionValue(action, Config.DEFAULT_ACTION_VALUE);
         }
     }
 
