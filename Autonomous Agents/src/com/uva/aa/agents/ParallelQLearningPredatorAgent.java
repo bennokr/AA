@@ -28,14 +28,9 @@ public abstract class ParallelQLearningPredatorAgent extends ParallelLearningPre
      */
     protected void postActionCallback(final State initialState, final State resultingState,
             final Action previousAction, final Action nextAction) {
-        // Target our prey
-        final List<PreyAgent> preys = getEnvironment().getPreys();
-        final PreyAgent prey = (!preys.isEmpty() ? preys.get(0) : null);
 
-        // Determine the transation's details
-        final State immediateNextState = State.buildState(this, resultingState.getAgentLocation(this), prey,
-                initialState.getAgentLocation(prey));
-        final double reward = getImmediateReward(initialState, immediateNextState, previousAction);
+        // Determine the transaction's details
+        final double reward = getImmediateReward(initialState, resultingState, previousAction);
         final double initialActionValue = mPolicy.getActionValue(initialState, previousAction);
 
         // Find the value of the best possible next action
