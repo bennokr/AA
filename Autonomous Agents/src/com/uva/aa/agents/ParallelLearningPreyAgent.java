@@ -24,18 +24,6 @@ public abstract class ParallelLearningPreyAgent extends ParallelPreyAgent {
     }
 
     /**
-     * Starts with a random policy but will evaluate that to improve.
-     */
-    @Override
-    public void prepare() {
-        for (final State state : getEnvironment().getPossibleStates(false)) {
-            for (final Action action : Action.values()) {
-                mPolicy.setActionValue(state, action, Config.PREY_DEFAULT_ACTION_VALUE);
-            }
-        }
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override

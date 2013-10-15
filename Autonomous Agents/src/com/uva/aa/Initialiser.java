@@ -4,6 +4,7 @@ import com.uva.aa.testers.GameTester;
 import com.uva.aa.testers.OffPolicyMCGameTester;
 import com.uva.aa.testers.OnPolicyMCGameTester;
 import com.uva.aa.testers.ParallelGameTester;
+import com.uva.aa.testers.ParallelQLearningEGreedyGameTester;
 import com.uva.aa.testers.ParallelRLearningGameTester;
 import com.uva.aa.testers.PolicyEvaluationTester;
 import com.uva.aa.testers.PolicyIterationStateValueTester;
@@ -35,7 +36,8 @@ public class Initialiser {
     private static boolean sTestOffPolicyMCGame = false;
 
     private static boolean sTestParallelGame = false;
-    private static boolean sTestParallelRLearningGame = true;
+    private static boolean sTestParallelQLearningEGreedyGame = true;
+    private static boolean sTestParallelRLearningGame = false;
 
     /**
      * Sets everything in motion.
@@ -115,6 +117,12 @@ public class Initialiser {
             parallelTester.runTests(1000);
         }
 
+        // Task 3(2): Parallel Q-Learning with Epsilon-Greedy action selection
+        if (sTestParallelQLearningEGreedyGame) {
+            final GameTester parallelQLearningEGreedyTester = new ParallelQLearningEGreedyGameTester();
+            parallelQLearningEGreedyTester.runTests(10000);
+        }
+        
         // Task 3(2): Parallel R-Learning
         if (sTestParallelRLearningGame) {
             final GameTester parallelRLearningTester = new ParallelRLearningGameTester();

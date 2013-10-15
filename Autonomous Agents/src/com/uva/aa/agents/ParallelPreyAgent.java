@@ -48,6 +48,7 @@ public class ParallelPreyAgent extends PreyAgent {
         final double moveProbability = MOVE_PROBABILITY / possibleActions.size();
         for (final Action action : possibleActions) {
             defaultProperties.setActionProbability(action, moveProbability);
+            defaultProperties.setActionValue(action, Config.PREY_DEFAULT_ACTION_VALUE);
         }
     }
 
