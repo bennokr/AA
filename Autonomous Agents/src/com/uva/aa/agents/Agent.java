@@ -16,6 +16,9 @@ public abstract class Agent {
 
     /** The current location of the agent within the environment */
     private Location mLocation;
+    
+    /** The last performed action of the agent within the environment */
+    private Action lastAction;
 
     /**
      * Creates a new agent on the specified location.
@@ -34,8 +37,16 @@ public abstract class Agent {
      */
     public void performAction(final State roundStartState) {
         // Move to a location based on an action determined by the policy
-        moveTo(mPolicy.getActionBasedOnProbability(
-                roundStartState != null ? roundStartState : getEnvironment().getState()).getLocation(this));
+    	lastAction = mPolicy.getActionBasedOnProbability(
+                roundStartState != null ? roundStartState : getEnvironment().getState());
+        moveTo(lastAction.getLocation(this));
+    }
+    
+    /**
+     * @return the last performed action of the agent within the environment
+     */
+    public Action getLastAction() {
+    	return lastAction;
     }
 
     /**
