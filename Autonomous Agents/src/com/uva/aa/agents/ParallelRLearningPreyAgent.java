@@ -9,7 +9,7 @@ import com.uva.aa.enums.Action;
  * An agent that acts as a predator within the environment. Will learn about the prey by following its policy using
  * R-Learning.
  */
-public class ParallelRLearningPredatorAgent extends ParallelLearningPredatorAgent {
+public class ParallelRLearningPreyAgent extends ParallelLearningPreyAgent {
 
     /** The rho used for updating action values */
     private double mRho;
@@ -20,7 +20,7 @@ public class ParallelRLearningPredatorAgent extends ParallelLearningPredatorAgen
      * @param location
      *            The location to place the predator at
      */
-    public ParallelRLearningPredatorAgent(final Location location) {
+    public ParallelRLearningPreyAgent(final Location location) {
         super(location);
     }
 
@@ -66,6 +66,6 @@ public class ParallelRLearningPredatorAgent extends ParallelLearningPredatorAgen
      */
     @Override
     protected Action getActionToPerform(final State state) {
-        return mPolicy.getActionBasedOnValueEpsilonGreedy(state, Config.EPSILON);
+        return mPolicy.getActionBasedOnValueSoftmax(state, Config.EPSILON, Config.TEMPERATURE);
     }
 }

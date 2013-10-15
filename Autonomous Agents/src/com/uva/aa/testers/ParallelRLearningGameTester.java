@@ -16,7 +16,8 @@ public class ParallelRLearningGameTester extends GameTester {
         game.setParallelActions(true);
 
         // Adds the two required agents
-        game.addParallelPrey(5, 5);
+        game.addParallelRLearningPrey(5, 5);
+//        game.addParallelPrey(5, 5);
         game.addParallelRLearningPredator(0, 0);
         game.addParallelRLearningPredator(10, 0);
         game.addParallelRLearningPredator(10, 10);

@@ -10,6 +10,7 @@ import com.uva.aa.agents.ParallelPreyAgent;
 import com.uva.aa.agents.ParallelQLearningEGreedyPredatorAgent;
 import com.uva.aa.agents.ParallelQLearningEGreedyPreyAgent;
 import com.uva.aa.agents.ParallelRLearningPredatorAgent;
+import com.uva.aa.agents.ParallelRLearningPreyAgent;
 import com.uva.aa.agents.PolicyIteratingPredatorAgent;
 import com.uva.aa.agents.PredatorAgent;
 import com.uva.aa.agents.PreyAgent;
@@ -85,6 +86,31 @@ public class Game {
      */
     public void addParallelPrey(final int x, final int y) {
         mEnvironment.addAgent(new ParallelPreyAgent(new Location(mEnvironment, x, y)));
+    }
+
+    /**
+     * Adds a parallel Q-learning prey that uses an epsilon-greedy policy to the environment at the specified
+     * coordinates.
+     * 
+     * @param x
+     *            The x coordinate where the prey is located at
+     * @param y
+     *            The y coordinate where the prey is located at
+     */
+    public void addParallelQLearningEGreedyPrey(final int x, final int y) {
+        mEnvironment.addAgent(new ParallelQLearningEGreedyPreyAgent(new Location(mEnvironment, x, y)));
+    }
+
+    /**
+     * Adds a parallel R-learning prey to the environment at the specified coordinates.
+     * 
+     * @param x
+     *            The x coordinate where the prey is located at
+     * @param y
+     *            The y coordinate where the prey is located at
+     */
+    public void addParallelRLearningPrey(final int x, final int y) {
+        mEnvironment.addAgent(new ParallelRLearningPreyAgent(new Location(mEnvironment, x, y)));
     }
 
     /**
@@ -219,19 +245,6 @@ public class Game {
      */
     public void addParallelRLearningPredator(final int x, final int y) {
         mEnvironment.addAgent(new ParallelRLearningPredatorAgent(new Location(mEnvironment, x, y)));
-    }
-
-    /**
-     * Adds a parallel q-learning prey that uses an epsilon-greedy policy to the environment at the specified
-     * coordinates.
-     * 
-     * @param x
-     *            The x coordinate where the prey is located at
-     * @param y
-     *            The y coordinate where the prey is located at
-     */
-    public void addParallelQLearningEGreedyPrey(final int x, final int y) {
-        mEnvironment.addAgent(new ParallelQLearningEGreedyPreyAgent(new Location(mEnvironment, x, y)));
     }
 
     /**

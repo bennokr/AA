@@ -1,9 +1,6 @@
 package com.uva.aa.testers;
 
 import com.uva.aa.Game;
-import com.uva.aa.agents.OffPolicyMCPredatorAgent;
-import com.uva.aa.agents.ParallelQLearningEGreedyPredatorAgent;
-import com.uva.aa.agents.ParallelQLearningEGreedyPreyAgent;
 
 /**
  * Runs simple test with a On-Policy Monte-Carlo game tester.
