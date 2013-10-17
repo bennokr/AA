@@ -39,12 +39,7 @@ public class MinimaxQ {
 		this.decay = decay;
 		this.opponent = opponent;
 		try {
-			// Initialize immense overcapabilities
-			solver = LpSolve.makeLp(0, Action.values().length);
-			solver.setVerbose(0);
-			solver.setMaxim();
-			// Sum of probability distribution pi should be 1
-			solver.addConstraint(new double[]{1, 1, 1, 1, 1}, LpSolve.EQ, 1);
+
 		} catch (LpSolveException e) {
 			e.printStackTrace();
 		}
@@ -82,46 +77,40 @@ public class MinimaxQ {
 		// Minimize, starting with infinity
 		double minEndReward = Double.POSITIVE_INFINITY;
 		Set<double[]> bestPolicyArrays = new HashSet<double[]>();
+		for (Action o : Action.values()) {
+			if (!stateGameValues.get(initialState).containsKey(o)) {
+				stateGameValues.get(initialState).put(o, new HashMap<Action, Double>());
+			}
+		}
 		try {
-			for(Action o : Action.values()) {
-				if (!stateGameValues.get(initialState).containsKey(o)) {
-					stateGameValues.get(initialState).put(o, new HashMap<Action, Double>());
+			// Initialize immense overcapabilities
+			// With 1 extra parameter for the value of the minimization
+			solver = LpSolve.makeLp(0, Action.values().length + 1);
+			solver.setVerbose(0);
+			solver.setMaxim();
+			// Sum of probability distribution pi should be 1
+			solver.addConstraint(new double[]{1, 1, 1, 1, 1, 0}, LpSolve.EQ, 1);
+
+			// Java wants us to loop so we loop-de-loop
+			double[] Qs = new double[Action.values().length];
+			for (Action a : Action.values()) {
+				// Init action value if not present
+				if (!stateGameValues.get(initialState).get(o).containsKey(a)) {
+					stateGameValues.get(initialState).get(o).put(a, Config.DEFAULT_ACTION_VALUE);
 				}
-				// Java wants us to loop so we loop-de-loop
-				double[] Qs = new double[Action.values().length];
-				for (Action a : Action.values()) {
-					// Init action value if not present
-					if (!stateGameValues.get(initialState).get(o).containsKey(a)) {
-						stateGameValues.get(initialState).get(o).put(a, Config.DEFAULT_ACTION_VALUE);
-					}
-					//solver.setColName(a.ordinal()+1, a.name());
-					Qs[a.ordinal()] = stateGameValues.get(initialState).get(o).get(a);
-				}
-				// Maximize over innerproduct(Q(s,o), pi)
-				solver.setObjFn(Qs);
-				solver.solve();
-				
-				// Minimize outer loop
-				double endReward = solver.getObjective();
-				if (endReward <= minEndReward) {
-					minEndReward = endReward;
-					if (endReward < minEndReward) {
-						bestPolicyArrays.clear();
-					}
-					bestPolicyArrays.add(solver.getPtrVariables());
-				}
-			} 
+				//solver.setColName(a.ordinal()+1, a.name());
+				Qs[a.ordinal()] = stateGameValues.get(initialState).get(o).get(a);
+			}
+			// Maximize
+			solver.setObjFn(Qs);
+			solver.solve();
 		} catch (LpSolveException e) {
 			e.printStackTrace();
 		}
 		for(Action a : Action.values()) {
-			double prob = 0;
-			for (double[] policyArray : bestPolicyArrays) {
-				prob += policyArray[a.ordinal()] ;
-			}
-			policy.setActionProbability(initialState, a, prob);
+			policy.setActionProbability(initialState, a, solver.getPtrVariables()[a.ordinal()]);
 		}
-		policy.setStateValue(resultingState, minEndReward);
+		policy.setStateValue(resultingState, solver.getObjective(););
 		alpha = alpha * decay;
 	}
 }
