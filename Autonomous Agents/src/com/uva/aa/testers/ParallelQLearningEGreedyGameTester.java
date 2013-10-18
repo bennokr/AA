@@ -3,7 +3,7 @@ package com.uva.aa.testers;
 import com.uva.aa.Game;
 
 /**
- * Runs simple test with a On-Policy Monte-Carlo game tester.
+ * Runs simple test with a Q-Learning game tester.
  */
 public class ParallelQLearningEGreedyGameTester extends GameTester {
 
@@ -17,12 +17,12 @@ public class ParallelQLearningEGreedyGameTester extends GameTester {
 
         // Adds the required agents
         game.addParallelQLearningEGreedyPrey(5, 5);
-        //game.addParallelPrey(5, 5);
+        // game.addParallelPrey(5, 5);
         game.addParallelQLearningEGreedyPredator(0, 0);
         game.addParallelQLearningEGreedyPredator(10, 0);
-        //game.addParallelQLearningEGreedyPredator(10, 10);
-        //game.addParallelQLearningEGreedyPredator(0, 10);
-        
+        // game.addParallelQLearningEGreedyPredator(10, 10);
+        // game.addParallelQLearningEGreedyPredator(0, 10);
+
         return game;
     }
 }

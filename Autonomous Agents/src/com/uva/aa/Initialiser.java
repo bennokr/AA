@@ -39,7 +39,7 @@ public class Initialiser {
     private static boolean sTestParallelGame = false;
     private static boolean sTestParallelQLearningEGreedyGame = false;
     private static boolean sTestParallelRLearningGame = false;
-	private static boolean sTestParallelMinimaxQGame = true;
+    private static boolean sTestParallelMinimaxQGame = true;
 
     /**
      * Sets everything in motion.
@@ -113,26 +113,26 @@ public class Initialiser {
             offPolicyMCGameTester.runTests(1000);
         }
 
-        // Task 3(1): Parallel
+        // Task 3.1: Parallel
         if (sTestParallelGame) {
             final GameTester parallelTester = new ParallelGameTester();
             parallelTester.runTests(1000);
         }
 
-        // Task 3(2): Parallel Q-Learning with Epsilon-Greedy action selection
+        // Task 3.2(1): Parallel Q-Learning with Epsilon-Greedy action selection
         if (sTestParallelQLearningEGreedyGame) {
             final GameTester parallelQLearningEGreedyTester = new ParallelQLearningEGreedyGameTester();
             parallelQLearningEGreedyTester.runTests(10000);
         }
-        
-        // Task 3(2): Parallel R-Learning
+
+        // Task 3.3: Parallel R-Learning
         if (sTestParallelRLearningGame) {
             final GameTester parallelRLearningTester = new ParallelRLearningGameTester();
             parallelRLearningTester.runTests(1000);
         }
-        
-     // Task XXX: Minimax-Q
-        if (sTestParallelMinimaxQGame ) {
+
+        // Task 3.2(2): Minimax-Q
+        if (sTestParallelMinimaxQGame) {
             final GameTester parallelMinimaxQTester = new ParallelMinimaxQGameTester();
             parallelMinimaxQTester.runTests(1000);
         }

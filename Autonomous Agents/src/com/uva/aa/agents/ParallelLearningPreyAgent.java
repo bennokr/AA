@@ -1,6 +1,5 @@
 package com.uva.aa.agents;
 
-import com.uva.aa.Config;
 import com.uva.aa.Location;
 import com.uva.aa.State;
 import com.uva.aa.enums.Action;

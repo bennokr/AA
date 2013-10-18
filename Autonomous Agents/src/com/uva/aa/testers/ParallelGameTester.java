@@ -3,7 +3,7 @@ package com.uva.aa.testers;
 import com.uva.aa.Game;
 
 /**
- * Runs simple test with a Q-Learning e-Greedy predator and prey behaviour.
+ * Runs simple test with random predator and prey behaviour.
  */
 public class ParallelGameTester extends GameTester {
 

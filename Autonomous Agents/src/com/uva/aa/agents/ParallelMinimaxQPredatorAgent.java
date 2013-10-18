@@ -4,10 +4,11 @@ import com.uva.aa.Config;
 import com.uva.aa.Location;
 import com.uva.aa.State;
 import com.uva.aa.enums.Action;
+import com.uva.aa.policies.MinimaxQ;
 
 public class ParallelMinimaxQPredatorAgent extends ParallelLearningPredatorAgent {
 	
-	private MinimaxQ minimaxQ;
+	private MinimaxQ mMinimaxQ;
 
 	/**
      * Creates a new predator on the specified coordinates within the environment.
@@ -18,20 +19,20 @@ public class ParallelMinimaxQPredatorAgent extends ParallelLearningPredatorAgent
     public ParallelMinimaxQPredatorAgent(final Location location) {
         super(location);
     	// initialize minimaxQ without opponent
-        minimaxQ = new MinimaxQ( 1, 0.999999);
+        mMinimaxQ = new MinimaxQ( 1, 0.999999);
     }
     
     @Override
     public void prepare() {
     	super.prepare();
-    	minimaxQ.setOpponent(getEnvironment().getPreys().get(0));
+    	mMinimaxQ.setOpponent(getEnvironment().getPreys().get(0));
     }
 
 	@Override
 	protected void postActionCallback(State initialState, State resultingState,
 			Action previousAction, Action nextAction) {	
 		double r = getImmediateReward(initialState, resultingState, previousAction);
-		minimaxQ.learn(initialState, resultingState, previousAction, r, mPolicy);
+		mMinimaxQ.learn(initialState, resultingState, previousAction, r, mPolicy);
 	}
 	
 	@Override
