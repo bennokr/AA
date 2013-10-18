@@ -63,10 +63,14 @@ public class MinimaxQ {
 		try {
 			// With 1 extra parameter for the value of the minimization
 			solver = LpSolve.makeLp(0, Action.values().length + 1);
-			solver.setVerbose(0);
+			solver.setVerbose(1);
 			solver.setMaxim();
 			// Sum of probability distribution pi should be 1
-			solver.addConstraint(new double[]{1, 1, 1, 1, 1, 0}, LpSolve.EQ, 1);
+			solver.addConstraint(new double[]{0, 1, 1, 1, 1, 1, 0}, LpSolve.EQ, 1);
+			
+			for (Action a : Action.values()) {
+				solver.setColName(a.ordinal()+1, a.name());
+			}
 
 			for (Action o : Action.values()) {
 				// Init action value map if not present
@@ -75,21 +79,24 @@ public class MinimaxQ {
 				}
 
 				// Java wants us to loop so we loop-de-loop
-				double[] minimizationConstraint = new double[Action.values().length+1];
+				double[] minimizationConstraint = new double[Action.values().length+2];
 				for (Action a : Action.values()) {
 					// Init action value if not present
 					if (!stateGameValues.get(initialState).get(o).containsKey(a)) {
 						stateGameValues.get(initialState).get(o).put(a, Config.DEFAULT_ACTION_VALUE);
 					}
-					minimizationConstraint[a.ordinal()] = - stateGameValues.get(initialState).get(o).get(a);
+					minimizationConstraint[a.ordinal()+1] = - stateGameValues.get(initialState).get(o).get(a);
 				}
-				minimizationConstraint[Action.values().length] = 1;
+				minimizationConstraint[Action.values().length+1] = 1;
 				solver.addConstraint(minimizationConstraint, LpSolve.LE, 0);
 			}
 
 
 			// Maximize
-			solver.setObjFn(new double[]{0, 0, 0, 0, 0, 1});
+			solver.setObjFn(new double[]{0, 0, 0, 0, 0, 0, 1});
+			if (Math.random() < 0.01) {
+				solver.printLp();
+			}
 			solver.solve();
 			
 			// Update
@@ -97,12 +104,13 @@ public class MinimaxQ {
 			double sum = 0;
 			for(Action a : Action.values()) {
 				double p = solver.getPtrVariables()[a.ordinal()];
-				System.out.print(p + " ");
-				policy.setActionProbability(initialState, a, solver.getPtrVariables()[a.ordinal()]);
+				//System.out.print(p + " ");
+				policy.setActionProbability(initialState, a, p);
 				sum += p;
 			}
-			System.out.println(" (sum "+sum+") %%% " + R + "  a:" + alpha);
-			policy.setStateValue(resultingState, solver.getObjective());
+			if (1-sum > 0.0001) { System.err.println("bad sum!"); }
+			//System.out.println(" (sum "+sum+") %%% " + R + "  a:" + alpha);
+			policy.setStateValue(resultingState, R);
 			alpha = alpha * decay;
 			solver.deleteLp();
 			
