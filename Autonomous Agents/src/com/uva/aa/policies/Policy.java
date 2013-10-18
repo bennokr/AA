@@ -173,7 +173,7 @@ public class Policy {
      * @param state
      *            The state to choose an action for
      * 
-     * @return A semi-random action or null if no actions are available
+     * @return A random action or null if no actions are available
      */
     public Action getActionBasedOnProbability(final State state) {
         final double decision = Math.random();
@@ -325,6 +325,27 @@ public class Policy {
         }
 
         return null;
+    }
+    
+    /**
+     * Returns a random action with probability epsilon, else choose it based on the policy
+     * 
+     * @param state
+     *            The state to choose an action for
+     * @param epsilon
+     *            The probability of returning a random action
+     * 
+     * @return A possibly random action or null if no actions are available
+     */
+    public Action getActionBasedOnPolicyOrRandom(final State state, final double epsilon) {
+    	final double decision = Math.random();
+    	if (decision > epsilon) {
+    		// Random action
+    		return Action.values()[(int) Math.floor(Math.random() * Action.values().length)];
+    	} else {
+    		// Policy action
+    		return getActionBasedOnProbability(state);
+    	}
     }
 
     /**

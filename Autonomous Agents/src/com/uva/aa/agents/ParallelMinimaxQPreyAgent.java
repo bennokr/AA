@@ -37,7 +37,7 @@ public class ParallelMinimaxQPreyAgent extends ParallelLearningPreyAgent {
 	
 	@Override
 	protected Action getActionToPerform(State state) {
-        return mPolicy.getActionBasedOnValueEpsilonGreedy(state, Config.EPSILON);
+        return mPolicy.getActionBasedOnPolicyOrRandom(state, Config.EPSILON);
 	}
 
 	@Override
