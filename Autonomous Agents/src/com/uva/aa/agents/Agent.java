@@ -18,7 +18,7 @@ public abstract class Agent {
     private Location mLocation;
     
     /** The last performed action of the agent within the environment */
-    private Action lastAction;
+    protected Action lastAction;
 
     /**
      * Creates a new agent on the specified location.

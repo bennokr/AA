@@ -32,7 +32,6 @@ public class MinimaxQ {
 		stateGameValues = new HashMap<State, HashMap<Action, HashMap<Action, Double>>>();
 		this.alpha = alpha;
 		this.decay = decay;
-		
 	}
 	
 	protected void setOpponent(Agent opponent) {
@@ -95,11 +94,14 @@ public class MinimaxQ {
 			
 			// Update
 			double R = solver.getObjective();
+			double sum = 0;
 			for(Action a : Action.values()) {
-			//	System.out.print(solver.getPtrVariables()[a.ordinal()] + " ");
+				double p = solver.getPtrVariables()[a.ordinal()];
+				System.out.print(p + " ");
 				policy.setActionProbability(initialState, a, solver.getPtrVariables()[a.ordinal()]);
+				sum += p;
 			}
-			//System.out.println("  %%% " + R);
+			System.out.println(" (sum "+sum+") %%% " + R + "  a:" + alpha);
 			policy.setStateValue(resultingState, solver.getObjective());
 			alpha = alpha * decay;
 			solver.deleteLp();
