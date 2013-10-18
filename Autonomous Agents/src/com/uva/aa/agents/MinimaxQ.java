@@ -90,11 +90,15 @@ public class MinimaxQ {
 			solver.solve();
 			
 			// Update
+			double R = solver.getObjective();
 			for(Action a : Action.values()) {
+			//	System.out.print(solver.getPtrVariables()[a.ordinal()] + " ");
 				policy.setActionProbability(initialState, a, solver.getPtrVariables()[a.ordinal()]);
 			}
+			//System.out.println("  %%% " + R);
 			policy.setStateValue(resultingState, solver.getObjective());
 			alpha = alpha * decay;
+			solver.deleteLp();
 			
 		} catch (LpSolveException e) {
 			e.printStackTrace();
