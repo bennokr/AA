@@ -18,7 +18,7 @@ public class ParallelMinimaxQPreyAgent extends ParallelLearningPreyAgent {
     public ParallelMinimaxQPreyAgent(final Location location) {
         super(location);
     	// initialize minimaxQ without opponent
-        minimaxQ = new MinimaxQ(1, 0.9999);
+        minimaxQ = new MinimaxQ(1, 0.999999);
     }
     
     @Override

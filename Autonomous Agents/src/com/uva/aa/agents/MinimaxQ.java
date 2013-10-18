@@ -28,7 +28,7 @@ public class MinimaxQ {
 	LpSolve solver;
 
 	protected MinimaxQ(double alpha, double decay) {
-		// initialize Q(s,a,o)
+		// initialize Q(s,o,a)
 		stateGameValues = new HashMap<State, HashMap<Action, HashMap<Action, Double>>>();
 		this.alpha = alpha;
 		this.decay = decay;
@@ -67,6 +67,8 @@ public class MinimaxQ {
 			solver.setMaxim();
 			// Sum of probability distribution pi should be 1
 			solver.addConstraint(new double[]{0, 1, 1, 1, 1, 1, 0}, LpSolve.EQ, 1);
+			// v has no lower boundary
+			solver.setLowbo(Action.values().length+1, Double.NEGATIVE_INFINITY);
 			
 			for (Action a : Action.values()) {
 				solver.setColName(a.ordinal()+1, a.name());
@@ -94,7 +96,7 @@ public class MinimaxQ {
 
 			// Maximize
 			solver.setObjFn(new double[]{0, 0, 0, 0, 0, 0, 1});
-			if (Math.random() < 0.01) {
+			if (opponent.getEnvironment().getPreys().isEmpty()) {
 				solver.printLp();
 			}
 			solver.solve();
@@ -109,7 +111,7 @@ public class MinimaxQ {
 				sum += p;
 			}
 			if (1-sum > 0.0001) { System.err.println("bad sum!"); }
-			//System.out.println(" (sum "+sum+") %%% " + R + "  a:" + alpha);
+			//System.out.println(R + "  a:" + alpha);
 			policy.setStateValue(resultingState, R);
 			alpha = alpha * decay;
 			solver.deleteLp();
