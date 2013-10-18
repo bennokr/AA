@@ -5,6 +5,8 @@ import java.util.List;
 import com.uva.aa.agents.Agent;
 import com.uva.aa.agents.OffPolicyMCPredatorAgent;
 import com.uva.aa.agents.OnPolicyMCPredatorAgent;
+import com.uva.aa.agents.ParallelMinimaxQPredatorAgent;
+import com.uva.aa.agents.ParallelMinimaxQPreyAgent;
 import com.uva.aa.agents.ParallelPredatorAgent;
 import com.uva.aa.agents.ParallelPreyAgent;
 import com.uva.aa.agents.ParallelQLearningEGreedyPredatorAgent;
@@ -246,6 +248,33 @@ public class Game {
     public void addParallelRLearningPredator(final int x, final int y) {
         mEnvironment.addAgent(new ParallelRLearningPredatorAgent(new Location(mEnvironment, x, y)));
     }
+    
+    
+    /**
+     * Adds a parallel Minimax-Q prey to the environment at the specified
+     * coordinates.
+     * 
+     * @param x
+     *            The x coordinate where the prey is located at
+     * @param y
+     *            The y coordinate where the prey is located at
+     */
+    public void addParallelMinimaxQPrey(int x, int y) {
+    	mEnvironment.addAgent(new ParallelMinimaxQPreyAgent(new Location(mEnvironment, x, y)));
+	}
+
+    /**
+     * Adds a parallel Minimax-Q predator to the environment at the specified
+     * coordinates.
+     * 
+     * @param x
+     *            The x coordinate where the prey is located at
+     * @param y
+     *            The y coordinate where the prey is located at
+     */
+	public void addParallelMinimaxQPredator(int x, int y) {
+    	mEnvironment.addAgent(new ParallelMinimaxQPredatorAgent(new Location(mEnvironment, x, y)));		
+	}
 
     /**
      * Checks whether or not moves taken should be printed.
@@ -431,5 +460,7 @@ public class Game {
     public Environment getEnvironment() {
         return mEnvironment;
     }
+
+	
 
 }

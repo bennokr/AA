@@ -33,7 +33,7 @@ public class Config {
     public final static double TEMPERATURE = 5;
 
     /** The default value for any Q(s,a) in an agent's policy */
-    public final static double DEFAULT_ACTION_VALUE = 0;
+    public final static double DEFAULT_ACTION_VALUE = 1;
 
     /** The default value for any Q(s,a) in an prey's policy */
     public final static double PREY_DEFAULT_ACTION_VALUE = 0;
