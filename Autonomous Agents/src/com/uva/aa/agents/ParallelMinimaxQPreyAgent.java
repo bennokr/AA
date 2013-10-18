@@ -17,13 +17,15 @@ public class ParallelMinimaxQPreyAgent extends ParallelLearningPreyAgent {
      */
     public ParallelMinimaxQPreyAgent(final Location location) {
         super(location);
+    	// initialize minimaxQ without opponent
+        minimaxQ = new MinimaxQ(1, 0.99);
     }
     
     @Override
     public void prepare() {
     	super.prepare();
-    	// initialize minimaxQ with opponent
-        minimaxQ = new MinimaxQ(getEnvironment().getPredators().get(0), 1, 0.99);
+    	// set the opponent
+        minimaxQ.setOpponent(getEnvironment().getPredators().get(0));
     }
 
 	@Override

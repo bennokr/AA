@@ -27,11 +27,15 @@ public class MinimaxQ {
 	double decay;
 	LpSolve solver;
 
-	protected MinimaxQ(Agent opponent, double alpha, double decay) {
+	protected MinimaxQ(double alpha, double decay) {
 		// initialize Q(s,a,o)
 		stateGameValues = new HashMap<State, HashMap<Action, HashMap<Action, Double>>>();
 		this.alpha = alpha;
 		this.decay = decay;
+		
+	}
+	
+	protected void setOpponent(Agent opponent) {
 		this.opponent = opponent;
 	}
 
