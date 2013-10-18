@@ -81,7 +81,7 @@ public class MinimaxQ {
 					minimizationConstraint[a.ordinal()] = - stateGameValues.get(initialState).get(o).get(a);
 				}
 				minimizationConstraint[Action.values().length] = 1;
-				solver.addConstraint(minimizationConstraint, LpSolve.EQ, 1);
+				solver.addConstraint(minimizationConstraint, LpSolve.LE, 0);
 			}
 
 
